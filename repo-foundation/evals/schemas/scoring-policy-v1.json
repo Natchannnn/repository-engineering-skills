@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "repo-foundation-harness/scoring-policy-v1",
+  "title": "ScoringPolicyV1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "policy_id",
+    "checkpoint_weights"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "repo-foundation-harness/scoring-policy-v1"
+    },
+    "policy_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "description": {
+      "type": "string"
+    },
+    "checkpoint_weights": {
+      "type": "object",
+      "required": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "properties": {
+        "CP1_BOOTSTRAP": { "$ref": "#/$defs/rationalNumber" },
+        "CP2_SLICE": { "$ref": "#/$defs/rationalNumber" },
+        "CP3_EVOLUTION": { "$ref": "#/$defs/rationalNumber" },
+        "CP4_CONTINUITY": { "$ref": "#/$defs/rationalNumber" }
+      },
+      "additionalProperties": false
+    },
+    "optional_thresholds": {
+      "type": ["object", "null"],
+      "properties": {
+        "min_checkpoint_pass_rate": { "$ref": "#/$defs/rationalNumber" },
+        "min_trajectory_utility": { "$ref": "#/$defs/rationalNumber" }
+      },
+      "additionalProperties": false
+    },
+    "pricing": {
+      "type": ["object", "null"],
+      "properties": {
+        "model_id": { "type": "string" },
+        "version": { "type": "string" },
+        "currency": { "type": "string" },
+        "input_cost_per_million": { "$ref": "#/$defs/rationalNumber" },
+        "output_cost_per_million": { "$ref": "#/$defs/rationalNumber" },
+        "cached_input_cost_per_million": { "$ref": "#/$defs/rationalNumber" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "rationalNumber": {
+      "type": "object",
+      "required": ["numerator", "denominator", "display", "decimal_string"],
+      "properties": {
+        "numerator": { "type": "integer" },
+        "denominator": { "type": "integer", "minimum": 1 },
+        "display": { "type": "string" },
+        "decimal_string": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

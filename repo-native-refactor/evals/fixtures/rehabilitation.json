@@ -1,0 +1,27 @@
+{
+  "fixture_set": "repository-rehabilitation",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "rehab-batch-by-owner",
+      "repository_context": {
+        "areas": ["billing domain", "identity domain", "generated API client", "shared UI"],
+        "known_findings": ["duplicate billing validation", "generic identity errors", "narrative UI comments"],
+        "verification": ["billing integration tests", "identity contract tests", "UI unit tests"]
+      },
+      "expected": "Create separate billing, identity, and UI batches with focused verification; exclude the generated client unless its canonical source changes.",
+      "required": ["Calibrate on a low-to-moderate-risk batch.", "Run a cross-batch consistency review."],
+      "forbidden": ["Rewrite all areas in one mutation batch.", "Hand-edit the generated client."]
+    },
+    {
+      "id": "rehab-conflicting-valid-conventions",
+      "repository_context": {
+        "areas": ["legacy settlement adapter", "new settlement core"],
+        "evidence": "The adapter preserves a partner protocol; the core follows the new domain model. Both are valid within their boundaries."
+      },
+      "expected": "Scope each convention to its owner and preserve the adapter boundary rather than forcing global uniformity.",
+      "required": ["Record the convention conflict in the repository profile."],
+      "forbidden": ["Normalize the legacy adapter to the core style without a protocol migration."]
+    }
+  ]
+}

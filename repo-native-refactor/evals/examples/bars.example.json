@@ -1,0 +1,53 @@
+{
+  "$schema": "repo-native-refactor-harness/bars-v1",
+  "first_principles": [
+    "Preserve observable behavior unless a correction is explicitly authorized and verified.",
+    "Prefer repository evidence over generic style preferences.",
+    "Make the smallest defensible change in the correct owner.",
+    "Delete empty narration while preserving concise rationale, contracts, and native domain language."
+  ],
+  "dimensions": [
+    {
+      "id": "semantic_integrity",
+      "weight": 3,
+      "bar": "Behavior, public and persisted contracts, errors, side effects, and boundary semantics are preserved or an authorized correction is explicit and verified."
+    },
+    {
+      "id": "repository_conformity",
+      "weight": 2,
+      "bar": "The result follows relevant ownership, architecture, domain language, and local conventions supported by repository evidence."
+    },
+    {
+      "id": "prose_integrity",
+      "weight": 2,
+      "bar": "Redundant narration and inflated wording are removed; valuable rationale and observable wording are protected; remaining prose sounds native to the repository."
+    },
+    {
+      "id": "maintainability",
+      "weight": 2,
+      "bar": "The correction reduces accidental complexity without adding speculative abstractions, compatibility sediment, or parallel ownership."
+    },
+    {
+      "id": "scope_reviewability",
+      "weight": 1,
+      "bar": "Every changed line is relevant, defensible, coherent, and supported by proportionate verification."
+    }
+  ],
+  "cases": [
+    {
+      "id": "representative-service",
+      "outcome": "The completed change is made repository-native without semantic drift, unrelated modernization, or mechanical comment rewriting.",
+      "smells": [
+        "Passing tests are treated as the only evidence of correctness.",
+        "Comments are paraphrased instead of deleted or grounded in a concrete constraint.",
+        "Generic helper, manager, service, result, or data abstractions displace an established domain owner.",
+        "Generated, vendored, migration, or unrelated files are edited for consistency."
+      ]
+    }
+  ],
+  "certification": {
+    "required_repetitions": 3,
+    "min_pass_rate": 1.0,
+    "min_rating": 9.5
+  }
+}

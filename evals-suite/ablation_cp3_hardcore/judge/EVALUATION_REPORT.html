@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Independent Blind Evaluation Report: CP3_EVOLUTION</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-dim: rgba(56, 189, 248, 0.1);
+      --success: #22c55e;
+      --success-bg: rgba(34, 197, 94, 0.15);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --code-bg: #090d16;
+      --code-border: #1e293b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 32px 24px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge-eval {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .metadata {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .card-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+    }
+    .card-value.winner { color: var(--accent); }
+    .card-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: var(--text);
+      border-bottom: 1px solid var(--surface-border);
+      padding-bottom: 10px;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 20px 0 12px;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--surface-border);
+      vertical-align: top;
+    }
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+    }
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .pill {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.03em;
+    }
+    .pill-pass { background: var(--success-bg); color: var(--success); border: 1px solid var(--success); }
+    .pill-fail { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger); }
+    .pill-neutral { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border: 1px solid #64748b; }
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 16px 0;
+    }
+    @media (max-width: 850px) {
+      .code-grid { grid-template-columns: 1fr; }
+    }
+    .code-box {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .code-header {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--code-border);
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+    pre {
+      padding: 14px;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.84rem;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+    .code-comment { color: #64748b; }
+    .code-keyword { color: #f472b6; }
+    .code-fn { color: #38bdf8; }
+    .code-str { color: #a3e635; }
+    .verdict-box {
+      border: 2px solid var(--accent);
+      background: var(--accent-dim);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    .verdict-box h3 {
+      margin-top: 0;
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+    ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>
+        Independent Blind Evaluation Report: CP3_EVOLUTION
+        <span class="badge-eval">Audit Complete</span>
+      </h1>
+      <div class="metadata">
+        <span><strong>Target:</strong> candidate_A/ vs candidate_B/</span>
+        <span><strong>Baseline:</strong> predecessor/ (Checkpoint 2)</span>
+        <span><strong>Evaluator:</strong> Principal Software Architect & Lead Code Judge</span>
+        <span><strong>Evaluation Date:</strong> September 2026</span>
+      </div>
+    </header>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">Verdict Winner</div>
+        <div class="card-value winner">Candidate B</div>
+        <div class="card-sub">Decisive victory across architecture & documentation</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Candidate B Score</div>
+        <div class="card-value" style="color: var(--success);">4.00 / 4.0</div>
+        <div class="card-sub">100% Pass Bar Compliance (5/5 MET)</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Candidate A Score</div>
+        <div class="card-value" style="color: #e2e8f0;">2.80 / 4.0</div>
+        <div class="card-sub">Failed documentation_synchronized (4/5 MET)</div>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <section>
+      <h2>1. File & Codebase Evolution Metrics</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>File / Target</th>
+            <th>Predecessor Baseline</th>
+            <th>Candidate A</th>
+            <th>Candidate B</th>
+            <th>Technical Observations & Delta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ledger.py</code></td>
+            <td>58 lines (1,668 B)</td>
+            <td>114 lines (3,383 B)</td>
+            <td>112 lines (3,284 B)</td>
+            <td>Candidate B achieves full parity with 2 fewer lines and 99 fewer bytes via consolidated DRY predicate.</td>
+          </tr>
+          <tr>
+            <td><code>query.py</code></td>
+            <td>41 lines (990 B)</td>
+            <td>45 lines (1,268 B)</td>
+            <td>44 lines (1,185 B)</td>
+            <td>Both implement 2-stage sequential filtering with list comprehensions.</td>
+          </tr>
+          <tr>
+            <td><code>README.md</code></td>
+            <td>6 lines (240 B)</td>
+            <td>6 lines (240 B) <span class="pill pill-fail">UNMODIFIED</span></td>
+            <td>25 lines (1,194 B) <span class="pill pill-pass">+19 LINES</span></td>
+            <td>Candidate A caused complete documentation drift (0 updates). Candidate B fully synchronized living specs.</td>
+          </tr>
+          <tr>
+            <td><code>data/seed.json</code></td>
+            <td>280 B</td>
+            <td>Unmodified</td>
+            <td>Unmodified</td>
+            <td>Zero scope pollution; fixtures preserved across both candidates.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 2 -->
+    <section>
+      <h2>2. Behavioral & Runtime Contract Verification Matrix</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Contract Requirement</th>
+            <th>Test Vectors & Failure Scenarios</th>
+            <th>Candidate A</th>
+            <th>Candidate B</th>
+            <th>Underlying Mechanics</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tenant Presence & Type</strong></td>
+            <td>Missing key <code>{}</code> or explicit <code>None</code></td>
+            <td><span class="pill pill-pass">PASS</span> (ValueError)</td>
+            <td><span class="pill pill-pass">PASS</span> (ValueError)</td>
+            <td>Safe dictionary extraction via <code>.get("tenant")</code></td>
+          </tr>
+          <tr>
+            <td><strong>Tenant Non-Blank</strong></td>
+            <td>Empty string <code>""</code> or whitespace <code>"   "</code></td>
+            <td><span class="pill pill-pass">PASS</span> (ValueError)</td>
+            <td><span class="pill pill-pass">PASS</span> (ValueError)</td>
+            <td>Sanitization via <code>.strip()</code></td>
+          </tr>
+          <tr>
+            <td><strong>Tenant Type Safety</strong></td>
+            <td>Invalid primitives: <code>123</code>, <code>[]</code>, <code>{}</code>, <code>False</code></td>
+            <td><span class="pill pill-pass">PASS</span> (ValueError)</td>
+            <td><span class="pill pill-pass">PASS</span> (ValueError)</td>
+            <td>Guarded with <code>isinstance(value, str)</code> before string methods</td>
+          </tr>
+          <tr>
+            <td><strong>Zero-Mutation Guarantee</strong></td>
+            <td>Validation aborts prior to ledger modification</td>
+            <td><span class="pill pill-pass">PASS</span> (Byte-identical)</td>
+            <td><span class="pill pill-pass">PASS</span> (Byte-identical)</td>
+            <td>Validation precedes any disk I/O or temporary file creation</td>
+          </tr>
+          <tr>
+            <td><strong>Atomic Durability</strong></td>
+            <td>Process interruption safety during migration</td>
+            <td><span class="pill pill-pass">PASS</span></td>
+            <td><span class="pill pill-pass">PASS</span></td>
+            <td><code>mkstemp</code> &rarr; <code>write()</code> &rarr; <code>flush()</code> &rarr; <code>fsync()</code> &rarr; <code>os.replace()</code></td>
+          </tr>
+          <tr>
+            <td><strong>Migrate Backfill</strong></td>
+            <td>Missing/invalid tenant converted to <code>"default"</code></td>
+            <td><span class="pill pill-pass">PASS</span> (5/6 migrated)</td>
+            <td><span class="pill pill-pass">PASS</span> (5/6 migrated)</td>
+            <td>Preserves existing record IDs and schema keys: <code>{**record, "tenant": "default"}</code></td>
+          </tr>
+          <tr>
+            <td><strong>Missing File Guard</strong></td>
+            <td><code>ledger.jsonl</code> does not exist</td>
+            <td><span class="pill pill-pass">PASS</span> (returns 0, no file)</td>
+            <td><span class="pill pill-pass">PASS</span> (returns 0, no file)</td>
+            <td>Guarded by <code>if not LEDGER_FILE.exists(): return 0</code></td>
+          </tr>
+          <tr>
+            <td><strong>Idempotency & Zero Churn</strong></td>
+            <td>Successive runs on migrated file</td>
+            <td><span class="pill pill-pass">PASS</span> (returns 0, zero churn)</td>
+            <td><span class="pill pill-pass">PASS</span> (returns 0, zero churn)</td>
+            <td>Bypasses disk write when migration tally equals zero</td>
+          </tr>
+          <tr>
+            <td><strong>Multi-Dimensional Conjunction</strong></td>
+            <td><code>find(kind="deploy", tenant="alpha")</code></td>
+            <td><span class="pill pill-pass">PASS</span> (Exact match AND)</td>
+            <td><span class="pill pill-pass">PASS</span> (Exact match AND)</td>
+            <td>Sequential filter passes with <code>is not None</code> guards</td>
+          </tr>
+          <tr>
+            <td><strong>Literal String Contract</strong></td>
+            <td>Preserve <code>LEDGER_FILE = "ledger.jsonl"</code></td>
+            <td><span class="pill pill-pass">PASS</span> (Type str)</td>
+            <td><span class="pill pill-pass">PASS</span> (Type str)</td>
+            <td>Literal string constant preserved in <code>query.py</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 3 -->
+    <section>
+      <h2>3. Engineering Craft: Code Snippets & Architecture</h2>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">
+        Comparing how each candidate structured tenant validation across <code>append()</code> and <code>migrate()</code>.
+      </p>
+
+      <div class="code-grid">
+        <div class="code-box">
+          <div class="code-header">
+            <span>Candidate A: Duplicated & Inverted Logic</span>
+            <span class="pill pill-fail">Code Smell</span>
+          </div>
+          <pre><code><span class="code-comment"># In append() - Inline check (Lines 16-18)</span>
+tenant = event.get(<span class="code-str">"tenant"</span>)
+<span class="code-keyword">if not</span> isinstance(tenant, str) <span class="code-keyword">or not</span> tenant.strip():
+    <span class="code-keyword">raise</span> ValueError(<span class="code-str">"event tenant must be a non-empty string"</span>)
+
+<span class="code-comment"># In migrate() helper - Inverted duplication (Lines 51-54)</span>
+<span class="code-keyword">def</span> <span class="code-fn">_needs_migration</span>(record: dict) -> bool:
+    tenant = record.get(<span class="code-str">"tenant"</span>)
+    <span class="code-keyword">return not</span> (isinstance(tenant, str) <span class="code-keyword">and</span> tenant.strip())</code></pre>
+        </div>
+
+        <div class="code-box">
+          <div class="code-header">
+            <span>Candidate B: Consolidated DRY Predicate</span>
+            <span class="pill pill-pass">Best Practice</span>
+          </div>
+          <pre><code><span class="code-comment"># Shared pure predicate (Lines 10-11)</span>
+<span class="code-keyword">def</span> <span class="code-fn">_is_valid_tenant</span>(value) -> bool:
+    <span class="code-keyword">return</span> isinstance(value, str) <span class="code-keyword">and</span> bool(value.strip())
+
+<span class="code-comment"># In append() - Reused directly (Lines 20-22)</span>
+tenant = event.get(<span class="code-str">"tenant"</span>)
+<span class="code-keyword">if not</span> <span class="code-fn">_is_valid_tenant</span>(tenant):
+    <span class="code-keyword">raise</span> ValueError(<span class="code-str">"event tenant must be a non-empty string"</span>)
+
+<span class="code-comment"># In migrate() - Reused directly (Lines 69-73)</span>
+<span class="code-keyword">if not</span> <span class="code-fn">_is_valid_tenant</span>(record.get(<span class="code-str">"tenant"</span>)):
+    record = {**record, <span class="code-str">"tenant"</span>: <span class="code-str">"default"</span>}
+    count += 1</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4 -->
+    <section>
+      <h2>4. Living Documentation & Repository Conformity</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Specification Aspect</th>
+            <th>Candidate A</th>
+            <th>Candidate B</th>
+            <th>Engineering Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Documentation Status</strong></td>
+            <td><span class="pill pill-fail">UNTOUCHED</span> (0 updates)</td>
+            <td><span class="pill pill-pass">SYNCHRONIZED</span> (+19 lines)</td>
+            <td>Candidate A exhibits full documentation drift; API clients cannot discover CP3 contracts.</td>
+          </tr>
+          <tr>
+            <td><strong><code>ledger.append</code> Contract</strong></td>
+            <td>Missing</td>
+            <td>Documented (type checking, ValueError, zero-mutation guarantee)</td>
+            <td>Candidate B provides clear caller guidance and contract transparency.</td>
+          </tr>
+          <tr>
+            <td><strong><code>ledger.migrate</code> Contract</strong></td>
+            <td>Missing</td>
+            <td>Documented (atomic rewrite, idempotency, backfill rules)</td>
+            <td>Candidate B provides explicit operational runbook documentation.</td>
+          </tr>
+          <tr>
+            <td><strong><code>query.find</code> Conjunction</strong></td>
+            <td>Missing</td>
+            <td>Documented (multi-filter exact match semantics)</td>
+            <td>Candidate B accurately documents evolved query signatures.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 5 -->
+    <section>
+      <h2>5. Scorecard & Mandatory Pass Bars</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Evaluation Dimension</th>
+            <th>Weight</th>
+            <th>Candidate A</th>
+            <th>Candidate B</th>
+            <th>Technical Justification</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Functional Correctness & Contract Adherence</strong></td>
+            <td>25%</td>
+            <td>4.0 / 4.0</td>
+            <td>4.0 / 4.0</td>
+            <td>Both pass 100% of functional requirements and edge cases.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Refactoring Craft & Code Economy</strong></td>
+            <td>20%</td>
+            <td>2.8 / 4.0</td>
+            <td>4.0 / 4.0</td>
+            <td>Candidate B cleanly factored validation into a shared predicate; Candidate A duplicated logic.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Repository Conformity & Living Documentation</strong></td>
+            <td>20%</td>
+            <td>0.0 / 4.0</td>
+            <td>4.0 / 4.0</td>
+            <td>Candidate A did not modify README.md. Candidate B maintained full synchronization.</td>
+          </tr>
+          <tr>
+            <td><strong>4. Scope Control & Blast Radius</strong></td>
+            <td>10%</td>
+            <td>4.0 / 4.0</td>
+            <td>4.0 / 4.0</td>
+            <td>Both maintained surgical commits with zero extraneous artifact pollution.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Contract Alignment & Type Safety</strong></td>
+            <td>10%</td>
+            <td>4.0 / 4.0</td>
+            <td>4.0 / 4.0</td>
+            <td>Both preserved <code>LEDGER_FILE = "ledger.jsonl"</code> as <code>str</code> and maintained type annotations.</td>
+          </tr>
+          <tr>
+            <td><strong>6. Code Clarity & Clean Idioms</strong></td>
+            <td>15%</td>
+            <td>3.2 / 4.0</td>
+            <td>4.0 / 4.0</td>
+            <td>Candidate B used affirmative boolean logic and clean variable semantics (<code>count</code> vs <code>migrated</code>).</td>
+          </tr>
+          <tr style="font-weight: 700; background: rgba(255, 255, 255, 0.03);">
+            <td>Weighted Composite Score</td>
+            <td>100%</td>
+            <td>2.80 / 4.0</td>
+            <td style="color: var(--accent);">4.00 / 4.0</td>
+            <td>Candidate B wins by +1.20 points.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top: 24px;">Mandatory Pass Bars Check</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Pass Bar</th>
+            <th>Candidate A</th>
+            <th>Candidate B</th>
+            <th>Criterion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>functional_correctness</code></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td>Runtime behavioral validation across all edge cases</td>
+          </tr>
+          <tr>
+            <td><code>zero_mutation_guarantee</code></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td>Ledger file left byte-identical upon invalid append</td>
+          </tr>
+          <tr>
+            <td><code>atomic_migration_idempotent</code></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td>Durability via tempfile/fsync/replace; zero disk churn on repeat</td>
+          </tr>
+          <tr>
+            <td><code>contract_literal_str_preserved</code></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td><code>LEDGER_FILE = "ledger.jsonl"</code> literal preserved as string</td>
+          </tr>
+          <tr>
+            <td><code>documentation_synchronized</code></td>
+            <td><span class="pill pill-fail">NOT MET</span></td>
+            <td><span class="pill pill-pass">MET</span></td>
+            <td>Evolved contracts reflected in <code>README.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="verdict-box">
+        <h3>Final Verdict: Candidate B Wins</h3>
+        <ul>
+          <li><strong>Disqualification of Candidate A:</strong> Candidate A failed the mandatory <code>documentation_synchronized</code> pass bar by leaving <code>README.md</code> completely untouched in its greenfield state.</li>
+          <li><strong>Superior Architecture:</strong> Candidate B applied disciplined DRY refactoring by implementing <code>_is_valid_tenant(value)</code> as a reusable predicate, eliminating duplicate conditionals and future maintenance overhead.</li>
+          <li><strong>Production Readiness:</strong> Candidate B delivered clean variable naming, robust error handling, and end-to-end repository hygiene.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

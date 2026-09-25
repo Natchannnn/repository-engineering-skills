@@ -1,0 +1,5 @@
+# Enforce LF normalization across codebase text files
+* text=auto eol=lf
+
+# Freeze sealed evaluation evidence as raw binary to prevent ANY byte mutation on checkout/clone
+evals-suite/** -text -eol

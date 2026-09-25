@@ -1,0 +1,177 @@
+{
+  "fixture_set": "repository-prose",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "prose-narration-delete-ts",
+      "language": "typescript",
+      "repository_context": {
+        "convention": "Healthy sibling functions use descriptive names and no comments for ordinary control flow.",
+        "healthy_sibling": "export function findOrder(id: string) {\n  return orders.find((order) => order.id === id);\n}"
+      },
+      "input": "export function findUser(id: string) {\n  // First, iterate through all users\n  const user = users.find((item) => item.id === id);\n  // Finally, return the matching user\n  return user;\n}",
+      "expected": "export function findUser(id: string) {\n  return users.find((user) => user.id === id);\n}",
+      "required": [
+        "Delete both execution-narration comments rather than paraphrasing them.",
+        "Use the repository's established local callback naming."
+      ],
+      "forbidden": [
+        "Add replacement comments.",
+        "Change not-found behavior."
+      ]
+    },
+    {
+      "id": "prose-constraint-tighten-py",
+      "language": "python",
+      "repository_context": {
+        "convention": "Compatibility comments are concise, factual sentences.",
+        "healthy_sibling": "# API v1 returns an empty body for missing accounts.\nif not body:\n    return None"
+      },
+      "input": "# Gracefully handle the legacy response to ensure the lookup remains robust and seamless.\nif response.status_code == 200 and not response.content:\n    return None",
+      "expected": "# API v1 returns 200 with an empty body for a missing customer.\nif response.status_code == 200 and not response.content:\n    return None",
+      "required": [
+        "Preserve the compatibility fact.",
+        "Remove ungrounded quality claims and use the local domain noun."
+      ],
+      "forbidden": [
+        "Delete the only explanation of the nonstandard response.",
+        "Change fallback behavior."
+      ]
+    },
+    {
+      "id": "prose-public-doc-go",
+      "language": "go",
+      "repository_context": {
+        "convention": "Exported declarations require Go-style documentation beginning with the symbol name."
+      },
+      "input": "// ParseInvoice is a comprehensive helper function that properly parses the supplied invoice payload.\nfunc ParseInvoice(raw []byte) (Invoice, error) {\n    return parseInvoice(raw)\n}",
+      "expected": "// ParseInvoice parses an invoice payload.\nfunc ParseInvoice(raw []byte) (Invoice, error) {\n    return parseInvoice(raw)\n}",
+      "required": [
+        "Retain required public documentation.",
+        "Remove inflated wording without changing the contract."
+      ],
+      "forbidden": [
+        "Delete the exported-symbol comment.",
+        "Invent validation guarantees."
+      ]
+    },
+    {
+      "id": "prose-observable-error-ts",
+      "language": "typescript",
+      "repository_context": {
+        "consumer": "A contract test asserts the exact error message: Account is suspended.",
+        "task_scope": "Behavior-preserving cleanup only."
+      },
+      "input": "throw new AccountError('Account is suspended.');",
+      "expected": "throw new AccountError('Account is suspended.');",
+      "required": [
+        "Treat the error text as observable behavior and preserve it."
+      ],
+      "forbidden": [
+        "Rewrite the message to sound friendlier, more detailed, or less AI-like."
+      ]
+    },
+    {
+      "id": "prose-observable-log-py",
+      "language": "python",
+      "repository_context": {
+        "consumer": "An alert groups events by message template and the payment_id field.",
+        "task_scope": "Refactor local control flow."
+      },
+      "input": "logger.error(\"payment_capture_failed\", extra={\"payment_id\": payment.id})",
+      "expected": "logger.error(\"payment_capture_failed\", extra={\"payment_id\": payment.id})",
+      "required": [
+        "Preserve the template and structured field."
+      ],
+      "forbidden": [
+        "Turn the log into prose.",
+        "Rename the structured field without an observability migration."
+      ]
+    },
+    {
+      "id": "prose-stale-comment-java",
+      "language": "java",
+      "repository_context": {
+        "evidence": "Configuration and callers establish that timeoutMs is milliseconds.",
+        "convention": "Obvious unit-bearing names are not commented."
+      },
+      "input": "// Timeout is measured in seconds.\nclient.setTimeout(timeoutMs);",
+      "expected": "client.setTimeout(timeoutMs);",
+      "required": [
+        "Remove the stale comment because the established name already carries the correct unit."
+      ],
+      "forbidden": [
+        "Change timeoutMs or convert its value.",
+        "Preserve misleading prose."
+      ]
+    },
+    {
+      "id": "prose-todo-provenance-rust",
+      "language": "rust",
+      "repository_context": {
+        "evidence": "Issue PAY-184 exists in repository references and tracks removal of the compatibility branch."
+      },
+      "input": "// TODO(PAY-184): Remove after all merchants use signature v3.\nif merchant.uses_v2_signature() { verify_v2(request)?; }",
+      "expected": "// TODO(PAY-184): Remove after all merchants use signature v3.\nif merchant.uses_v2_signature() { verify_v2(request)?; }",
+      "required": [
+        "Preserve the verified issue reference and compatibility condition."
+      ],
+      "forbidden": [
+        "Remove the TODO as comment noise.",
+        "Invent a replacement date or owner."
+      ]
+    },
+    {
+      "id": "prose-concurrency-note-csharp",
+      "language": "csharp",
+      "repository_context": {
+        "evidence": "The callback may synchronously re-enter Subscribe; the lock must be released first.",
+        "convention": "Concurrency comments state the constraint directly."
+      },
+      "input": "// Note: It is very important that we carefully invoke this outside the lock to ensure robust handling.\ncallback(value);",
+      "expected": "// Invoke outside the lock: callbacks may re-enter Subscribe.\ncallback(value);",
+      "required": [
+        "Retain the concurrency invariant and named re-entry behavior.",
+        "Remove emphasis and generic quality claims."
+      ],
+      "forbidden": [
+        "Delete the constraint.",
+        "Move callback invocation under the lock."
+      ]
+    },
+    {
+      "id": "prose-redundant-jsdoc-ts",
+      "language": "typescript",
+      "repository_context": {
+        "convention": "Internal helpers are undocumented unless they have a non-obvious contract."
+      },
+      "input": "/**\n * Gets the invoice by its invoice ID.\n * @param invoiceId The invoice ID.\n * @returns The invoice.\n */\nfunction getInvoice(invoiceId: InvoiceId): Invoice {\n  return invoices.require(invoiceId);\n}",
+      "expected": "function getInvoice(invoiceId: InvoiceId): Invoice {\n  return invoices.require(invoiceId);\n}",
+      "required": [
+        "Delete documentation that adds no information beyond the signature."
+      ],
+      "forbidden": [
+        "Replace the JSDoc with an equally redundant line comment.",
+        "Change lookup semantics."
+      ]
+    },
+    {
+      "id": "prose-domain-language-vi",
+      "language": "typescript",
+      "repository_context": {
+        "convention": "The owning Vietnamese payroll module documents statutory exceptions in Vietnamese.",
+        "domain_term": "truy thu",
+        "evidence": "The rule excludes retroactive adjustments from the current payroll cap."
+      },
+      "input": "// We need to carefully bypass the limit here to ensure comprehensive handling of retroactive adjustment items.\nif (entry.kind === 'truy_thu') return amount;",
+      "expected": "// Khoản truy thu không áp dụng hạn mức của kỳ lương hiện tại.\nif (entry.kind === 'truy_thu') return amount;",
+      "required": [
+        "Preserve the statutory exception using the module's established language and domain term."
+      ],
+      "forbidden": [
+        "Replace the domain term with generic English.",
+        "Delete the only explanation of the exception."
+      ]
+    }
+  ]
+}

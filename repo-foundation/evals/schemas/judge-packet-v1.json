@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "JudgePacketMetadataV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "artifact_id",
+    "created_at",
+    "checkpoint_id",
+    "order",
+    "parent_snapshot_hash",
+    "candidate_snapshot_hash",
+    "per_checkpoint_diff_sha256",
+    "cumulative_diff_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "repo-foundation-harness/judge-packet-v1"
+    },
+    "artifact_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "checkpoint_id": {
+      "type": "string",
+      "enum": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ]
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "parent_snapshot_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "candidate_snapshot_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "per_checkpoint_diff_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "cumulative_diff_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

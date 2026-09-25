@@ -1,0 +1,67 @@
+[
+  {
+    "check_id": "chk_cp4_accept_v2_pre",
+    "backend": "container",
+    "exit_code": 1,
+    "timed_out": false,
+    "wall_time_seconds": 3.4244,
+    "stdout": "FAIL: export.py missing: export CLI not implemented\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "ade6f707680fba07060216cac33ffd49eae0ce2063e9d86142898fc330d9011e",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:59:13.678202+00:00"
+  },
+  {
+    "check_id": "chk_cp4_accept_v2_post",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.9643,
+    "stdout": "PASS: CLI export holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "0f0554faca3b9aaee60a2c23f6f63c47c0965a54f518e3b547e59caabe890ecf",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:59:15.538387+00:00"
+  },
+  {
+    "check_id": "chk_store_regress",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5116,
+    "stdout": "PASS: storage regression holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "0f0554faca3b9aaee60a2c23f6f63c47c0965a54f518e3b547e59caabe890ecf",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:59:16.945612+00:00"
+  },
+  {
+    "check_id": "chk_query_regress",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5114,
+    "stdout": "PASS: query regression holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "0f0554faca3b9aaee60a2c23f6f63c47c0965a54f518e3b547e59caabe890ecf",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:59:18.360244+00:00"
+  },
+  {
+    "check_id": "chk_tenant_regress",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.511,
+    "stdout": "PASS: tenant regression holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "0f0554faca3b9aaee60a2c23f6f63c47c0965a54f518e3b547e59caabe890ecf",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:59:19.750855+00:00"
+  }
+]

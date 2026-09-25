@@ -1,0 +1,183 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "repo-foundation-harness/manifest-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "retry_of_run_id",
+    "synthetic",
+    "created_at",
+    "harness_version",
+    "harness_sha256",
+    "journey",
+    "rubric_sha256",
+    "trusted_checks_sha256",
+    "initial_snapshot_hash",
+    "snapshot_policy",
+    "variants",
+    "packets"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "repo-foundation-harness/manifest-v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "retry_of_run_id": {
+      "type": ["string", "null"],
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "harness_version": {
+      "type": "string"
+    },
+    "harness_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "journey": {
+      "type": "object",
+      "required": ["id", "sha256", "path"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "path": {
+          "type": "string"
+        }
+      }
+    },
+    "rubric_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "trusted_checks_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "initial_snapshot_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "snapshot_policy": {
+      "type": "object",
+      "required": ["include", "exclude"],
+      "additionalProperties": false,
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "skills"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": ["A", "B", "C", "D"]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "path", "sha256"],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "packets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "packet_id",
+          "journey_id",
+          "variant_id",
+          "repetition_id",
+          "checkpoint_id",
+          "order",
+          "path"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "packet_id": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{16}$"
+          },
+          "journey_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+          },
+          "variant_id": {
+            "type": "string",
+            "enum": ["A", "B", "C", "D"]
+          },
+          "repetition_id": {
+            "type": "string",
+            "pattern": "^rep[0-9]{2}$"
+          },
+          "checkpoint_id": {
+            "type": "string",
+            "enum": [
+              "CP1_BOOTSTRAP",
+              "CP2_SLICE",
+              "CP3_EVOLUTION",
+              "CP4_CONTINUITY"
+            ]
+          },
+          "order": {
+            "type": "integer",
+            "enum": [1, 2, 3, 4]
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

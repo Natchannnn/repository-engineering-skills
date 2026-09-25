@@ -1,0 +1,6 @@
+[
+  {"kind": "deploy", "tenant": "acme", "detail": "api v3 rollout"},
+  {"kind": "rollback", "tenant": "acme", "detail": "revert api v3"},
+  {"kind": "deploy", "tenant": "beta", "detail": "worker fleet update"},
+  {"kind": "scale", "tenant": "beta", "detail": "add 4 replicas"}
+]

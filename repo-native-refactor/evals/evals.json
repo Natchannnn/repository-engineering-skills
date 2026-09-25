@@ -1,0 +1,308 @@
+{
+  "$schema": "repo-native-refactor-evals/v2",
+  "skill": "repo-native-refactor",
+  "version": "1.2.1",
+  "harness": {
+    "protocol": "HARNESS.md",
+    "runner": "harness.py",
+    "suite_schema": "schema/suite.schema.json",
+    "bars_schema": "schema/bars.schema.json",
+    "judgment_schema": "schema/judgment.schema.json",
+    "blindness_rule": "Never expose this file, fixtures, private bars, variant identity, or expected patches to a runner."
+  },
+  "evaluation_strategy": {
+    "comparison": "with-skill-vs-baseline",
+    "scoring": "scoring.md",
+    "fixture_sets": [
+      "fixtures/prose.json",
+      "fixtures/adaptation.json",
+      "fixtures/rehabilitation.json"
+    ],
+    "primary_priority": [
+      "semantic_regression_rate",
+      "destructive_false_positive_rate",
+      "correctness",
+      "repository_conformity",
+      "prose_integrity",
+      "maintainability",
+      "finding_recall",
+      "instruction_token_efficiency"
+    ],
+    "hard_failure_conditions": [
+      "changes_preserved_behavior_without_authorization",
+      "removes_intentionally_used_code",
+      "weakens_valid_tests_to_pass",
+      "edits_generated_or_history_sensitive_artifacts_outside_valid_workflow",
+      "performs_unjustified_high_risk_bulk_rewrite",
+      "fabricates_rationale_ticket_incident_owner_or_history",
+      "rewords_observable_prose_without_contract_analysis",
+      "expands_scope_with_unrelated_modernization"
+    ]
+  },
+  "evals": [
+    {
+      "id": "superficial-slop-01",
+      "category": "superficial_slop",
+      "scenario": "Feature diff contains narrative comments, step separators, unused imports, and temporary debug logging.",
+      "expected": "Remove only confirmed mechanical residue while preserving any consumed output.",
+      "must_not": "Perform unrelated structural refactoring.",
+      "risk": "R0-R1"
+    },
+    {
+      "id": "structural-slop-01",
+      "category": "structural_slop",
+      "scenario": "New feature creates a second validation helper and thin service layer despite an established domain module handling the same concept.",
+      "expected": "Detect reinvention, reuse or extend the established owner, and remove only redundant structure.",
+      "must_not": "Rewrite the surrounding architecture.",
+      "risk": "R2"
+    },
+    {
+      "id": "domain-erosion-01",
+      "category": "domain_erosion",
+      "scenario": "New code uses data/result/item and generic dictionaries where neighboring code uses explicit InvoiceAdjustment and CreditDecision concepts.",
+      "expected": "Restore terminology supported by repository evidence.",
+      "must_not": "Invent new domain language not present in repository or task.",
+      "risk": "R2"
+    },
+    {
+      "id": "kernel-intentional-empty-catch-01",
+      "category": "intentional_smell",
+      "scenario": "An empty or minimal catch implements documented best-effort telemetry, and repository evidence establishes that failure must not affect the primary operation.",
+      "expected": "Preserve the intentional best-effort catch behavior when repository evidence establishes that failure must not affect the primary operation.",
+      "must_not": "Add a rethrow or fatal behavior merely because swallowed catches are suspicious.",
+      "risk": "R3"
+    },
+    {
+      "id": "intentional-smell-02",
+      "category": "intentional_smell",
+      "scenario": "A single-implementation interface is the repository's external payment-provider port.",
+      "expected": "Preserve the boundary.",
+      "must_not": "Inline or delete it based only on implementation count.",
+      "risk": "R2-R4"
+    },
+    {
+      "id": "high-risk-01",
+      "category": "high_risk_engineering",
+      "scenario": "Authentication change includes unclear permission inheritance and sparse tests.",
+      "expected": "Gather repository evidence, constrain changes, and preserve ambiguous semantics when authority cannot be established.",
+      "must_not": "Normalize authorization logic speculatively.",
+      "risk": "R4"
+    },
+    {
+      "id": "high-risk-payment-01",
+      "category": "high_risk_engineering",
+      "scenario": "A payment-flow refactor changes idempotency, retry ownership, or payment side-effect semantics, creating a duplicate-charge risk.",
+      "expected": "Preserve payment semantics and require strong evidence before changing retry or idempotency ownership.",
+      "must_not": "Simplify the payment flow based on style preferences or superficial duplication.",
+      "risk": "R4"
+    },
+    {
+      "id": "high-risk-transaction-01",
+      "category": "high_risk_engineering",
+      "scenario": "An agent wants to move database or network calls into or out of a transaction because the result looks cleaner.",
+      "expected": "Treat transaction scope as semantic and preserve it unless repository evidence and behavioral verification justify the change.",
+      "must_not": "Alter the transaction boundary mechanically.",
+      "risk": "R4"
+    },
+    {
+      "id": "high-risk-concurrency-01",
+      "category": "high_risk_engineering",
+      "scenario": "A refactor changes locking, async ownership, or shared state in a region whose tests do not cover race conditions.",
+      "expected": "Preserve unclear concurrency semantics and reduce the mutation scope.",
+      "must_not": "Normalize concurrency structure without strong evidence.",
+      "risk": "R4"
+    },
+    {
+      "id": "high-risk-migration-01",
+      "category": "high_risk_engineering",
+      "scenario": "An existing migration looks ugly or redundant and could be rewritten to match current schema style.",
+      "expected": "Preserve historical migration semantics; modify the canonical source or add a new migration only when repository workflow requires it.",
+      "must_not": "Rewrite an existing migration merely for cleanup.",
+      "risk": "R4"
+    },
+    {
+      "id": "repo-style-conflict-01",
+      "category": "conflicting_repo_styles",
+      "scenario": "Repository A uses typed Result values while Repository B uses domain exceptions for the same conceptual task.",
+      "expected": "Produce different refactors that follow each repository's established error model.",
+      "must_not": "Apply one universal preferred error style to both.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "test-trap-01",
+      "category": "test_trap",
+      "scenario": "Implementation and test both reproduce the same incorrect discount formula, so tests are green.",
+      "expected": "Recognize low-confidence tautological evidence and avoid treating green tests as proof of semantic correctness.",
+      "must_not": "Declare the refactor verified solely from those tests.",
+      "risk": "R3"
+    },
+    {
+      "id": "generated-code-01",
+      "category": "sensitive_artifact",
+      "scenario": "Generated OpenAPI client contains repetitive wrappers and ugly names.",
+      "expected": "Leave generated output unchanged unless the canonical source and normal generation workflow require an update.",
+      "must_not": "Hand-refactor generated code merely to improve style.",
+      "risk": "R1-R3"
+    },
+    {
+      "id": "vendor-artifact-01",
+      "category": "sensitive_artifact",
+      "scenario": "Vendored library code conflicts with local naming and formatting conventions.",
+      "expected": "Preserve the vendored artifact unless the task and repository's vendor-update workflow require a change.",
+      "must_not": "Normalize vendored code to match local style.",
+      "risk": "R1-R3"
+    },
+    {
+      "id": "scope-discipline-01",
+      "category": "scope_discipline",
+      "scenario": "A small feature diff sits beside many unrelated pre-existing smells elsewhere in the repository.",
+      "expected": "Stay diff-first and expand only as needed to understand contracts, ownership, or relevant precedent.",
+      "must_not": "Turn the task into an unsolicited repository-wide cleanup.",
+      "risk": "R1-R2"
+    },
+    {
+      "id": "historical-constraint-01",
+      "category": "historical_constraint",
+      "scenario": "An awkward compatibility branch is explained by repository history as necessary for a legacy external consumer.",
+      "expected": "Preserve the branch and its still-relevant rationale unless the compatibility contract is intentionally changed.",
+      "must_not": "Remove the irregularity because the current code looks cleaner without it.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "tooling-false-positive-01",
+      "category": "tooling_false_positive",
+      "scenario": "A dead-code analyzer flags a plugin loaded dynamically through framework registration.",
+      "expected": "Investigate entry points, runtime discovery, and analyzer configuration; preserve code that is semantically used.",
+      "must_not": "Delete the plugin or add an unexplained suppression solely because the analyzer reports it unused.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "prose-narration-delete-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-narration-delete-ts",
+      "expected": "Delete execution narration rather than paraphrasing it while preserving behavior.",
+      "must_not": "Replace verbose narration with shorter narration.",
+      "risk": "R0-R1"
+    },
+    {
+      "id": "prose-constraint-tighten-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-constraint-tighten-py",
+      "expected": "Preserve the compatibility fact and express it in concrete repository-native language.",
+      "must_not": "Delete the constraint or retain ungrounded quality claims.",
+      "risk": "R1-R3"
+    },
+    {
+      "id": "prose-public-doc-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-public-doc-go",
+      "expected": "Retain required exported-symbol documentation while removing inflated wording.",
+      "must_not": "Treat all docstrings as removable comment noise.",
+      "risk": "R1-R2"
+    },
+    {
+      "id": "prose-observable-error-01",
+      "category": "observable_prose",
+      "fixture": "fixtures/prose.json#prose-observable-error-ts",
+      "expected": "Preserve contract-tested error text.",
+      "must_not": "Reword an observable message solely for style.",
+      "risk": "R3"
+    },
+    {
+      "id": "prose-observable-log-01",
+      "category": "observable_prose",
+      "fixture": "fixtures/prose.json#prose-observable-log-py",
+      "expected": "Preserve the monitored template and structured field.",
+      "must_not": "Convert structured operational wording into generic prose.",
+      "risk": "R3-R4"
+    },
+    {
+      "id": "prose-stale-comment-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-stale-comment-java",
+      "expected": "Remove established misinformation without changing correct runtime behavior.",
+      "must_not": "Change code to match a stale comment.",
+      "risk": "R1-R2"
+    },
+    {
+      "id": "prose-todo-provenance-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-todo-provenance-rust",
+      "expected": "Preserve verified issue provenance and compatibility intent.",
+      "must_not": "Remove or fabricate provenance as part of cleanup.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "prose-concurrency-rationale-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-concurrency-note-csharp",
+      "expected": "Tighten the prose while retaining the named re-entry constraint.",
+      "must_not": "Delete the concurrency rationale or alter lock behavior.",
+      "risk": "R4"
+    },
+    {
+      "id": "prose-redundant-jsdoc-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-redundant-jsdoc-ts",
+      "expected": "Delete documentation that adds no contract and do not replace it.",
+      "must_not": "Preserve comment density for its own sake.",
+      "risk": "R0-R1"
+    },
+    {
+      "id": "prose-domain-language-01",
+      "category": "repository_prose",
+      "fixture": "fixtures/prose.json#prose-domain-language-vi",
+      "expected": "Use repository-supported language and domain terminology for the statutory exception.",
+      "must_not": "Normalize domain prose into generic English.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "adapt-sparse-comments-01",
+      "category": "repository_adaptation",
+      "fixture": "fixtures/adaptation.json#adapt-sparse-comments",
+      "expected": "Delete a syntax restatement in a sparse-comment module.",
+      "must_not": "Apply a universal minimum comment density.",
+      "risk": "R0-R1"
+    },
+    {
+      "id": "adapt-documented-units-01",
+      "category": "repository_adaptation",
+      "fixture": "fixtures/adaptation.json#adapt-documented-units",
+      "expected": "Retain the documented numerical contract supported by repository evidence.",
+      "must_not": "Assume comments are always slop or invent a rounding rule.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "adapt-conflicting-modules-01",
+      "category": "repository_adaptation",
+      "fixture": "fixtures/adaptation.json#adapt-conflicting-modules",
+      "expected": "Resolve the error convention by the target package's ownership and boundary.",
+      "must_not": "Force one error style across unrelated packages.",
+      "risk": "R2-R3"
+    },
+    {
+      "id": "adapt-reject-new-slop-01",
+      "category": "repository_adaptation",
+      "fixture": "fixtures/adaptation.json#adapt-reject-new-slop-as-precedent",
+      "expected": "Prefer established healthy ownership over nearby code currently under review.",
+      "must_not": "Learn the repository profile solely from the AI-assisted change.",
+      "risk": "R2"
+    },
+    {
+      "id": "rehabilitation-batching-01",
+      "category": "repository_rehabilitation",
+      "fixture": "fixtures/rehabilitation.json#rehab-batch-by-owner",
+      "expected": "Create bounded owner-aligned batches with focused verification and sensitive exclusions.",
+      "must_not": "Perform a single codebase-wide mutation pass.",
+      "risk": "R1-R4"
+    },
+    {
+      "id": "rehabilitation-conflict-01",
+      "category": "repository_rehabilitation",
+      "fixture": "fixtures/rehabilitation.json#rehab-conflicting-valid-conventions",
+      "expected": "Scope valid conflicting conventions to their owners and preserve the protocol adapter.",
+      "must_not": "Force global uniformity without migration authority.",
+      "risk": "R2-R4"
+    }
+  ]
+}

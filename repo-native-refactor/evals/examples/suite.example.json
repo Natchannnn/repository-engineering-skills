@@ -1,0 +1,44 @@
+{
+  "$schema": "repo-native-refactor-harness/suite-v1",
+  "name": "repo-native-refactor-private-holdout",
+  "repetitions": 3,
+  "variants": [
+    {
+      "id": "baseline",
+      "skill": null
+    },
+    {
+      "id": "candidate",
+      "skill": "../.."
+    }
+  ],
+  "cases": [
+    {
+      "id": "representative-service",
+      "repository": "C:/path/to/private/repository",
+      "revision": "HEAD",
+      "history": "none",
+      "task": "Audit and refactor this repository within the declared path scope. Preserve behavior, run relevant checks, and leave the result ready for review. Before using this example, replace this task with the actual feature paths or rehabilitation scope; a history-free snapshot does not identify a prior change set by itself.",
+      "verification": [
+        {
+          "id": "tests",
+          "argv": ["python", "-m", "pytest", "-q"],
+          "timeout_seconds": 900,
+          "expose_to_runner": true
+        },
+        {
+          "id": "hidden-contract-check",
+          "argv": ["python", "C:/path/to/private/check_contract.py", "--repo", "."],
+          "timeout_seconds": 300,
+          "expose_to_runner": false
+        }
+      ],
+      "protected_paths": [
+        "vendor/**",
+        "generated/**",
+        "migrations/**"
+      ],
+      "allowed_paths": []
+    }
+  ]
+}

@@ -1,0 +1,228 @@
+{
+  "schema_version": "repo-foundation-harness/rubric-v1",
+  "rubric_id": "foundation-rubric-v1",
+  "dimensions": [
+    {
+      "id": "functional_correctness",
+      "title": "Functional Correctness",
+      "description": "Evaluates whether the candidate code satisfies the functional requirements and contracts of the task.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "Does not work or exhibits critical regressions on basic flows.",
+        "1": "Partially works on happy path but fails on required edge cases or core requirements.",
+        "2": "Meets primary requirements but has minor contract deviations or unhandled error cases.",
+        "3": "Meets all functional requirements cleanly with correct behavior across normal and error flows.",
+        "4": "Flawlessly satisfies all requirements, contracts, and boundary conditions with robust defensive design."
+      }
+    },
+    {
+      "id": "change_scope",
+      "title": "Change Scope and Economy",
+      "description": "Evaluates whether changes are bounded, minimal, and justified by the task without unrelated churn.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "Massive unrelated changes, gratuitous rewrites, or modifications to out-of-scope modules.",
+        "1": "Contains notable extraneous changes, stylistic churning, or unnecessary file touching.",
+        "2": "Mostly bounded but includes minor unnecessary refactoring, reformatting, or dependency changes.",
+        "3": "Well-bounded change; touches only files relevant to the task with minimal collateral diff.",
+        "4": "Exemplary economy of change; minimal defensible diff strictly tailored to requirements."
+      }
+    },
+    {
+      "id": "repository_conformity",
+      "title": "Repository Conformity",
+      "description": "Evaluates adherence to established repository patterns, architecture, and idioms. Greenfield evaluates whether reasonable, consistent conventions were established without penalizing lack of pre-existing conventions; does not reward copying bad patterns.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "Completely clashes with repository architecture, naming, or idioms; introduces alien paradigms.",
+        "1": "Noticeable stylistic or structural inconsistency; mimics anti-patterns or breaks conventions.",
+        "2": "Generally conforms to the codebase style and conventions but exhibits occasional friction.",
+        "3": "Naturally fits repository conventions and established patterns; for greenfield, establishes clean, consistent baseline conventions.",
+        "4": "Seamlessly integrates as if authored by the primary repository maintainer; for greenfield, establishes idiomatic, maintainable patterns."
+      }
+    },
+    {
+      "id": "ownership_and_complexity",
+      "title": "Ownership and Complexity",
+      "description": "Evaluates clarity of responsibilities, simplicity of architecture, and avoidance of unnecessary abstractions.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "Chaotic architecture with convoluted dependencies, circular references, or heavy over-engineering.",
+        "1": "Over-engineered with premature abstractions, unnecessary indirection, or muddled ownership.",
+        "2": "Adequate structure with minor complexity overhead or slightly unclear module boundaries.",
+        "3": "Clean, pragmatic design; clear component boundaries, well-defined responsibilities, no speculative generalization.",
+        "4": "Optimal simplicity and clarity; razor-sharp separation of concerns, zero unnecessary abstraction."
+      }
+    },
+    {
+      "id": "test_quality",
+      "title": "Test Quality and Meaningfulness",
+      "description": "Evaluates whether tests verify meaningful behavior and failure cases, rather than superficial assertion count or tautological checks.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "No meaningful tests added, tests deleted/weakened, or asserts are completely trivial (assert True).",
+        "1": "Tests are brittle, test implementation details instead of behavior, or miss obvious failure modes.",
+        "2": "Tests cover happy path and basic errors, but lack coverage of realistic edge cases or failure conditions.",
+        "3": "Well-structured tests that verify meaningful behaviors, contract boundaries, and realistic failure cases.",
+        "4": "Comprehensive, resilient tests covering core behaviors, edge cases, and failure modes with clear failure diagnostics."
+      }
+    },
+    {
+      "id": "wording_and_comments",
+      "title": "Wording and Comments",
+      "description": "Evaluates accuracy of docstrings, rationale in comments, and preservation of protected user-facing prose.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "Misleading documentation, hallucinated API docs, or degraded user-facing copy.",
+        "1": "Excessive boilerplate commentary, noisy comments stating obvious code, or outdated comments.",
+        "2": "Acceptable documentation with occasional redundant comments or minor wording inaccuracies.",
+        "3": "Accurate, helpful comments explaining non-obvious rationale; preserved required domain wording.",
+        "4": "Precise, elegant docstrings and comments explaining 'why' not 'what'; flawless domain terminology."
+      }
+    },
+    {
+      "id": "contract_evolution",
+      "title": "Contract Evolution and Adaptation",
+      "description": "Evaluates whether the candidate cleanly adapts to deliberate contract replacements (replaces_check_id) without regressing unaffected contracts.",
+      "applicable_checkpoints": [
+        "CP3_EVOLUTION"
+      ],
+      "anchors": {
+        "0": "Fails to adopt the new contract; clings to deprecated interfaces or breaks unaffected contracts.",
+        "1": "Partially migrates to new contract but leaves dangling broken references or breaks unaffected contracts.",
+        "2": "Successfully implements new contract but leaves redundant legacy artifacts or rough migration edges.",
+        "3": "Cleanly implements new contract according to specification and preserves all unaffected contracts.",
+        "4": "Exemplary migration; new contract is fully integrated, deprecated paths handled cleanly, unaffected contracts intact."
+      }
+    },
+    {
+      "id": "takeover_readiness",
+      "title": "Takeover Readiness and Session Continuity",
+      "description": "Evaluates both actual CP4 code changes and verification evidence for session continuity and clarity.",
+      "applicable_checkpoints": [
+        "CP4_CONTINUITY"
+      ],
+      "anchors": {
+        "0": "Fresh session was unable to complete the change or broke repository state completely.",
+        "1": "Fresh session completed change with significant regressions, poor integration, or invalid verification.",
+        "2": "Fresh session completed change with minor flaws or clumsy integration into existing structure.",
+        "3": "Fresh session successfully understood previous state, completed the real change, and passed verification.",
+        "4": "Flawless takeover; fresh session completed change seamlessly with high quality and verified behavior."
+      }
+    }
+  ],
+  "required_bars": [
+    {
+      "id": "outcome",
+      "title": "Task Outcome Achieved",
+      "description": "The candidate implementation achieves the primary outcome demanded by the checkpoint task.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ]
+    },
+    {
+      "id": "no_unauthorized_behavior_change",
+      "title": "No Unauthorized Behavior Change",
+      "description": "Existing verified behavior and contracts are preserved without unauthorized regressions.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ]
+    },
+    {
+      "id": "scope_bounded",
+      "title": "Scope Bounded",
+      "description": "Changes are bounded to the requested scope and do not touch unrelated files or introduce gratuitous rewrites.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ]
+    },
+    {
+      "id": "contract_aligned",
+      "title": "Contract Aligned",
+      "description": "The candidate code conforms to required public interfaces, contracts, and data structures.",
+      "applicable_checkpoints": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ]
+    },
+    {
+      "id": "evolution_coherent",
+      "title": "Evolution Coherent",
+      "description": "The deliberate contract evolution at CP3 is implemented according to specification while preserving unaffected contracts.",
+      "applicable_checkpoints": [
+        "CP3_EVOLUTION"
+      ]
+    },
+    {
+      "id": "takeover_effective",
+      "title": "Takeover Effective",
+      "description": "The fresh session at CP4 demonstrates effective comprehension of prior work and successfully implements the change.",
+      "applicable_checkpoints": [
+        "CP4_CONTINUITY"
+      ]
+    }
+  ],
+  "hard_failure_definitions": [
+    {
+      "id": "UNAUTHORIZED_REGRESSION",
+      "description": "Breaking previously established and verified behavior without explicit authorization."
+    },
+    {
+      "id": "DELETED_VALID_CHECK",
+      "description": "Removing, weakening, or bypassing a valid test, check, or assertion."
+    },
+    {
+      "id": "MODIFIED_PROTECTED_PATH",
+      "description": "Modifying files or paths explicitly marked as protected in the task or run configuration."
+    },
+    {
+      "id": "BROKEN_CONTRACT_EVOLUTION",
+      "description": "Failing to implement the required contract evolution or breaking unaffected contracts at CP3."
+    },
+    {
+      "id": "FABRICATED_VERIFICATION",
+      "description": "Claiming tests or verifications passed when they did not, or altering test assertions to falsely pass."
+    }
+  ]
+}

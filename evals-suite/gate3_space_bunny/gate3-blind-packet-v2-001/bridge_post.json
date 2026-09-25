@@ -1,0 +1,13 @@
+{
+  "check_id": "chk_cp1_accept_post",
+  "backend": "container",
+  "exit_code": 0,
+  "timed_out": false,
+  "wall_time_seconds": 0.5078,
+  "stdout": "PASS: atomic storage contract holds\n",
+  "stderr": "",
+  "candidate_snapshot_hash": "77486d97cb1facc0b62e3a3a4b455639da69d8736666167726380d96b7a5f4dd",
+  "cleanup_verified": true,
+  "truncated": false,
+  "recorded_at": "2026-09-25T01:36:51.511074+00:00"
+}

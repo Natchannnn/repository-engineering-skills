@@ -1,0 +1,33 @@
+{
+  "schema_version": "repo-foundation-harness/scoring-policy-v1",
+  "policy_id": "foundation-scoring-policy-v1",
+  "description": "Canonical rational scoring policy: uniform 1/4 checkpoint weights, strict bounds on unknowns, no arbitrary certifications.",
+  "checkpoint_weights": {
+    "CP1_BOOTSTRAP": {
+      "numerator": 1,
+      "denominator": 4,
+      "display": "1/4",
+      "decimal_string": "0.25"
+    },
+    "CP2_SLICE": {
+      "numerator": 1,
+      "denominator": 4,
+      "display": "1/4",
+      "decimal_string": "0.25"
+    },
+    "CP3_EVOLUTION": {
+      "numerator": 1,
+      "denominator": 4,
+      "display": "1/4",
+      "decimal_string": "0.25"
+    },
+    "CP4_CONTINUITY": {
+      "numerator": 1,
+      "denominator": 4,
+      "display": "1/4",
+      "decimal_string": "0.25"
+    }
+  },
+  "optional_thresholds": null,
+  "pricing": null
+}

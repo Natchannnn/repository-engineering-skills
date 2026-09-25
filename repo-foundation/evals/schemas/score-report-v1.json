@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "repo-foundation-harness/score-report-v1",
+  "title": "ScoreReportV1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "created_at",
+    "synthetic",
+    "policy_id",
+    "policy_sha256",
+    "summary",
+    "variants",
+    "usage_accounting",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "repo-foundation-harness/score-report-v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "policy_id": {
+      "type": "string"
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "policy_threshold_met": {
+      "type": ["boolean", "null"]
+    },
+    "policy_threshold_notes": {
+      "type": ["string", "null"]
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "expected_samples",
+        "state_counts",
+        "coverage",
+        "overall_strict_pass_rate_bounds"
+      ],
+      "properties": {
+        "expected_samples": { "type": "integer", "minimum": 0 },
+        "state_counts": {
+          "type": "object",
+          "required": [
+            "PASS",
+            "FAIL",
+            "HARD_FAILURE",
+            "INCOMPLETE",
+            "BLOCKED",
+            "MISSING",
+            "INVALID",
+            "UNRESOLVED"
+          ],
+          "properties": {
+            "PASS": { "type": "integer", "minimum": 0 },
+            "FAIL": { "type": "integer", "minimum": 0 },
+            "HARD_FAILURE": { "type": "integer", "minimum": 0 },
+            "INCOMPLETE": { "type": "integer", "minimum": 0 },
+            "BLOCKED": { "type": "integer", "minimum": 0 },
+            "MISSING": { "type": "integer", "minimum": 0 },
+            "INVALID": { "type": "integer", "minimum": 0 },
+            "UNRESOLVED": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "coverage": {
+          "type": "object",
+          "required": [
+            "attempted_coverage",
+            "conclusive_checkpoint_coverage",
+            "judgment_score_coverage"
+          ],
+          "properties": {
+            "attempted_coverage": { "$ref": "#/$defs/rationalNumber" },
+            "conclusive_checkpoint_coverage": { "$ref": "#/$defs/rationalNumber" },
+            "judgment_score_coverage": { "$ref": "#/$defs/rationalNumber" }
+          },
+          "additionalProperties": false
+        },
+        "overall_strict_pass_rate": {
+          "oneOf": [
+            { "$ref": "#/$defs/rationalNumber" },
+            { "type": "null" }
+          ]
+        },
+        "overall_strict_pass_rate_bounds": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rationalNumber" },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "additionalProperties": false
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "variant_id",
+          "expected_checkpoints",
+          "state_counts",
+          "coverage",
+          "checkpoint_pass_rates",
+          "checkpoint_pass_rate_bounds",
+          "journey_pass_rate_bounds",
+          "trajectories"
+        ],
+        "properties": {
+          "variant_id": { "type": "string" },
+          "skills": { "type": "array" },
+          "expected_checkpoints": { "type": "integer" },
+          "state_counts": { "type": "object" },
+          "coverage": { "type": "object" },
+          "checkpoint_pass_rates": { "type": "object" },
+          "checkpoint_pass_rate_bounds": { "type": "object" },
+          "journey_pass_rate": {
+            "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+          },
+          "journey_pass_rate_bounds": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/rationalNumber" },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "mean_strict_utility": {
+            "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+          },
+          "mean_strict_utility_bounds": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/rationalNumber" },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "mean_conditional_utility": {
+            "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+          },
+          "conditional_metric_notes": { "type": ["string", "null"] },
+          "trajectories": { "type": "array" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "usage_accounting": {
+      "type": "object",
+      "required": [
+        "scopes",
+        "elapsed_wall_time_seconds",
+        "derived_estimate_cost_usd"
+      ],
+      "properties": {
+        "scopes": {
+          "type": "object",
+          "properties": {
+            "candidate_work": { "type": "object" },
+            "verification": { "type": "object" },
+            "judge": { "type": "object" }
+          },
+          "additionalProperties": true
+        },
+        "elapsed_wall_time_seconds": {
+          "type": ["number", "null"]
+        },
+        "elapsed_wall_time_reason": { "type": ["string", "null"] },
+        "derived_observed_cost_usd": {
+          "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+        },
+        "derived_estimated_cost_usd": {
+          "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+        },
+        "observed_cost_usd": {
+          "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+        },
+        "estimated_cost_usd": {
+          "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+        },
+        "derived_estimate_cost_usd": {
+          "oneOf": [{ "$ref": "#/$defs/rationalNumber" }, { "type": "null" }]
+        },
+        "cost_reason": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "rationalNumber": {
+      "type": "object",
+      "required": ["numerator", "denominator", "display", "decimal_string"],
+      "properties": {
+        "numerator": { "type": "integer" },
+        "denominator": { "type": "integer", "minimum": 1 },
+        "display": { "type": "string" },
+        "decimal_string": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

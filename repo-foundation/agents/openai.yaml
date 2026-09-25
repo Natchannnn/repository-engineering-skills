@@ -1,0 +1,7 @@
+interface:
+  display_name: "Repo Foundation"
+  short_description: "Build software on a clean foundation and develop features."
+  default_prompt: "Use $repo-foundation to build or develop features in this repository."
+
+policy:
+  allow_implicit_invocation: true

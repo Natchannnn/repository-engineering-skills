@@ -1,0 +1,22 @@
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+*$py.class
+__pycache__/
+
+# Preserve sealed bytecode in archived test evidence packets
+!evals-suite/**/__pycache__/
+!evals-suite/**/*.pyc
+
+# Caches and temporary run artifacts
+.cache/
+.pytest_cache/
+.mypy_cache/
+*.tmp
+*.log
+repo-foundation/evals/control/
+.snapshots/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini

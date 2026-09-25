@@ -1,0 +1,28 @@
+[
+  {
+    "check_id": "chk_cp1_accept_pre",
+    "backend": "container",
+    "exit_code": 1,
+    "timed_out": false,
+    "wall_time_seconds": 3.4731,
+    "stdout": "FAIL: ledger.py missing: storage feature not implemented\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "d229d032d51a1af855cc9bacd6fbef57def5e78cf80021ba12842b286a474956",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:38:16.176619+00:00"
+  },
+  {
+    "check_id": "chk_cp1_accept_post",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5118,
+    "stdout": "PASS: atomic storage contract holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "636a98cea2479dd4fe81fbb58d7ebc3eb2f4fba4d6fee31c74b6e7021b6a4cd8",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T16:38:17.565997+00:00"
+  }
+]

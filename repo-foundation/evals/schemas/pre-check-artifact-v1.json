@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "repo-foundation-harness/pre-check-artifact-v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "packet_id",
+    "journey_id",
+    "variant_id",
+    "repetition_id",
+    "checkpoint_id",
+    "order",
+    "phase",
+    "parent_snapshot_hash",
+    "check_results",
+    "pre_check_passed",
+    "recorded_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "repo-foundation-harness/pre-check-artifact-v1"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{16}$"
+    },
+    "journey_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+    },
+    "variant_id": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D"]
+    },
+    "repetition_id": {
+      "type": "string",
+      "pattern": "^rep[0-9]{2}$"
+    },
+    "checkpoint_id": {
+      "type": "string",
+      "enum": [
+        "CP1_BOOTSTRAP",
+        "CP2_SLICE",
+        "CP3_EVOLUTION",
+        "CP4_CONTINUITY"
+      ]
+    },
+    "order": {
+      "type": "integer",
+      "enum": [1, 2, 3, 4]
+    },
+    "phase": {
+      "type": "string",
+      "const": "pre"
+    },
+    "parent_snapshot_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "check_results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "exit_code",
+          "timed_out",
+          "duration_seconds"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["environment", "acceptance", "regression"]
+          },
+          "status": {
+            "type": ["string", "null"],
+            "enum": [
+              null,
+              "PASSED",
+              "FAILED",
+              "NOT_YET_IMPLEMENTED",
+              "ACCEPTANCE_FAILED",
+              "ENVIRONMENT_CHECK_FAILED",
+              "INFRA_ERROR",
+              "TIMEOUT"
+            ]
+          },
+          "exit_code": {
+            "type": ["integer", "null"]
+          },
+          "timed_out": {
+            "type": "boolean"
+          },
+          "duration_seconds": {
+            "type": "number",
+            "minimum": 0
+          },
+          "message": {
+            "type": ["string", "null"]
+          },
+          "stdout": {
+            "type": ["string", "null"]
+          },
+          "stderr": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    },
+    "pre_check_passed": {
+      "type": "boolean"
+    },
+    "recorded_at": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

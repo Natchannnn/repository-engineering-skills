@@ -1,0 +1,13 @@
+{
+  "check_id": "chk_cp1_accept_pre",
+  "backend": "container",
+  "exit_code": 1,
+  "timed_out": false,
+  "wall_time_seconds": 0.6079,
+  "stdout": "FAIL: ledger.py missing: storage feature not implemented\n",
+  "stderr": "",
+  "candidate_snapshot_hash": "d229d032d51a1af855cc9bacd6fbef57def5e78cf80021ba12842b286a474956",
+  "cleanup_verified": true,
+  "truncated": false,
+  "recorded_at": "2026-09-25T01:36:50.148393+00:00"
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "check_id": "chk_cp2_accept_pre",
+    "backend": "container",
+    "exit_code": 1,
+    "timed_out": false,
+    "wall_time_seconds": 0.4566,
+    "stdout": "FAIL: query.py missing: query pipeline not implemented\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "410e4956c8d029e0b922b842e5ccf716dac559b46790afa11cab1d7fbf26416c",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:51:27.833431+00:00"
+  },
+  {
+    "check_id": "chk_cp2_accept_post",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5081,
+    "stdout": "PASS: query pipeline holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "08fb9616bac6eef227fdff0f4e3bc9447c85a8740952845f4a875c610332a49c",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:51:29.180208+00:00"
+  },
+  {
+    "check_id": "chk_store_regress",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5118,
+    "stdout": "PASS: storage regression holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "08fb9616bac6eef227fdff0f4e3bc9447c85a8740952845f4a875c610332a49c",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:51:30.549187+00:00"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "fixture_set": "repository-adaptation",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "adapt-sparse-comments",
+      "repository_context": "The module uses names and types instead of comments for ordinary transformations.",
+      "input": "// Convert the cents to dollars.\nconst dollars = cents / 100;",
+      "expected": "const dollars = cents / 100;",
+      "required": ["Follow the sparse local convention."],
+      "forbidden": ["Preserve or paraphrase the syntax restatement."]
+    },
+    {
+      "id": "adapt-documented-units",
+      "repository_context": "The numerical module documents rounding rules beside every currency conversion because external statements depend on them.",
+      "input": "const dollars = Math.round(cents / 100);",
+      "expected": "// Statements round half-cents toward positive infinity.\nconst dollars = Math.round(cents / 100);",
+      "required": ["Preserve or add the established non-obvious rounding contract when repository evidence confirms it."],
+      "forbidden": ["Assume that comments are always slop.", "Invent a different rounding rule."]
+    },
+    {
+      "id": "adapt-conflicting-modules",
+      "repository_context": "The API package uses typed Result values; the CLI package uses domain exceptions. The target belongs to the API package.",
+      "input": "A new API handler throws DomainError while healthy sibling handlers return Result.failure.",
+      "expected": "Use the API package's established Result boundary without changing the CLI package.",
+      "required": ["Resolve convention by ownership and runtime boundary."],
+      "forbidden": ["Apply a repository-wide error-style rewrite."]
+    },
+    {
+      "id": "adapt-reject-new-slop-as-precedent",
+      "repository_context": "Three files added in the current AI-assisted change use ServiceFactoryManager; established domain files call the BillingPolicy owner directly.",
+      "input": "The refactor needs to choose which pattern represents repository intent.",
+      "expected": "Treat the newly added layer as the subject of review and prefer the established BillingPolicy ownership when semantics agree.",
+      "required": ["Distinguish current-change proximity from healthy precedent."],
+      "forbidden": ["Infer a new convention from the files being rehabilitated solely because they are nearby."]
+    }
+  ]
+}

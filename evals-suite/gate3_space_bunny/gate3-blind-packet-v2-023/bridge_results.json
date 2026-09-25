@@ -1,0 +1,54 @@
+[
+  {
+    "check_id": "chk_cp3_accept_pre",
+    "backend": "container",
+    "exit_code": 1,
+    "timed_out": false,
+    "wall_time_seconds": 3.6277,
+    "stdout": "FAIL: tenant-less append accepted: {'kind': 'deploy'}\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "db44c176eaf32f8019bdd5e21a0415107794c086c3c69c4c1081e6bafbd43cca",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:12:05.488647+00:00"
+  },
+  {
+    "check_id": "chk_cp3_accept_post",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5071,
+    "stdout": "PASS: tenant evolution holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "ace6956f9d1fcfc05c35a247f1466ac27c080f4c7a6d35b819742c442d59e648",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:12:06.853413+00:00"
+  },
+  {
+    "check_id": "chk_store_regress",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.5088,
+    "stdout": "PASS: storage regression holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "ace6956f9d1fcfc05c35a247f1466ac27c080f4c7a6d35b819742c442d59e648",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:12:08.220314+00:00"
+  },
+  {
+    "check_id": "chk_query_regress",
+    "backend": "container",
+    "exit_code": 0,
+    "timed_out": false,
+    "wall_time_seconds": 0.508,
+    "stdout": "PASS: query regression holds\n",
+    "stderr": "",
+    "candidate_snapshot_hash": "ace6956f9d1fcfc05c35a247f1466ac27c080f4c7a6d35b819742c442d59e648",
+    "cleanup_verified": true,
+    "truncated": false,
+    "recorded_at": "2026-09-25T15:12:09.586754+00:00"
+  }
+]
