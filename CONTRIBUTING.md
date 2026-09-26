@@ -27,7 +27,7 @@ python -B -m unittest discover -s repo-foundation/evals/tests -v
 python -B repo-foundation/evals/harness.py validate
 
 # 4. Verify all 31 archived evidence packets:
-pwsh -Command "Get-ChildItem -Recurse -Filter verify_hashes.py | ForEach-Object { python -B $_.FullName; if ($LASTEXITCODE -ne 0) { throw 'Hash mismatch' } }"
+pwsh -NoProfile -File ./scripts/verify-archive.ps1
 ```
 
 Check for whitespace errors before committing:

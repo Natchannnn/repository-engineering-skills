@@ -3,9 +3,9 @@
 Two specialized skills for AI coding agents working in software repositories.
 
 - **`repo-foundation`** guides project setup, feature implementation, contract evolution, and multi-session continuity.
-- **`repo-native-refactor`** audits diffs and performs bounded, regression-free refactoring while preserving intended behavior and repository conventions.
+- **`repo-native-refactor`** reviews diffs and performs scoped cleanup while preserving the behavior the task requires.
 
-Both skills emphasize bounded scope, proportionate verification, contract preservation, and explicit handling of uncertainty.
+Both skills emphasize repository evidence, contract preservation, and verification proportionate to the change.
 
 The repository includes evaluation harnesses and archived comparison runs from internal experiments. These results cover a small set of repository tasks; they do not establish consistent improvements across all models, languages, or projects.
 
@@ -40,33 +40,54 @@ You can use each skill independently. Small tasks such as fixing a typo or updat
 
 ## 3. Installation & Tested Environments
 
-### Tested Environment
-- **Operating System:** Windows (tested on Windows 11 with `core.autocrlf=true`)
-- **Python Version:** 3.14.5 (harness and test suite verified)
-- **Supported Hosts:** Any coding agent host that loads skill directories containing a `SKILL.md` file and optional `references/` folder (e.g., OpenAI Codex / Agent SDK, Claude Code, Cursor, Antigravity). Note that Markdown compatibility alone does not guarantee equivalent behavior across all agent hosts.
+### Install with npx
 
-### Runtime Installation
-To install the skills for an agent, copy only the runtime skill directories (`repo-foundation` and `repo-native-refactor`) into your project or user skills directory.
+Requires Git and Node.js **22.20.0 or newer**, including npm/npx. Run from the project where you want to use the skills. The [Skills CLI](https://github.com/vercel-labs/skills) installs directly from this GitHub repository; there is no separate npm package for these two skills.
 
-> [!IMPORTANT]
-> Do **not** install or copy the `evals-suite/` directory into your project. That directory contains archived historical benchmark runs and frozen artifacts for evaluation, not runtime instructions.
+Preview the available skills without installing:
 
-#### Example: Installing into a project using `.agents/skills/` (Codex / Agent SDK)
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
+```
+
+Install both for **Codex in the current project**:
+
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
+```
+
+This writes to `.agents/skills/` and creates or updates `skills-lock.json`. Re-running the command replaces the selected installed skills, including local edits inside them. Use a fresh project folder for a first trial. The version `1.7.0` pins the installer, not the skill source revision.
+
+To select another agent interactively, omit `--agent codex`, `--copy`, and `-y`. Installation options, single-skill commands, updating and removal are in [the installation guide](docs/installation.md).
+
+### Alternative: Install from local clone (PowerShell)
+
+If installing from a local clone of this repository into a target project:
 
 ```powershell
-# Set path to this cloned repository and your target project:
-$sourceRepo = "C:\path\to\repository-engineering-skills"
-$targetProject = "C:\path\to\my-project"
+# Fresh install (stops safely if destination skill already exists):
+pwsh -NoProfile -File ./scripts/install-skills.ps1 -TargetProject "C:\path\to\my-project"
 
-$installDir = Join-Path $targetProject ".agents\skills"
-
-foreach ($skill in @("repo-foundation", "repo-native-refactor")) {
-    $dest = Join-Path $installDir $skill
-    New-Item -ItemType Directory -Path $dest -Force | Out-Null
-    Copy-Item -LiteralPath (Join-Path $sourceRepo "$skill\SKILL.md") -Destination $dest -Force
-    Copy-Item -LiteralPath (Join-Path $sourceRepo "$skill\references") -Destination $dest -Recurse -Force
-}
+# Safe update (backs up previous installation, replaces cleanly, and rolls back on failure):
+pwsh -NoProfile -File ./scripts/install-skills.ps1 -TargetProject "C:\path\to\my-project" -Update
 ```
+
+### Check the installation and try a skill
+
+```sh
+npx skills@1.7.0 list --agent codex
+```
+
+Open the target project in Codex, start a new session and try the prompts below. Listing files confirms installation; verify that the host reads the intended skill before treating an example as a behavior test.
+
+### Tested scope and installed files
+
+- **Installation:** Windows, Node.js 24.16.0 and Skills CLI 1.7.0; discovery, project-local Codex copy installation, file comparison and reinstall tested. This does not establish automatic routing or behavior across hosts.
+- **Local Installer Script:** Windows PowerShell / PowerShell 7; pre-flight validation of both skills, isolated staging, automatic backup creation, byte-exact post-deploy SHA-256 hash verification, and verified rollback on deployment failure.
+- **Harness:** Windows / Python 3.14.5. Python is needed for the evaluation harness, not merely to load the Markdown skills.
+- **Payload:** The CLI copies the selected skill directories, including their `evals/` harness files and supporting references. It does **not** install the repository-level `evals-suite/` archive. Harness files are copied, not run by this installation command. Each skill directory includes its MIT license for distribution.
+
+See [the recorded installation checks](docs/npx-install-verification.md) for the source revision and limitations.
 
 ---
 
@@ -142,7 +163,7 @@ python -B -m unittest discover -s repo-foundation/evals/tests -v
 python -B repo-foundation/evals/harness.py validate
 
 # 4. Verify all 31 archive evidence packets (PowerShell):
-pwsh -Command "Get-ChildItem -Recurse -Filter verify_hashes.py | ForEach-Object { python -B $_.FullName; if ($LASTEXITCODE -ne 0) { throw 'Hash mismatch' } }"
+pwsh -NoProfile -File ./scripts/verify-archive.ps1
 ```
 
 ---

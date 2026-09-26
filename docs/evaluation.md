@@ -65,20 +65,10 @@ The `evals-suite/` directory contains 31 sealed benchmark runs. Each packet cont
 
 ### Running all 31 archive verifiers (PowerShell on Windows):
 
-```powershell
-$verifiers = @(Get-ChildItem -LiteralPath evals-suite -Recurse -Filter verify_hashes.py -File)
-Write-Host "Found $($verifiers.Count) archive verifiers."
+Run the unified archive verification script from the repository root:
 
-$passed = 0
-foreach ($v in $verifiers) {
-    python -B $v.FullName
-    if ($LASTEXITCODE -eq 0) {
-        $passed++
-    } else {
-        Write-Error "Verification failed for: $($v.FullName)"
-    }
-}
-Write-Host "Results: $passed / $($verifiers.Count) passed."
+```powershell
+pwsh -NoProfile -File ./scripts/verify-archive.ps1
 ```
 
-All 31 verifiers must pass with exit code 0.
+The script iterates through all 31 verifier scripts, checks that all 31 are present, executes them in isolated Python sub-processes, and confirms SHA-256 tree hash parity. All 31 verifiers must pass with exit code 0.

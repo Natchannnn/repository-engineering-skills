@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- Tested `npx skills` project-installation instructions, with discovery, single-skill installation, trial prompts and reinstall behavior documented.
+- A copy of the MIT license in each installable skill directory.
+
+### Changed
+- Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
+
 ## [0.1.0] - 2026-09-26
 
 ### Added

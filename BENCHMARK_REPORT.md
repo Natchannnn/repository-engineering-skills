@@ -6,21 +6,19 @@
 
 ---
 
-## 1. Executive Summary & Scientific Honesty
+## 1. Executive Summary & Evaluation Scope
 
-Most AI benchmarks suffer from selective reporting: authors tune prompts until their tool wins, reporting flattering numbers while hiding negative signals. 
+This report documents the empirical evaluation and iterative hardening of two specialized agent engineering skills:
+- **`repo-foundation`**: Project bootstrap, vertical slices, contract evolution, living documentation, and multi-session continuity.
+- **`repo-native-refactor`**: Evidence-based scoped refactoring, semantic predicate consolidation (DRY), and change-set cleanup.
 
-This report documents the **complete, unvarnished trajectory** of developing, testing, and hardening two specialized agent engineering skills:
-- **`repo-foundation`**: Lifecycle engineering (Bootstrap, Slice, Evolution, Continuity), living documentation, and contract type protection.
-- **`repo-native-refactor`**: Evidence-based surgical refactoring, semantic DRY predicate consolidation, and code hygiene.
-
-The evaluation traversed four distinct empirical phases:
-1. **Phase 1 (Gate 3 Live Campaign — 32 Checkpoints):** Evaluated on **Space Bunny** (OpenCode) and judged blindly by **OpenAI Codex**. Result: 32/32 functional pass, but revealed 3 critical blindspots (raw models substituted `Path` for `str`, zero persistent test files authored, and premature refactoring on greenfield code caused Variant C/D to score lower than Baseline A).
+The report covers observed findings across four empirical phases, distinguishing locally verifiable cryptographic artifacts from qualitative judge evaluations:
+1. **Phase 1 (Gate 3 Live Campaign — 32 Checkpoints):** Evaluated on **Space Bunny** (OpenCode) and judged blindly by **OpenAI Codex**. Result: 32/32 functional pass, but revealed 3 critical blindspots (raw models substituted `Path` for `str`, zero persistent test files authored, and premature refactoring on greenfield code caused Variant C/D to score lower than Baseline A). Raw candidate workspaces are preserved under `evals-suite/gate3_space_bunny/`.
 2. **Phase 2 (Targeted Skill Hardening):** Applied three explicit, surgical patches: *Strict literal contract adherence*, *Proportionate test artifact authorship*, and the *Minimal Intervention & Evidence Gate*.
 3. **Phase 3 (Frontier Model Stress Ablations — Claude Sonnet 4.6):** Tested whether the hardened skills solved the blindspots under strict head-to-head conditions:
-   - **CP2 Greenfield Slice:** Control failed the type contract (`Path`, 19/24); Treatment scored **24/24**.
+   - **CP2 Greenfield Slice:** Control altered the type contract (`Path`, 19/24); Treatment scored **24/24**.
    - **CP3 Hardcore Enterprise Evolution:** Both passed runtime tests (25/25). Blind judge review awarded **4.00 / 4.00 (100%)** to Treatment vs **2.84 / 4.00 (71.0%)** to Control (+29.0 percentage points). Control failed the mandatory `documentation_synchronized` hard gate and duplicated validation logic.
-4. **Phase 4 (Cryptographic Invariants):** 32 automated harness integrity tests executed and verified in 63.3s.
+4. **Phase 4 (Cryptographic Invariants):** 32 automated harness integrity tests executed and verified in 63.3s at commit `ae83651` (expanded to 33 tests at commit `200286c` with Windows 8.3 short-path resolution).
 
 ---
 
@@ -112,11 +110,11 @@ To rigorously verify if the patches addressed the failure modes, we subjected th
 
 ---
 
-## 5. Phase 4: Test Harness Cryptographic Invariants (32 Tests)
+## 5. Phase 4: Test Harness Cryptographic Invariants
 
-The test harness in `repo-native-refactor/evals/` was verified across 32 deterministic cryptographic unit tests:
-- **Command:** `python -B -m unittest discover -s repo-native-refactor/evals/tests -v`
-- **Result:** `Ran 32 tests in 63.339s — OK` (32/32 Passed).
+The test harness in `repo-native-refactor/evals/` was verified across deterministic cryptographic unit tests:
+- **Historical Baseline (Commit `ae83651`):** `Ran 32 tests in 63.339s — OK` (32/32 Passed).
+- **Current Release (Commit `200286c`):** `Ran 33 tests in 70.755s — OK` (33/33 Passed; added Windows 8.3 short-path resolution).
 - **Invariants Verified:**
   - Strict SHA-256 tree hash computation over directory snapshots.
   - Rejection of post-collection tampering (patch alteration, task mutation, metadata edits).
@@ -139,30 +137,31 @@ The test harness in `repo-native-refactor/evals/` was verified across 32 determi
 
 | Test Target | Runner | Scope | Result | Verified Property |
 | :--- | :--- | :--- | :---: | :--- |
-| **Refactor Harness Suite** | Python 3.14 `unittest` | 32 tests | **32 / 32 Passed** | Blind review protocol, patch round-tripping, non-finite score rejection. |
+| **Refactor Harness Suite** | Python 3.14 `unittest` | 33 tests | **33 / 33 Passed** | Blind review protocol, patch round-tripping, non-finite score rejection, Windows 8.3 path resolution. |
 | **Foundation Harness Suite** | Python 3.14 `unittest` | 26 tests | **26 / 26 Passed** | Byte snapshot determinism, atomic rollback on I/O failure, unmanaged target protection. |
-| **Historical Archive Evidence** | Standalone verifiers | 31 packets | **31 / 31 Passed** | Exact SHA-256 tree hash parity across fresh clones and line ending configurations. |
+| **Historical Archive Evidence** | `scripts/verify-archive.ps1` | 31 packets | **31 / 31 Passed** | Exact SHA-256 tree hash parity across fresh clones and line ending configurations. |
 
 ---
 
-## 7. How to Reproduce All Results
+## 7. Verifying Preserved Artifacts & Harness Integrity
 
-Clone the repository and run the test battery:
+The commands below verify the preserved directory snapshots, unit test suites, asset schemas, and trusted checks locally without network egress or API keys. (Re-running live agent behavioral experiments requires live LLM API access and active agent host environments, as outlined in Phase 1 and Phase 3).
 
 ```bash
-# 1. Run the 32 deterministic harness integrity unit tests:
+# 1. Run refactor harness unit tests (33 tests):
 python -B -m unittest discover -s repo-native-refactor/evals/tests -v
 
-# 2. Run the foundation evaluation harness unit tests:
+# 2. Run foundation evaluation harness unit tests (26 tests):
 python -B -m unittest discover -s repo-foundation/evals/tests -v
 
 # 3. Validate foundation evaluation assets (schemas, rubric, task specs):
-python repo-foundation/evals/harness.py validate
+python -B repo-foundation/evals/harness.py validate
 
-# 4. Verify CP2 and CP3 solutions in temporary scratch workspaces:
-python repo-foundation/evals/harness.py verify CP2_SLICE evals-suite/ablation_cp2/treatment/workspace
-python repo-foundation/evals/harness.py verify CP3_EVOLUTION evals-suite/ablation_cp3_hardcore/treatment/workspace
+# 4. Verify all 31 archive evidence packets via unified script:
+pwsh -NoProfile -File ./scripts/verify-archive.ps1
 
-# 5. Run the 7-trap CP3 hardcore runtime verification suite:
-python evals-suite/ablation_cp3_hardcore/verify_cp3.py evals-suite/ablation_cp3_hardcore/treatment/workspace
+# 5. Verify CP2, CP3, and CP4 solutions in temporary scratch workspaces:
+python -B repo-foundation/evals/harness.py verify CP2_SLICE evals-suite/ablation_cp2/treatment/workspace
+python -B repo-foundation/evals/harness.py verify CP3_EVOLUTION evals-suite/ablation_cp3_hardcore/treatment/workspace
+python -B repo-foundation/evals/harness.py verify CP4_CONTINUITY evals-suite/gate3_space_bunny/gate3-manual-v2-A-rep01
 ```
