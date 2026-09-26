@@ -127,6 +127,109 @@ When `-Update` is specified:
 4. Replaces the destination skill directories cleanly, eliminating stale ghost files from older versions while leaving unrelated skills in `.agents/skills/` untouched.
 5. Performs bi-directional manifest and SHA-256 verification on all deployed files. If any error occurs during copy or verification, the installer automatically rolls back and restores the previous installation from the backup.
 
+## Standalone Runtime ZIP Distribution
+
+For offline environments, air-gapped systems, or teams that do not use Node.js or `npx`, pre-built runtime packages are generated using `scripts/package-runtime.ps1` (or downloaded as `repository-engineering-skills-runtime.zip` from repository releases).
+
+### Package structure
+
+The runtime archive excludes evaluation harnesses, tests, and authoring tools, containing strictly the 17 payload files required for agent execution:
+
+```text
+repository-engineering-skills-runtime/
+├── LICENSE
+├── manifest.json
+└── skills/
+    ├── repo-foundation/
+    │   ├── LICENSE
+    │   ├── SKILL.md
+    │   ├── agents/
+    │   │   └── openai.yaml
+    │   └── references/
+    │       ├── bootstrap.md
+    │       ├── continuity.md
+    │       ├── evolution.md
+    │       └── verification.md
+    └── repo-native-refactor/
+        ├── LICENSE
+        ├── SKILL.md
+        └── references/
+            ├── deterministic-tooling.md
+            ├── error-reliability.md
+            ├── finding-taxonomy.md
+            ├── repository-prose.md
+            ├── repository-rehabilitation.md
+            ├── semantic-risk.md
+            └── testing-integrity.md
+```
+
+### Integrity verification
+
+Before deploying, verify all payload files against `manifest.json`:
+
+#### PowerShell
+```powershell
+$manifest = Get-Content .\manifest.json -Raw | ConvertFrom-Json
+$failed = 0
+foreach ($entry in $manifest.files.PSObject.Properties) {
+    $path = $entry.Name
+    $expected = $entry.Value
+    if (-not (Test-Path -LiteralPath $path)) {
+        Write-Error "Missing payload file: $path"
+        $failed++
+        continue
+    }
+    $actual = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+    if ($actual -ne $expected) {
+        Write-Error "SHA-256 mismatch on $path"
+        $failed++
+    }
+}
+if ($failed -eq 0) {
+    Write-Host "Verification PASSED: All $($manifest.file_count) payload files match SHA-256 manifest."
+} else {
+    throw "Verification FAILED: $failed file(s) mismatched or missing."
+}
+```
+
+#### Python
+```python
+import json, hashlib, pathlib, sys
+
+manifest = json.loads(pathlib.Path("manifest.json").read_text(encoding="utf-8"))
+failed = 0
+for rel_path, expected_hash in manifest["files"].items():
+    file_path = pathlib.Path(rel_path)
+    if not file_path.is_file():
+        print(f"Missing: {rel_path}", file=sys.stderr)
+        failed += 1
+        continue
+    actual_hash = hashlib.sha256(file_path.read_bytes()).hexdigest()
+    if actual_hash != expected_hash:
+        print(f"Mismatch: {rel_path} (expected {expected_hash}, got {actual_hash})", file=sys.stderr)
+        failed += 1
+
+if failed == 0:
+    print(f"Verification PASSED: All {manifest['file_count']} files match SHA-256 manifest.")
+else:
+    sys.exit(f"Verification FAILED: {failed} error(s) detected.")
+```
+
+### Manual deployment into a target project
+
+Because the standalone ZIP does not include the repository's PowerShell installer script, manual deployment is performed directly:
+
+1. Extract `repository-engineering-skills-runtime.zip`.
+2. In your target project root, create `.agents/skills/` (or your host agent's configured skills path, e.g. `.claude/skills/`).
+3. Copy the two skill folders:
+   - Copy `skills/repo-foundation/` to `<target-project>/.agents/skills/repo-foundation/`
+   - Copy `skills/repo-native-refactor/` to `<target-project>/.agents/skills/repo-native-refactor/`
+
+Alternatively, if you have cloned the source repository, you can pass the unpacked `skills/` path to the installer:
+```powershell
+pwsh -NoProfile -File ./scripts/install-skills.ps1 -SkillsRepo "C:\path\to\unpacked\skills" -TargetProject "C:\path\to\my-project"
+```
+
 ## Troubleshooting
 
 - **`npx` is not found:** install a supported Node.js version, then reopen the terminal.
