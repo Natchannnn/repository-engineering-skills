@@ -42,6 +42,10 @@ jobs:
         shell: pwsh
         run: ./scripts/test-installer.ps1
 
+      - name: Verify runtime package generator
+        shell: pwsh
+        run: ./scripts/test-package.ps1
+
       - name: CP2 treatment
         run: python -B repo-foundation/evals/harness.py verify CP2_SLICE evals-suite/ablation_cp2/treatment/workspace
 

@@ -15,6 +15,7 @@ __pycache__/
 *.log
 repo-foundation/evals/control/
 .snapshots/
+dist/
 
 # OS metadata
 .DS_Store
