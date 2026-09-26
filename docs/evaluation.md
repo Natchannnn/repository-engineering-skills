@@ -53,7 +53,7 @@ Run both unit test suites from the repository root:
 # 1. Foundation harness tests (26 unit tests):
 python -B -m unittest discover -s repo-foundation/evals/tests -v
 
-# 2. Refactor harness tests (32 unit tests):
+# 2. Refactor harness tests (33 unit tests):
 python -B -m unittest discover -s repo-native-refactor/evals/tests -v
 ```
 

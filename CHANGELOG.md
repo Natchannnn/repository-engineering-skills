@@ -30,5 +30,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Structural JSON Schema metaschema validator conforming to Draft 7 / Draft 2020-12.
 - **Evaluation Suite & Archives:**
   - 31 sealed historical evidence packets in `evals-suite/` verified with bit-exact SHA-256 tree hashes.
-  - 58 deterministic unit tests (26 for foundation harness, 32 for refactor harness).
+  - 59 deterministic unit tests (26 for foundation harness, 33 for refactor harness including Windows 8.3 short-path resolution).
   - GitHub Actions CI workflow for automated Windows / Python 3.14 verification.
