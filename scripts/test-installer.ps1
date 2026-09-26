@@ -26,6 +26,7 @@ function Invoke-Installer {
         }
     } finally {
         $ErrorActionPreference = $prev
+        $global:LASTEXITCODE = 0
     }
 }
 
@@ -175,6 +176,7 @@ Set-Content -LiteralPath `$ghostHidden -Value 'hidden payload content'
     Write-Host "[PASS] Test 6: Non-empty -BackupDir safely rejected before modifying destination!"
 
     Write-Host "`nALL 6 INSTALLER ACCEPTANCE TESTS PASSED SUCCESSFULLY."
+    exit 0
 }
 finally {
     Remove-Item -LiteralPath $testRoot -Recurse -Force -ErrorAction SilentlyContinue

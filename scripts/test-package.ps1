@@ -133,6 +133,7 @@ try {
     }
     finally {
         $ErrorActionPreference = $prevEap
+        $global:LASTEXITCODE = 0
         Remove-Item -LiteralPath $tamperDir -Recurse -Force -ErrorAction SilentlyContinue
     }
 
@@ -163,6 +164,7 @@ try {
     }
     finally {
         $ErrorActionPreference = $prevEap
+        $global:LASTEXITCODE = 0
         [System.IO.File]::WriteAllText($dirtyTrackedFile, $originalSkillContent)
     }
 
@@ -276,6 +278,7 @@ try {
     Write-Host "    [PASS] install-skills.ps1 successfully installed skills from unpacked bundle."
 
     Write-Host "`nAll 8 Runtime Package Acceptance Tests (including negative control) PASSED successfully!" -ForegroundColor Green
+    exit 0
 }
 finally {
     Remove-Item -LiteralPath $testRoot -Recurse -Force -ErrorAction SilentlyContinue
