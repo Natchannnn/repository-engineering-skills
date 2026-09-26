@@ -1,0 +1,58 @@
+name: Verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Exercise Windows line-ending conversion
+        run: git config --global core.autocrlf true
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Refactor harness tests
+        run: python -B -m unittest discover -s repo-native-refactor/evals/tests -v
+
+      - name: Foundation harness tests
+        run: python -B -m unittest discover -s repo-foundation/evals/tests -v
+
+      - name: Validate foundation assets
+        run: python -B repo-foundation/evals/harness.py validate
+
+      - name: Verify archived evidence
+        shell: pwsh
+        run: |
+          $verifiers = @(Get-ChildItem -LiteralPath evals-suite -Recurse -Filter verify_hashes.py -File)
+          if ($verifiers.Count -ne 31) {
+            throw "Expected 31 archive verifiers; found $($verifiers.Count). Review the inventory."
+          }
+          foreach ($verifier in $verifiers) {
+            python -B $verifier.FullName
+            if ($LASTEXITCODE -ne 0) {
+              throw "Archive verification failed: $($verifier.FullName)"
+            }
+          }
+
+      - name: CP2 treatment
+        run: python -B repo-foundation/evals/harness.py verify CP2_SLICE evals-suite/ablation_cp2/treatment/workspace
+
+      - name: CP3 treatment
+        run: python -B repo-foundation/evals/harness.py verify CP3_EVOLUTION evals-suite/ablation_cp3_hardcore/treatment/workspace
+
+      - name: CP4 continuity
+        run: python -B repo-foundation/evals/harness.py verify CP4_CONTINUITY evals-suite/gate3_space_bunny/gate3-manual-v2-A-rep01
