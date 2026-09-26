@@ -341,21 +341,23 @@ def git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProce
 
 
 def git_source_state(repo: Path) -> dict[str, str]:
+    root = repo.resolve()
     return {
-        "head": git(repo, "rev-parse", "HEAD").stdout.strip(),
-        "status_sha256": hashlib.sha256(git(repo, "status", "--porcelain=v1", "--untracked-files=all").stdout.encode()).hexdigest(),
-        "visible_tree_sha256": git_visible_tree_hash(repo),
+        "head": git(root, "rev-parse", "HEAD").stdout.strip(),
+        "status_sha256": hashlib.sha256(git(root, "status", "--porcelain=v1", "--untracked-files=all").stdout.encode()).hexdigest(),
+        "visible_tree_sha256": git_visible_tree_hash(root),
     }
 
 
 def git_visible_tree_hash(repo: Path) -> str:
     digest = hashlib.sha256()
     root = repo.resolve()
-    names = git(repo, "ls-files", "--cached", "--others", "--exclude-standard", "-z").stdout.split("\0")
+    names = git(root, "ls-files", "--cached", "--others", "--exclude-standard", "-z").stdout.split("\0")
     for rel_text in sorted(name for name in names if name):
-        path = repo / rel_text
+        path = root / rel_text
         try:
-            path.absolute().relative_to(root)
+            norm = Path(os.path.normpath(path))
+            norm.relative_to(root)
         except ValueError as exc:
             raise HarnessError(f"Git-visible path escapes repository: {rel_text}") from exc
         digest.update(rel_text.replace("\\", "/").encode("utf-8"))

@@ -190,6 +190,11 @@ class HarnessTest(unittest.TestCase):
         self.assertEqual(before["status_sha256"], after["status_sha256"])
         self.assertNotEqual(before["visible_tree_sha256"], after["visible_tree_sha256"])
 
+    def test_git_source_state_with_noncanonical_repo_path(self) -> None:
+        non_canonical = self.repo.parent / "." / self.repo.name
+        state = harness.git_source_state(non_canonical)
+        self.assertRegex(state["visible_tree_sha256"], r"^[a-f0-9]{64}$")
+
     def test_ancestor_history_excludes_future_commits(self) -> None:
         original = subprocess.run(
             ["git", "-C", str(self.repo), "rev-parse", "HEAD"],

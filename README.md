@@ -105,8 +105,8 @@ To maintain scientific honesty, we separate our evaluation data into three disti
 - **Purpose:** Verifies that the evaluation harnesses execute deterministically, preserve state safely, and correctly enforce boundaries.
 - **Coverage:**
   - `repo-foundation` harness: **26 unit tests** (validates deterministic byte snapshots, atomic staging/rollback on I/O failure, metaschema structural checks, exact rational scoring, and unmanaged directory protection).
-  - `repo-native-refactor` harness: **32 unit tests** (validates blind protocol invariants, runner isolation, patch round-tripping, and non-finite score rejection).
-- **Result:** 58/58 unit tests pass consistently on Windows / Python 3.14.
+  - `repo-native-refactor` harness: **33 unit tests** (validates blind protocol invariants, runner isolation, patch round-tripping, non-finite score rejection, and Windows 8.3 path canonicalization).
+- **Result:** 59/59 unit tests pass consistently on Windows / Python 3.14.
 
 ### B. Archive Integrity Verification
 - **Purpose:** Verifies that historical experimental evidence recorded in `evals-suite/` remains intact and bit-exact across checkouts.
@@ -132,7 +132,7 @@ For complete details, failure analyses, and trajectory notes, see [BENCHMARK_REP
 To run all automated verification checks locally:
 
 ```bash
-# 1. Run refactor harness unit tests (32 tests):
+# 1. Run refactor harness unit tests (33 tests):
 python -B -m unittest discover -s repo-native-refactor/evals/tests -v
 
 # 2. Run foundation harness unit tests (26 tests):
