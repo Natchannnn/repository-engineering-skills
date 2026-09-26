@@ -1,97 +1,136 @@
-# Installation & Maintenance Guide
+# Installation & Maintenance
 
-This document explains how to install, update, and remove `repo-foundation` and `repo-native-refactor`.
+Use the [Skills CLI](https://github.com/vercel-labs/skills) to install directly from GitHub. These skills do not need their own npm package.
 
----
+## Requirements
 
-## 1. What to Install
+- Git available on PATH.
+- Node.js 22.20.0 or newer with npm/npx for Skills CLI 1.7.0.
+- A coding agent host that supports the selected skill location.
 
-Only two directories contain runtime instructions for coding agents:
-- `repo-foundation/` (specifically `SKILL.md` and `references/`)
-- `repo-native-refactor/` (specifically `SKILL.md` and `references/`)
+Python is only needed to run the included evaluation harness, not to load the Markdown instructions. Examples pin the installer to 1.7.0; this does not pin the repository content to a release.
 
-> [!CAUTION]
-> Do **not** install or copy `evals-suite/` into your project. That directory contains evaluation harnesses and sealed historical test artifacts, which are not runtime instructions.
+## Preview and install
 
----
+Open a terminal in your target project. To see the two available skills without installing:
 
-## 2. Installing into OpenAI Codex / Agent SDK
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
+```
 
-OpenAI Codex and the Agent SDK discover skills stored under `.agents/skills/<skill-name>/` at the root of a project.
+Install both for Codex in that project:
 
-### PowerShell (Windows)
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
+```
+
+`--copy` selects copying instead of symlinking. `-y` accepts the installation, including replacement of existing selected skills. The command writes `.agents/skills/<skill-name>/` and `skills-lock.json`; it does not install globally. Back up any personal edits inside those skill directories before reinstalling.
+
+Install only Refactor:
+
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-native-refactor --agent codex --copy -y
+```
+
+For Foundation alone, replace the skill name with `repo-foundation`.
+
+To choose a host and installation options interactively:
+
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor
+```
+
+The tested recipe is the explicit Codex copy command. The CLI offers other agents, but successful file placement does not establish equivalent skill behavior on every host. Global installation is optional via the CLI's `--global` flag and has not been tested here.
+
+## What gets installed
+
+The CLI copies each selected skill directory. With the current source layout, this includes `SKILL.md`, `references/`, each skill's `evals/` harness directory, the per-skill `LICENSE`, and Foundation's `agents/openai.yaml` metadata.
+
+The repository-level `evals-suite/` archive is not installed. The included harness files are not executed by the install command. This is currently a full skill-directory installation, not a runtime-only bundle.
+
+References must stay beside `SKILL.md`. Do not move only the entry file after installation. The CLI may download the whole source repository to discover skills even though only selected directories are installed.
+
+## Try the skills in a separate project
+
+Create an empty folder, open it in your host and run the install command there. This keeps the trial separate from a working application.
+
+First check the installed inventory:
+
+```sh
+npx skills@1.7.0 list --agent codex
+```
+
+Expect `repo-foundation` and `repo-native-refactor` with paths inside the trial project. Start a new Codex session in that folder and use:
+
+```text
+Use $repo-foundation to create a small Python CLI that reads a CSV with category and amount columns and prints totals by category. Include a sample CSV, a meaningful test and instructions for running it. Keep the implementation small. Do not commit or publish.
+```
+
+After implementation, try a review that does not permit edits:
+
+```text
+Use $repo-native-refactor to review the implementation you just created. Report only findings supported by the code and requirements. Do not edit files. If no actionable issue is established, say so.
+```
+
+Check that the host actually read the installed skill, the CLI produces the expected totals, the checks exercised the required behavior, and the review did not modify files. Confirm the path if another copy of the skill exists at user or plugin scope. Inventory listing alone is not a behavioral test.
+
+These are suggested trial tasks, not reported benchmark results. The installation checks performed for this change are recorded in [npx-install-verification.md](npx-install-verification.md).
+
+## Reinstall or update
+
+From the same project, rerun the explicit `add` command to replace the selected installed copies with content from the repository's current default branch. In the recorded test, a stale reference file inside a selected skill was removed and an unrelated project file was preserved.
+
+This replaces local edits inside the selected skill directories. It is not a merge, and no rollback or interruption-durability guarantee is claimed for the third-party installer. Keep personal customizations separately or back them up first.
+
+`skills-lock.json` records source information; the `skills@1.7.0` version in the command identifies the installer, not a version of Foundation or Refactor. Record the actual source revision when comparing behavior.
+
+## Remove from the project
+
+From the project where the skills were installed:
+
+```sh
+npx skills@1.7.0 remove --skill repo-foundation repo-native-refactor -y
+```
+
+This removes the selected skills from project agent installations without a per-agent filter. Omit `-y` if you want the CLI's confirmation flow. Removal does not undo source-code changes previously made by an agent using a skill.
+
+For CLI 1.7.0, the tested `remove ... --agent codex -y` variant reported success but left the shared `.agents/skills/` copies installed. The command above, without that filter, removed them in the test. Run `npx skills@1.7.0 list --agent codex` afterwards and verify that the selected project skills are absent. If you need to keep the same skills available to another project agent, review the CLI's selection behavior before removing them.
+
+## Test local changes before publishing
+
+From a separate trial project, replace the GitHub source with your checkout path:
 
 ```powershell
-# Set your paths:
-$skillsRepo = "C:\path\to\cloned\repository-engineering-skills"
-$projectRoot = "C:\path\to\your\project"
-
-$skillsDest = Join-Path $projectRoot ".agents\skills"
-
-foreach ($skill in @("repo-foundation", "repo-native-refactor")) {
-    $targetDir = Join-Path $skillsDest $skill
-    if (Test-Path -LiteralPath $targetDir) {
-        Write-Warning "Skill already exists at $targetDir. Remove or backup before reinstalling."
-        continue
-    }
-    New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
-    Copy-Item -LiteralPath (Join-Path $skillsRepo "$skill\SKILL.md") -Destination $targetDir -Force
-    Copy-Item -LiteralPath (Join-Path $skillsRepo "$skill\references") -Destination $targetDir -Recurse -Force
-    Write-Host "Installed $skill to $targetDir"
-}
+npx skills@1.7.0 add 'C:\path\to\repository-engineering-skills' --skill repo-foundation repo-native-refactor --agent codex --copy -y
 ```
 
-### Bash (POSIX)
+Use an absolute path. Do not install into the source checkout just to test packaging. Local-source installation tests your uncommitted files; GitHub-source installation reads the published repository.
 
-```bash
-SKILLS_REPO="/path/to/cloned/repository-engineering-skills"
-PROJECT_ROOT="/path/to/your/project"
-SKILLS_DEST="$PROJECT_ROOT/.agents/skills"
+## Install or update from local clone (PowerShell)
 
-for skill in repo-foundation repo-native-refactor; do
-  target="$SKILLS_DEST/$skill"
-  if [ -d "$target" ]; then
-    echo "Warning: $target already exists."
-    continue
-  fi
-  mkdir -p "$target"
-  cp "$SKILLS_REPO/$skill/SKILL.md" "$target/"
-  cp -r "$SKILLS_REPO/$skill/references" "$target/"
-  echo "Installed $skill to $target"
-done
-```
+If installing from a local clone of this repository without Node.js or `npx`:
 
----
-
-## 3. Installing for Other Hosts (Claude Code, Cursor, Antigravity)
-
-Different agent environments load skills from different locations:
-
-- **Antigravity / Gemini CLI:** Global skills reside in `~/.gemini/antigravity/skills/<skill-name>/` or workspace `.gemini/skills/<skill-name>/`.
-- **Generic Markdown Hosts:** Any host that reads instruction files from a prompt or system context can point to `SKILL.md` directly.
-
-Ensure that the sibling `references/` directory is copied alongside `SKILL.md` so that contextual links remain valid.
-
----
-
-## 4. Updating Skills
-
-To update to a new version:
-1. Pull the latest release of `repository-engineering-skills`.
-2. Delete the old skill directories in your project's `.agents/skills/`.
-3. Copy the updated `SKILL.md` and `references/` folders.
-4. Verify by starting a new agent session and prompting:
-   ```text
-   What skills do you have available? Summarize repo-foundation.
-   ```
-
----
-
-## 5. Uninstallation
-
-To remove the skills from a project, delete the corresponding subdirectories:
-
+### Fresh installation
 ```powershell
-Remove-Item -Recurse -Force "path\to\project\.agents\skills\repo-foundation"
-Remove-Item -Recurse -Force "path\to\project\.agents\skills\repo-native-refactor"
+pwsh -NoProfile -File ./scripts/install-skills.ps1 -TargetProject "C:\path\to\my-project"
 ```
+The script performs pre-flight validation on both source skills (`SKILL.md`, `references/`, and metadata). If either skill already exists at the destination `.agents/skills/`, the script aborts before making any modifications to prevent accidental overwrites.
+
+### Safe update with automatic backup
+```powershell
+pwsh -NoProfile -File ./scripts/install-skills.ps1 -TargetProject "C:\path\to\my-project" -Update
+```
+When `-Update` is specified:
+1. Validates the source repository (`SKILL.md`, `LICENSE`, `references/`, and metadata for both skills).
+2. Stages the new version in an isolated temporary directory and computes a SHA-256 directory manifest.
+3. Automatically backs up existing skill copies to `<project>/.agents/skills-backup-<timestamp>/`.
+4. Replaces the destination skill directories cleanly, eliminating stale ghost files from older versions while leaving unrelated skills in `.agents/skills/` untouched.
+5. Performs bi-directional manifest and SHA-256 verification on all deployed files. If any error occurs during copy or verification, the installer automatically rolls back and restores the previous installation from the backup.
+
+## Troubleshooting
+
+- **`npx` is not found:** install a supported Node.js version, then reopen the terminal.
+- **PowerShell blocks the npm wrapper:** use `npx.cmd` in place of `npx`; the arguments stay the same. No execution-policy change is needed for that workaround.
+- **Skill is not visible:** inspect the installation path, current project, host support and duplicate copies; then start a new session.
+- **GitHub installation still shows old content:** confirm the intended changes have been committed and pushed to the source branch.
+- **Installation succeeds but behavior is wrong:** report the source revision, host/model, prompt and observed result. Installation success does not establish task success.

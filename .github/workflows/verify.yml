@@ -36,17 +36,11 @@ jobs:
 
       - name: Verify archived evidence
         shell: pwsh
-        run: |
-          $verifiers = @(Get-ChildItem -LiteralPath evals-suite -Recurse -Filter verify_hashes.py -File)
-          if ($verifiers.Count -ne 31) {
-            throw "Expected 31 archive verifiers; found $($verifiers.Count). Review the inventory."
-          }
-          foreach ($verifier in $verifiers) {
-            python -B $verifier.FullName
-            if ($LASTEXITCODE -ne 0) {
-              throw "Archive verification failed: $($verifier.FullName)"
-            }
-          }
+        run: ./scripts/verify-archive.ps1
+
+      - name: Verify PowerShell installer and rollback
+        shell: pwsh
+        run: ./scripts/test-installer.ps1
 
       - name: CP2 treatment
         run: python -B repo-foundation/evals/harness.py verify CP2_SLICE evals-suite/ablation_cp2/treatment/workspace

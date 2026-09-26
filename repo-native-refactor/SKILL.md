@@ -1,6 +1,6 @@
 ---
 name: repo-native-refactor
-description: Audit and refactor code changes to conform strictly to repository semantics, architecture, domain idioms, and reliability contracts. Use after implementation for surgical cleanup, regression-free refactoring, and review preparation without altering authorized behavior or introducing gratuitous modernization.
+description: Audit and refactor code changes to conform strictly to repository semantics, architecture, domain idioms, and reliability contracts. Use after implementation for surgical cleanup, behavior-preserving refactoring with verification, and review preparation without altering authorized behavior or introducing gratuitous modernization.
 metadata:
   version: "1.2.1"
 ---
@@ -10,7 +10,7 @@ metadata:
 Produce the smallest coherent change that belongs naturally in the target repository.
 
 Prioritize in order:
-1. **Correctness and security:** Zero regressions, zero new security vulnerabilities, zero broken edge cases.
+1. **Correctness and security:** Prevent regressions, avoid new security vulnerabilities, and handle boundary conditions.
 2. **Semantic integrity:** Preserve existing invariants, state transitions, validation, and error boundaries.
 3. **Strict contract adherence:** Preserve documented or demonstrably consumed public contracts across public interfaces, exported parameters, and module constants, preserving the target contracts authorized by the task. A requested behavior change may authorize a contract change when that consequence is clear from the task or authorized evolution; in all other cases, preserve exact declared types (for example, never substitute or wrap an exposed primitive `str` contract with `pathlib.Path` or custom wrapper objects merely for internal convenience). Internal intermediate representations may use appropriate helpers, provided exposed public contracts and types remain exact.
 4. **Repository conformity:** Match surrounding naming, domain conventions, and architectural precedents.

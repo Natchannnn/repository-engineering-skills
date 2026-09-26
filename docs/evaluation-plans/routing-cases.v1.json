@@ -1,0 +1,160 @@
+{
+  "format": "repository-engineering-skills-routing-plan-v1",
+  "status": "proposed_not_executed",
+  "dataset_role": "public_development_set_not_holdout",
+  "compatible_with_existing_harness": false,
+  "instructions": "Only prompt and prepared context go to the runner. Labels and scoring notes stay with the evaluator. Observe actual skill loading; self-reported intent alone is insufficient. Cases require fixtures and fresh sessions; this file is not an executable suite.",
+  "scoring": {
+    "initial_selection": "Observe the first of these two skills loaded, or neither. Other host skills are outside this label set.",
+    "later_selection": "For mixed cases, observe the required later skill at a real checkpoint in a separate end-to-end test. Initial-only routing does not verify later invocation.",
+    "companion_policy": "For foundation-only cases, a later justified companion pass is not automatically an initial-routing error.",
+    "missing_trace": "Record unobservable, not pass.",
+    "label_policy": "Review labels before execution; do not relabel selectively after seeing candidate results."
+  },
+  "cases": [
+    {
+      "id": "F01", "group": "foundation", "language": "vi",
+      "prompt": "Tạo một CLI Python đọc CSV giao dịch và tính tổng theo loại. Repo đang trống; làm một luồng chạy được cùng kiểm tra cơ bản.",
+      "context_required": "Empty repository; Python available; small CSV examples.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F02", "group": "foundation", "language": "en",
+      "prompt": "Add JSON export to the existing CLI. Keep current commands and text output unchanged unless the new flag is present.",
+      "context_required": "Working CLI with command tests and a documented output contract.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F03", "group": "foundation", "language": "vi",
+      "prompt": "Hàm tìm kiếm đang bỏ qua giá trị 0 hợp lệ. Sửa lỗi đó và thêm kiểm tra hồi quy, giữ các hành vi còn lại.",
+      "context_required": "Repository with a reproducible zero-value bug and existing test framework.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F04", "group": "foundation", "language": "en",
+      "prompt": "The API must now support multiple tenants. Implement the new contract and migrate existing persisted records without losing valid data.",
+      "context_required": "Existing API, explicit tenant requirements, persisted fixtures and consumers.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F05", "group": "foundation", "language": "vi",
+      "prompt": "Tiếp tục tính năng nhập giao dịch từ phiên trước. Notes nói chưa làm nhưng code đã có một phần; kiểm tra yêu cầu rồi hoàn thành phần còn thiếu.",
+      "context_required": "Original acceptance requirements, stale notes and partially implemented import feature.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F06", "group": "foundation", "language": "en",
+      "prompt": "Refactor the storage boundary to support the requested cloud backend, then implement that backend. The existing local mode must keep working.",
+      "context_required": "Documented new backend requirements, local storage implementation and contract tests.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F07", "group": "foundation", "language": "vi",
+      "prompt": "Thêm bộ lọc theo trạng thái vào trang đơn hàng. Mình có thay đổi chưa commit trong component này; giữ chúng và làm tiếp đúng conventions hiện có.",
+      "context_required": "Frontend repository with identifiable user edits and a requested filter contract.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "F08", "group": "foundation", "language": "en",
+      "prompt": "Build the first working slice of this new import module inside our existing repository. Reuse the current build and test setup.",
+      "context_required": "Established repository, empty bounded module and sample input/output requirements.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": null
+    },
+    {
+      "id": "R01", "group": "refactor", "language": "vi",
+      "prompt": "Review diff hiện tại giúp mình, chỉ báo lỗi có bằng chứng và vị trí file. Không sửa code.",
+      "context_required": "Small working-tree diff with an identifiable comparison base.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R02", "group": "refactor", "language": "en",
+      "prompt": "Simplify this feature diff where there is a concrete maintenance benefit. Preserve the feature's intended behavior and avoid unrelated edits.",
+      "context_required": "Completed feature diff, task requirements and affected tests.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R03", "group": "refactor", "language": "vi",
+      "prompt": "Hai chỗ validation trong diff có vẻ trùng nhau. Xem có cùng nghiệp vụ và chủ sở hữu không; chỉ hợp nhất nếu có lợi ích cụ thể.",
+      "context_required": "Diff with two similar validation blocks and enough domain context to distinguish ownership.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R04", "group": "refactor", "language": "en",
+      "prompt": "The implementation is done. Review its error handling, resource cleanup and public contracts before we hand it off. Report only.",
+      "context_required": "Completed implementation with callers, failure paths and test baseline.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R05", "group": "refactor", "language": "vi",
+      "prompt": "Mình muốn phục hồi chất lượng toàn repository này theo từng đợt nhỏ, giữ hành vi đang được dùng. Khảo sát rồi xử lý những vấn đề có bằng chứng.",
+      "context_required": "Bounded sample repository with documented behavior and permission for repository-wide rehabilitation.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R06", "group": "refactor", "language": "en",
+      "prompt": "Apply the confirmed findings from the previous review to this diff. Check that they still hold and keep unrelated user changes intact.",
+      "context_required": "Earlier findings supplied as task data, current code and distinct user changes.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R07", "group": "refactor", "language": "vi",
+      "prompt": "Dọn phần code AI vừa thêm trong diff này: bỏ residue có bằng chứng, giữ comments giải thích invariant và không đổi output mà bên khác đang dùng.",
+      "context_required": "Diff with mixed comments, debug residue and consumed observable output.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "R08", "group": "refactor", "language": "en",
+      "prompt": "This diff intentionally changes the API to v2. Audit and tidy the implementation without undoing that approved contract change.",
+      "context_required": "Explicit v2 contract, migration diff and relevant callers/tests.",
+      "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
+    },
+    {
+      "id": "N01", "group": "neither", "language": "vi",
+      "prompt": "Sửa đúng lỗi chính tả 'instalation' thành 'installation' trong README. Không cần review phần còn lại.",
+      "context_required": "README with one specified typo.",
+      "expected_initial_skill": null, "required_later_skill": null
+    },
+    {
+      "id": "N02", "group": "neither", "language": "en",
+      "prompt": "Translate the pasted paragraph explaining refactoring into Vietnamese. Do not inspect or modify the repository.",
+      "context_required": "A short pasted paragraph about refactoring, requiring translation only.",
+      "expected_initial_skill": null, "required_later_skill": null
+    },
+    {
+      "id": "N03", "group": "neither", "language": "vi",
+      "prompt": "Giải thích ngắn gọn sự khác nhau giữa git diff và git diff --staged, không chạy lệnh hoặc sửa file.",
+      "context_required": "No repository fixture needed; conceptual Git question.",
+      "expected_initial_skill": null, "required_later_skill": null
+    },
+    {
+      "id": "N04", "group": "neither", "language": "en",
+      "prompt": "In the pasted review comment, replace the word 'utilize' with 'use'. Return only the edited sentence.",
+      "context_required": "One pasted sentence containing utilize; no code review requested.",
+      "expected_initial_skill": null, "required_later_skill": null
+    },
+    {
+      "id": "M01", "group": "mixed", "language": "vi",
+      "prompt": "Thêm CSV export theo yêu cầu, kiểm tra xong rồi review và cleanup diff một lượt trước khi báo hoàn tất.",
+      "context_required": "Existing export interface, CSV acceptance examples and affected tests.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
+    },
+    {
+      "id": "M02", "group": "mixed", "language": "en",
+      "prompt": "Implement the approved schema migration, then do a scoped review and cleanup of the completed change while preserving the new contract.",
+      "context_required": "Migration specification, old records, expected new schema and callers.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
+    },
+    {
+      "id": "M03", "group": "mixed", "language": "vi",
+      "prompt": "Tiếp tục tính năng còn dang dở từ notes này, hoàn thành yêu cầu rồi kiểm tra diff để loại thay đổi thừa và lỗi hợp đồng.",
+      "context_required": "Stale session notes, acceptance requirements and partially implemented feature.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
+    },
+    {
+      "id": "M04", "group": "mixed", "language": "en",
+      "prompt": "Build a working first slice of the new module using repository conventions. Once it passes its checks, review the diff and remove only justified residue.",
+      "context_required": "Existing build/test conventions, empty module and bounded acceptance requirements.",
+      "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
+    }
+  ]
+}
