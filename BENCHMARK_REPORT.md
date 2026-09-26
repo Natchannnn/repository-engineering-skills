@@ -44,7 +44,7 @@ The evaluation traversed four distinct empirical phases:
 | **C (`repo-native-refactor`)**| 59 | 55 | **114** | **8 / 8 (100%)** |
 | **D (Both Skills)** | 59 | 56 | **115** | **8 / 8 (100%)** |
 
-### The Brutal Truth: What Gate 3 Exposed
+### Observed Failures: What Gate 3 Exposed
 While **Variant B** scored higher than Baseline A (126 vs 120), **Variants C and D scored lower than Baseline A**. Codex's blind review revealed three distinct failure modes:
 1. **The Literal Type Blindspot:** In 4 checkpoints, models spontaneously substituted `LEDGER_FILE: str` with `pathlib.Path(...)`. Functional checks passed, but the `contract_aligned` pass bar failed.
 2. **The Missing Test Artifact Blindspot:** In all 32 checkpoints, `Test Quality` was scored **0**. Space Bunny performed extensive self-checks in memory and scratch commands, but never authored or committed test files (`test_*.py`) for the judge to inspect.
@@ -60,7 +60,7 @@ While **Variant B** scored higher than Baseline A (126 vs 120), **Variants C and
 Rather than rationalizing the Gate 3 scores, we treated the failure modes as precise engineering requirements. We added three non-negotiable rules across both skills:
 
 1. **Strict Literal Contract Adherence (`repo-foundation` & `repo-native-refactor`):**
-   > *"Preserve exact declared interface types across all public boundaries (function signatures, return types, public module constants, and exported parameters). If a contract or specification declares a primitive type such as `str`, never change or wrap the exposed interface in `pathlib.Path` or custom wrapper objects unless an architectural evolution is explicitly requested. Internal intermediate representations may use appropriate helpers, provided all exposed public contracts and types remain exact."*
+   > *"Preserve exact declared interface types across all public boundaries (function signatures, return types, public module constants, and exported parameters). If a contract or specification declares a primitive type such as `str`, never change or wrap the exposed interface in `pathlib.Path` or custom wrapper objects unless an architectural evolution is explicitly authorized by the task. Internal intermediate representations may use appropriate helpers, provided all exposed public contracts and types remain exact."*
 2. **Proportionate Test Artifact Authorship (`repo-foundation`):**
    > *"When task scope permits, author persistent tests (`tests/test_<feature>.py`) asserting happy paths, boundary conditions, and regressions. When task scope restricts modifications to a single module, verify using localized scratch checks; do not pollute the workspace with unapproved files."*
 3. **Minimal Intervention & Evidence Gate (`repo-native-refactor`):**
@@ -74,12 +74,12 @@ To rigorously verify if the patches addressed the failure modes, we subjected th
 
 ### Test 1: Smoke Verification (CP2 Greenfield)
 - **Goal:** Verify if the "Test Quality = 0" failure was resolved.
-- **Result:** Claude Sonnet 4.6 loaded the patched skills, autonomously authored **18 comprehensive unit tests** in `tests/test_query.py`, and scored **24 / 24 Full Marks**. Test Quality jumped from 0 to 4.
+- **Result:** Claude Sonnet 4.6 loaded the patched skills, autonomously authored **18 comprehensive unit tests** in `tests/test_query.py`, and scored **24 / 24**. Test Quality jumped from 0 to 4.
 
 ### Test 2: CP2 Greenfield Slice Ablation (Head-to-Head)
 - **Setup:** Identical CP1 baseline, identical un-coached task prompt (`evals/tasks/CP2_SLICE.md`).
 - **Control (No Skills):** Sonnet 4.6 spontaneously wrapped `LEDGER_FILE = Path(...)` $\to$ **Failed contract (`contract_aligned: NOT MET`, 19 / 24)**.
-- **Treatment (With Skills):** Maintained `LEDGER_FILE = "ledger.jsonl"` (`str`), executed 24 localized verification checks $\to$ **Passed all bars (`contract_aligned: MET`, 24 / 24, Winner)**.
+- **Treatment (With Skills):** Maintained `LEDGER_FILE = "ledger.jsonl"` (`str`), executed 24 localized verification checks $\to$ **Passed all bars (`contract_aligned: MET`, 24 / 24)**.
 
 ### Test 3: CP3 Hardcore Enterprise Evolution Ablation (Head-to-Head)
 - **Setup:** Complex multi-tenant contract evolution: tenant validation (`ValueError` on missing/empty/blank/non-string), zero-mutation guarantee on failure, atomic idempotent migration (`migrate() -> int`), multi-filter conjunction querying (`find(kind, tenant)`), and living documentation synchronization.
@@ -125,14 +125,23 @@ The test harness in `repo-native-refactor/evals/` was verified across 32 determi
 
 ---
 
-## 6. Summary Comparison Table Across All Phases
+## 6. Summary Comparison Across Empirical Phases
+
+### Agent Behavioral Experiments
 
 | Benchmark Stage | Model & Agent | Control (No Skills) | Treatment (With Skills) | Measured Finding |
 | :--- | :--- | :---: | :---: | :--- |
-| **Phase 1: Gate 3 (32 Jobs)** | Space Bunny + Codex | 120 / 192 (A) | **126 / 192 (B)** | Foundation skill improved continuity; uncovered type drift & premature refactoring bugs. |
-| **Phase 3: CP2 Greenfield** | Claude Sonnet 4.6 | 19 / 24 (Failed `str`) | **24 / 24 (Full Marks)** | Literal contract rule prevented model from breaking string API contract. |
-| **Phase 3: CP3 Hardcore** | Claude Sonnet 4.6 | 2.84 / 4.00 (71.0%) | **4.00 / 4.00 (100%)** | Skills prevented logic duplication (DRY) and synchronized repository documentation. |
-| **Phase 4: Harness Tests** | Deterministic Python | 32 / 32 Passed | 32 / 32 Passed | Cryptographic integrity and tamper-detection verified. |
+| **Phase 1: Gate 3 (32 Jobs)** | Space Bunny + Codex | 120 / 192 (A) | **126 / 192 (B)** | Foundation skill improved continuity; uncovered type drift & premature refactoring issues. |
+| **Phase 3: CP2 Greenfield** | Claude Sonnet 4.6 | 19 / 24 (Altered `str` to `Path`) | **24 / 24** | Literal contract rule instructed agent to preserve declared string API contract. |
+| **Phase 3: CP3 Hardcore** | Claude Sonnet 4.6 | 2.84 / 4.00 (71.0%) | **4.00 / 4.00 (100%)** | Skills guided predicate consolidation (DRY) and synchronized repository documentation. |
+
+### Deterministic Harness Unit Tests & Evidence Integrity
+
+| Test Target | Runner | Scope | Result | Verified Property |
+| :--- | :--- | :--- | :---: | :--- |
+| **Refactor Harness Suite** | Python 3.14 `unittest` | 32 tests | **32 / 32 Passed** | Blind review protocol, patch round-tripping, non-finite score rejection. |
+| **Foundation Harness Suite** | Python 3.14 `unittest` | 26 tests | **26 / 26 Passed** | Byte snapshot determinism, atomic rollback on I/O failure, unmanaged target protection. |
+| **Historical Archive Evidence** | Standalone verifiers | 31 packets | **31 / 31 Passed** | Exact SHA-256 tree hash parity across fresh clones and line ending configurations. |
 
 ---
 
