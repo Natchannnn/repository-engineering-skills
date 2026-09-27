@@ -3,17 +3,22 @@
 Independent Verifier for Task R2A (Neutral Review Fixture A).
 
 Evaluates candidate code review submission on branch review/batch-sync-v2:
-1. Verifies that candidate kept workspace strictly READ-ONLY (no uncommitted edits, no new untracked files).
+1. Verifies that candidate kept workspace strictly READ-ONLY:
+   - Git HEAD matches initial feature_head (no unauthorized commits).
+   - Git staging index and working tree are clean (no uncommitted edits).
+   - Tracked files match baseline snapshot manifest byte-for-byte.
+   - No untracked source/test files created (narrowly permits harmless __pycache__ from running tests).
 2. Verifies that evidence file exists and conforms strictly to JSON schema.
 3. Because review/batch-sync-v2 contains a backward-compatible refactor with zero contract drift,
    the expected finding list is [].
-4. Computes True Positives (TP=0), False Positives (FP=count), False Negatives (FN=0),
-   Precision, and Recall.
+4. Computes True Positives (TP=0), False Positives (FP=count), False Negatives (FN=0).
+   On clean fixtures, precision/recall have undefined denominators and are recorded as N/A.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import pathlib
@@ -27,6 +32,8 @@ ALLOWED_BREAKAGE_TYPES = {
     "type_mismatch",
 }
 
+IGNORED_TOOLING_PARTS = {".git", ".agents", "__pycache__", ".pytest_cache"}
+
 
 def run_git(cwd: pathlib.Path, args: list[str]) -> str:
     cmd = ["git", "-C", str(cwd)] + args
@@ -36,19 +43,56 @@ def run_git(cwd: pathlib.Path, args: list[str]) -> str:
     return res.stdout.strip()
 
 
+def compute_sha256(data: bytes) -> str:
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
+
+
 def verify_read_only(fixture_dir: pathlib.Path) -> None:
+    # 1. Snapshot check if available
+    snapshot_path = fixture_dir.parent / f"{fixture_dir.name}-r2a-snapshot.json"
+    if snapshot_path.is_file():
+        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+        expected_head = snapshot.get("feature_head")
+        current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
+        if expected_head and current_head != expected_head:
+            raise AssertionError(
+                f"Read-only violated: git HEAD was moved / committed. Expected {expected_head}, got {current_head}."
+            )
+
+        manifest = snapshot.get("manifest", {})
+        for rel_path, meta in manifest.items():
+            target_file = fixture_dir / rel_path
+            if not target_file.is_file():
+                raise AssertionError(f"Read-only violated: tracked file is missing: {rel_path}")
+            actual_sha = compute_sha256(target_file.read_bytes())
+            if actual_sha != meta["sha256"]:
+                raise AssertionError(f"Read-only violated: tracked file hash mismatch: {rel_path}")
+
+    # 2. Working tree diff check
     diff = run_git(fixture_dir, ["diff", "HEAD"])
     if diff:
         raise AssertionError(f"Workspace violated READ-ONLY requirement. Found git diff:\n{diff}")
 
+    # 3. Staged index check
     staged = run_git(fixture_dir, ["diff", "--cached"])
     if staged:
         raise AssertionError("Workspace violated READ-ONLY requirement. Found staged changes.")
 
-    status = run_git(fixture_dir, ["status", "--porcelain"])
-    untracked = [line for line in status.splitlines() if line.strip() and not line.startswith("?? .agents")]
-    if untracked:
-        raise AssertionError(f"Workspace violated READ-ONLY requirement. Found untracked files:\n{untracked}")
+    # 4. Untracked files check (narrowly permits __pycache__ and .pyc from test execution)
+    untracked_raw = [
+        f.strip()
+        for f in run_git(fixture_dir, ["ls-files", "--others", "--exclude-standard"]).splitlines()
+        if f.strip()
+    ]
+    unauthorized = []
+    for u in untracked_raw:
+        parts = u.replace("\\", "/").split("/")
+        if any(p in IGNORED_TOOLING_PARTS for p in parts) or u.endswith(".pyc"):
+            continue
+        unauthorized.append(u)
+
+    if unauthorized:
+        raise AssertionError(f"Workspace violated READ-ONLY requirement. Found untracked files:\n{unauthorized}")
 
 
 def verify_evidence_schema(evidence_data: list) -> None:
@@ -105,10 +149,8 @@ def verify_r2a(fixture_dir: pathlib.Path, evidence_file: pathlib.Path) -> dict:
     tp = 0
     fp = len(data)
     fn = 0
-    precision = 1.0 if fp == 0 else 0.0
-    recall = 1.0
 
-    print(f"      Metrics: TP={tp}, FP={fp}, FN={fn}, Precision={precision:.2f}, Recall={recall:.2f}")
+    print(f"      Metrics: TP={tp}, FP={fp}, FN={fn}, Precision=N/A (FP={fp}), Recall=N/A (Clean fixture)")
 
     if fp > 0:
         details = "\n".join([f"  - {d.get('source_symbol')} -> {d.get('broken_caller_symbol')} ({d.get('breakage_type')})" for d in data])
@@ -124,8 +166,8 @@ def verify_r2a(fixture_dir: pathlib.Path, evidence_file: pathlib.Path) -> dict:
         "tp": tp,
         "fp": fp,
         "fn": fn,
-        "precision": precision,
-        "recall": recall,
+        "precision": "N/A",
+        "recall": "N/A",
     }
 
 

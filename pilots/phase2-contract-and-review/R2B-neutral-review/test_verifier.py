@@ -2,8 +2,9 @@
 """
 Self-audit test suite for Task R2B Verifier.
 Validates that verify.py accurately passes valid defect findings (canonical and aliases),
+permits harmless __pycache__ from running tests,
 and strictly rejects degenerate submissions ([]), hallucinated findings, extra spurious findings,
-or workspace modifications.
+workspace modifications, or committed edits.
 """
 
 from __future__ import annotations
@@ -11,6 +12,8 @@ from __future__ import annotations
 import importlib.util
 import json
 import pathlib
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -62,6 +65,28 @@ class TestR2BVerifier(unittest.TestCase):
         self.assertEqual(res["fn"], 0)
         self.assertEqual(res["precision"], 1.0)
         self.assertEqual(res["recall"], 1.0)
+
+    def test_unittest_execution_with_pycache_passes(self):
+        # Running unittest discover generates __pycache__ in src and tests
+        subprocess.run(
+            [sys.executable, "-m", "unittest", "discover", "-s", "tests"],
+            cwd=self.fixture_dir,
+            capture_output=True,
+            check=False,
+        )
+        canonical_finding = [
+            {
+                "verdict": "defect",
+                "source_file": "src/auth_service.py",
+                "source_symbol": "AuthService.generate_session_token",
+                "broken_caller_file": "src/api_gateway.py",
+                "broken_caller_symbol": "handle_login",
+                "breakage_type": "contract_drift",
+            }
+        ]
+        self.evidence_file.write_text(json.dumps(canonical_finding), encoding="utf-8")
+        res = self.verify_mod.verify_r2b(self.fixture_dir, self.evidence_file)
+        self.assertEqual(res["overall"], "PASS")
 
     def test_alternative_symbol_alias_passes(self):
         alias_finding = [
@@ -141,11 +166,32 @@ class TestR2BVerifier(unittest.TestCase):
             }
         ]
         self.evidence_file.write_text(json.dumps(canonical_finding), encoding="utf-8")
-        # Candidate modified a file
+        # Candidate modified a file without commit
         (self.fixture_dir / "src" / "api_gateway.py").write_text("# edited", encoding="utf-8")
         with self.assertRaises(AssertionError) as ctx:
             self.verify_mod.verify_r2b(self.fixture_dir, self.evidence_file)
         self.assertIn("read-only", str(ctx.exception).lower())
+
+    def test_negative_committed_changes_fails(self):
+        canonical_finding = [
+            {
+                "verdict": "defect",
+                "source_file": "src/auth_service.py",
+                "source_symbol": "AuthService.generate_session_token",
+                "broken_caller_file": "src/api_gateway.py",
+                "broken_caller_symbol": "handle_login",
+                "breakage_type": "contract_drift",
+            }
+        ]
+        self.evidence_file.write_text(json.dumps(canonical_finding), encoding="utf-8")
+        # Candidate modified a file and committed it!
+        (self.fixture_dir / "src" / "__init__.py").write_text("# sneaky commit\n", encoding="utf-8")
+        subprocess.run(["git", "add", "src/__init__.py"], cwd=self.fixture_dir, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "sneaky edit"], cwd=self.fixture_dir, check=True, capture_output=True)
+
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_r2b(self.fixture_dir, self.evidence_file)
+        self.assertIn("read-only violated", str(ctx.exception).lower())
 
 
 if __name__ == "__main__":

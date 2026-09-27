@@ -39,12 +39,23 @@ GUIDELINES_FILE = PHASE2_ROOT.parent / "small-behavioral-pilot" / "guidelines" /
 SKILL_FOUNDATION = REPO_ROOT / "repo-foundation" / "SKILL.md"
 SKILL_REFACTOR = REPO_ROOT / "repo-native-refactor" / "SKILL.md"
 
-# Generate 27 runs interleaved by repetition
+# Rotate arm order across repetitions to balance positional bias:
+# Repetition 1: A0 -> A1 -> A2
+# Repetition 2: A1 -> A2 -> A0
+# Repetition 3: A2 -> A0 -> A1
+ARM_ROTATION = {
+    1: ["A0", "A1", "A2"],
+    2: ["A1", "A2", "A0"],
+    3: ["A2", "A0", "A1"],
+}
+TASK_SEQUENCE = ["D2", "R2A", "R2B"]
+
 RUN_MATRIX = []
 run_idx = 1
-for rep in range(1, 4):
-    for task in ["D2", "R2A", "R2B"]:
-        for arm in ["A0", "A1", "A2"]:
+for rep in [1, 2, 3]:
+    arm_order = ARM_ROTATION[rep]
+    for task in TASK_SEQUENCE:
+        for arm in arm_order:
             arm_names = {
                 "A0": "Control (Prompt mộc)",
                 "A1": "Karpathy Guidelines",
@@ -64,7 +75,7 @@ TASK_PROMPTS = {
 Yêu cầu nhiệm vụ: Nâng cấp hàm tính phí vận chuyển calculate_shipping(weight_kg: Decimal, destination: str, express: bool = False) -> ShippingQuote trong src/shipping.py.
 
 Quy tắc nghiệp vụ công bố:
-1. Khai báo dataclass (hoặc class) ShippingQuote tại src/shipping.py với 3 thuộc tính kiểu Decimal: base_fee, express_fee, total_fee.
+1. Khai báo dataclass ShippingQuote tại src/shipping.py với 3 thuộc tính kiểu Decimal: base_fee, express_fee, total_fee.
 2. Tham số weight_kg bắt buộc là kiểu Decimal và strictly > 0 (không chấp nhận bool, float, str hoặc <= 0). Nếu sai: raise ValueError("Invalid weight").
 3. Tham số destination bắt buộc phải thuộc danh sách được hỗ trợ bởi get_supported_destinations(). Nếu không thuộc danh sách: raise ValueError("Unsupported destination").
 4. Tham số express bắt buộc là kiểu bool (mặc định False). Nếu True: express_fee = Decimal("12.50"). Nếu False: express_fee = Decimal("0.00"). Nếu express không phải bool: raise ValueError hoặc TypeError.
@@ -158,8 +169,23 @@ def build_prompt(run_id: int) -> str:
         evidence_path=str(evidence_file).replace("\\", "/")
     )
 
-    header = f"Workspace directory for this task: {str(workspace_dir).replace('\\', '/')}\n\n"
-    header += "You must perform all file views, edits, and terminal commands strictly within this workspace directory.\n\n"
+    ws_str = str(workspace_dir).replace('\\', '/')
+    ev_str = str(evidence_file).replace('\\', '/')
+
+    if task in ("R2A", "R2B"):
+        header = (
+            f"Workspace directory for this task: {ws_str}\n\n"
+            "You must perform all code views and git commands within this workspace directory.\n"
+            "Do not modify or commit any files within the workspace repository.\n"
+            f"The ONLY permitted file output is the review report specified by --evidence-file: {ev_str}\n"
+            "Do not access evaluator harnesses, snapshots, or data from other runs.\n\n"
+        )
+    else:
+        header = (
+            f"Workspace directory for this task: {ws_str}\n\n"
+            "You must perform all file views, edits, and terminal commands strictly within this workspace directory.\n"
+            "Do not access evaluator harnesses, snapshots, or data from other runs.\n\n"
+        )
 
     if arm == "A0":
         return header + base_task_text

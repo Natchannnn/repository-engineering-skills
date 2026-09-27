@@ -8,7 +8,7 @@ Tài liệu này xác lập quy trình, đặc tả kỹ thuật, fixtures và t
 
 ### 1.1. Bối cảnh từ Đợt 1 (Pilot 9 lượt)
 - Scorecard Đợt 1 xác nhận: Cả 3 cấu hình (A0 Control, A1 Guidelines, A2 Two Skills) đều hoàn thành xuất sắc các tác vụ vi mô đơn lẻ (D1: dirty worktree, R1: review contract drift). Ở bài D3 (lỗi baseline), mô hình ở A1 và A2 hiểu đúng bản chất nghiệp vụ nhưng bị trượt do định dạng chuỗi Test ID.
-- Kết luận khoa học từ Đợt 1: Trên các tác vụ đơn lẻ, tập trung tại 1 file và có yêu cầu rõ ràng, mô hình frontier hiện đại đã đạt trần năng lực mà không cần đến prompt skills phức tạp.
+- Kết luận khoa học từ Đợt 1: Trên các tác vụ đơn lẻ, tập trung tại 1 file và có yêu cầu rõ ràng, dữ liệu thực nghiệm cho thấy chưa quan sát được ưu thế bổ sung của treatment so với control trên ba fixture đó.
 
 ### 1.2. Giả thuyết nghiên cứu Đợt 2
 - **Giả thuyết H1 (Khám phá ràng buộc phân tán - Task D2):** Khi một hợp đồng công khai bị thay đổi có chủ đích mà đề bài **không liệt kê danh sách các caller phụ thuộc**, liệu việc trang bị kỹ năng (`repo-foundation`) có giúp agent chủ động rà soát toàn bộ repository, phát hiện đủ các caller phân tán và thực hiện di chuyển (migration) trọn vẹn hơn so với agent chỉ nhận prompt mộc?
@@ -120,8 +120,9 @@ Mỗi bài toán được thử nghiệm độc lập trên 3 cấu hình:
   - `TP` (True Positives): Phát hiện đúng lỗi contract drift thực tế (chấp nhận danh sách alias hợp lệ được định nghĩa trước).
   - `FP` (False Positives): Báo lỗi ảo khi mã nguồn hoàn toàn an toàn.
   - `FN` (False Negatives): Bỏ sót lỗi thực tế.
-  - `Precision` = `TP / (TP + FP)` (đạt 1.0 nếu TP=0 và FP=0 trên mã sạch).
-  - `Recall` = `TP / (TP + FN)` (đạt 1.0 nếu phát hiện đủ lỗi thật).
+  - Trên fixture sạch (R2A): Do không có lỗi thực tế (mẫu số bằng 0), kết quả đơn lẻ được ghi nhận là `Precision: N/A`, `Recall: N/A`, và tiêu chí PASS duy nhất là `FP == 0` (không báo lỗi sai).
+  - Trên fixture có lỗi (R2B): Yêu cầu `TP == 1` và `FP == 0` (Precision = 1.0, Recall = 1.0).
+  - Chỉ số Precision và Recall tổng hợp được tính chung trên dữ liệu gộp của cả hai bài R2A và R2B.
 - **Task R2A (Clean):** Yêu cầu `FP == 0` (mảng rỗng `[]`). Bất kỳ finding nào đều tính là FAIL.
 - **Task R2B (Defect):** Yêu cầu `TP == 1` và `FP == 0`. Báo cáo mảng rỗng `[]` tính là FAIL.
 
