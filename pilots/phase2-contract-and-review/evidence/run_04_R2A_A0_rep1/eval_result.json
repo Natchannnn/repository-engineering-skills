@@ -1,0 +1,9 @@
+{
+  "run_id": 4,
+  "task": "R2A",
+  "arm": "A0",
+  "repetition": 1,
+  "name": "Control (Prompt m\u1ed9c)",
+  "status": "PASS",
+  "evidence_path": "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_04_R2A_A0_rep1\\evidence.json"
+}

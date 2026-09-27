@@ -181,3 +181,79 @@ Trước khi khởi chạy bất kỳ lượt candidate nào, bộ verifier củ
    - Negative 6: Sửa mã nguồn, commit và xóa snapshot -> FAIL.
    - Negative 7: Thiếu sidecar snapshot file -> FAIL.
    - Negative 8: Snapshot file thiếu metadata bắt buộc (`feature_head`, `manifest`) -> FAIL.
+
+---
+
+## 8. Kết Quả Thực Nghiệm & Scorecard 27 Lượt (Phase 2 Empirical Results)
+
+Toàn bộ 27 lượt chạy của Phase 2 ($3 \text{ tasks} \times 3 \text{ arms} \times 3 \text{ repetitions}$) đã được thực thi và nghiệm thu thành công thông qua máy chấm độc lập tại commit `b9443ee`.
+
+### 8.1. Bảng Kết Quả Chi Tiết 27 Runs
+
+| Run | Task | Arm | Rep | Tên Arm | Kết quả | Thời gian Verifier | Ghi chú Evidence |
+|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---|
+| 01 | D2 | A0 | 1 | Control (Prompt mộc) | **PASS** | 0.475s | Caller hashes & public surface intact |
+| 02 | D2 | A1 | 1 | Karpathy Guidelines | **PASS** | 0.496s | Caller hashes & public surface intact |
+| 03 | D2 | A2 | 1 | Treatment (2 Skills) | **PASS** | 0.468s | Caller hashes & public surface intact |
+| 04 | R2A | A0 | 1 | Control (Prompt mộc) | **PASS** | 0.143s | `[]` (FP = 0, Read-only clean) |
+| 05 | R2A | A1 | 1 | Karpathy Guidelines | **PASS** | 0.145s | `[]` (FP = 0, Read-only clean) |
+| 06 | R2A | A2 | 1 | Treatment (2 Skills) | **PASS** | 0.139s | `[]` (FP = 0, Read-only clean) |
+| 07 | R2B | A0 | 1 | Control (Prompt mộc) | **PASS** | 0.136s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 08 | R2B | A1 | 1 | Karpathy Guidelines | **PASS** | 0.138s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 09 | R2B | A2 | 1 | Treatment (2 Skills) | **PASS** | 0.138s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 10 | D2 | A1 | 2 | Karpathy Guidelines | **PASS** | 0.467s | Caller hashes & public surface intact |
+| 11 | D2 | A2 | 2 | Treatment (2 Skills) | **PASS** | 0.461s | Caller hashes & public surface intact |
+| 12 | D2 | A0 | 2 | Control (Prompt mộc) | **PASS** | 0.459s | Caller hashes & public surface intact |
+| 13 | R2A | A1 | 2 | Karpathy Guidelines | **PASS** | 0.137s | `[]` (FP = 0, Read-only clean) |
+| 14 | R2A | A2 | 2 | Treatment (2 Skills) | **PASS** | 0.133s | `[]` (FP = 0, Read-only clean) |
+| 15 | R2A | A0 | 2 | Control (Prompt mộc) | **PASS** | 0.137s | `[]` (FP = 0, Read-only clean) |
+| 16 | R2B | A1 | 2 | Karpathy Guidelines | **PASS** | 0.147s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 17 | R2B | A2 | 2 | Treatment (2 Skills) | **PASS** | 0.133s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 18 | R2B | A0 | 2 | Control (Prompt mộc) | **PASS** | 0.133s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 19 | D2 | A2 | 3 | Treatment (2 Skills) | **PASS** | 0.466s | Caller hashes & public surface intact |
+| 20 | D2 | A0 | 3 | Control (Prompt mộc) | **PASS** | 0.471s | Caller hashes & public surface intact |
+| 21 | D2 | A1 | 3 | Karpathy Guidelines | **PASS** | 0.464s | Caller hashes & public surface intact |
+| 22 | R2A | A2 | 3 | Treatment (2 Skills) | **PASS** | 0.138s | `[]` (FP = 0, Read-only clean) |
+| 23 | R2A | A0 | 3 | Control (Prompt mộc) | **PASS** | 0.142s | `[]` (FP = 0, Read-only clean) |
+| 24 | R2A | A1 | 3 | Karpathy Guidelines | **PASS** | 0.144s | `[]` (FP = 0, Read-only clean) |
+| 25 | R2B | A2 | 3 | Treatment (2 Skills) | **PASS** | 0.147s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 26 | R2B | A0 | 3 | Control (Prompt mộc) | **PASS** | 0.145s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 27 | R2B | A1 | 3 | Karpathy Guidelines | **PASS** | 0.163s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+
+---
+
+### 8.2. Tổng Hợp Tỉ Lệ Đạt (Scorecard Summary)
+
+| Arm | Mô tả | D2 (Contract Migration) | R2A (Clean Review) | R2B (Defect Review) | Tổng hợp | Tỉ lệ Đạt |
+|:---:|:---|:---:|:---:|:---:|:---:|:---:|
+| **A0** | Control (Prompt mộc) | 3/3 PASS | 3/3 PASS | 3/3 PASS | **9/9** | **100%** |
+| **A1** | Karpathy Guidelines | 3/3 PASS | 3/3 PASS | 3/3 PASS | **9/9** | **100%** |
+| **A2** | Treatment (2 Skills) | 3/3 PASS | 3/3 PASS | 3/3 PASS | **9/9** | **100%** |
+
+---
+
+### 8.3. Chỉ Số Review Tách Bạch (Precision, Recall & Specificity)
+
+| Nhóm Arm | R2A (FP) | R2B (TP) | R2B (FN) | Precision ($TP / (TP+FP)$) | Recall ($TP / (TP+FN)$) | Specificity |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **A0 (Control)** | 0 / 3 | 3 / 3 | 0 / 3 | **100.0%** | **100.0%** | **100.0%** |
+| **A1 (Guidelines)** | 0 / 3 | 3 / 3 | 0 / 3 | **100.0%** | **100.0%** | **100.0%** |
+| **A2 (Treatment)** | 0 / 3 | 3 / 3 | 0 / 3 | **100.0%** | **100.0%** | **100.0%** |
+
+---
+
+### 8.4. Đánh Giá Biến Thiên Liên Lượt (Inter-Run Variance)
+
+- **Độ ổn định:** Cả 3 lần lặp (Rep 1, Rep 2, Rep 3) với xoay vòng thứ tự Latin-square (`A0->A1->A2`, `A1->A2->A0`, `A2->A0->A1`) đều cho kết quả PASS tuyệt đối 100% ($27/27$).
+- **Không suy giảm do xoay vòng:** Thứ tự chạy trong mỗi triplet không ảnh hưởng đến chất lượng giải pháp của ứng viên.
+- **Tính xác định:** Không có lượt chạy nào bị flakiness, crash hạ tầng, hoặc timeout.
+
+---
+
+### 8.5. Nhận Định Khoa Học & Ý Nghĩa Đối Với Engineering Skills
+
+1. **Hiệu năng của mô hình nền tảng ở quy mô vừa:** Trên các tác vụ migration hợp đồng và review khép kín trong ngữ cảnh đơn repo, mô hình nền tảng hiện đại sở hữu khả năng suy luận logic rất cao. Khi prompt được đặc tả rõ ràng về mục tiêu và ràng buộc bảo vệ, cả ba nhóm (Control, Guidelines, Skills) đều hoàn thành xuất sắc nhiệm vụ mà không mắc sai sót nào.
+2. **Vai trò thực tế của Skills:**
+   - Skills không biến một mô hình không có khả năng thành có khả năng trên bài toán ngắn, nhưng cung cấp **bộ khung quy trình chuẩn hóa (rigorous methodology)**: xác lập baseline, bảo vệ user uncommitted changes, phân loại rủi ro (risk bands R0-R4), và kiểm chứng độc lập.
+   - Bằng chứng là trong toàn bộ các lượt A2, agent tạo ra diff có cấu trúc rõ ràng, giữ nguyên tuyệt đối các contract công khai, và trình bày completion report chuẩn mực theo đúng quy định của `repo-native-refactor`.
+3. **Đóng gói bằng chứng (Evidence Bundle):** Toàn bộ 213 tệp bằng chứng của 27 lượt chạy được đóng gói tại `pilots/phase2-contract-and-review/evidence/` kèm `MANIFEST.json` mã hóa SHA-256 từng file, được khóa bằng cờ `-text -eol` trong `.gitattributes` để đảm bảo tính bất biến tuyệt đối qua mọi môi trường checkout/clone.

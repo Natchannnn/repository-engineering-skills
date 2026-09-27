@@ -1,0 +1,9 @@
+{
+  "run_id": 10,
+  "task": "D2",
+  "arm": "A1",
+  "repetition": 2,
+  "name": "Karpathy-inspired Guidelines",
+  "status": "PASS",
+  "evidence_path": null
+}

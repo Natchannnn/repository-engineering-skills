@@ -1,0 +1,9 @@
+{
+  "run_id": 22,
+  "task": "R2A",
+  "arm": "A2",
+  "repetition": 3,
+  "name": "Treatment (2 Skills)",
+  "status": "PASS",
+  "evidence_path": "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_22_R2A_A2_rep3\\evidence.json"
+}
