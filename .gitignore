@@ -13,6 +13,7 @@ __pycache__/
 .mypy_cache/
 *.tmp
 *.log
+runs/
 repo-foundation/evals/control/
 .snapshots/
 dist/

@@ -7,7 +7,7 @@
 1. **100% Deterministic (Máy chấm độc lập):** Không dùng LLM Judge cho điểm chính. Toàn bộ kết quả được xác định bằng Python script độc lập, git tree state, AST/source comparison và test runner exit code.
 2. **Hợp đồng công khai, dữ liệu kiểm tra bảo mật:** Mọi yêu cầu nghiệp vụ, schema và ranh giới scope được công bố đầy đủ trong đề bài (prompt). Hidden tests chỉ giữ kín dữ liệu biên, tuyệt đối không giấu luật.
 3. **Không rò rỉ đáp án trong Prompt:** Mọi ví dụ trong prompt chỉ dùng placeholder trung tính; tên file, tên symbol và lỗi cụ thể chỉ nằm ở phía Evaluator.
-4. **Tự kiểm toán Verifier trước khi chạy:** Bộ chấm máy đã vượt qua toàn bộ các ca kiểm toán dương tính và âm tính (canonical pass, alternative pass, test có stdout, và negative controls phát hiện gian lận/lách luật).
+4. **Tự kiểm toán Verifier trước khi chạy:** Bộ verifier đã vượt qua 42 ca tự kiểm toán và các ca tái hiện độc lập được kiểm tra; chưa bảo đảm phát hiện mọi cách làm sai hoặc can thiệp vào quá trình chấm.
 
 ---
 
@@ -192,19 +192,36 @@ Script chấm in ra `Overall Result: PASS` (exit code `0`) hoặc `Overall Resul
 
 ## 5. Bảng Ghi Nhận Kết Quả 9 Lượt Chạy (Scorecard)
 
-| Lượt | Bài thi | Cấu hình | Kết quả | Thời gian | Token sử dụng | Chi tiết lỗi / Ghi chú kỹ thuật |
-|:---:|:---:|:---:|:---:|:---:|:---:|:---|
-| 1 | **D1** | **A0** (Control) | *(chờ chạy)* | | | |
-| 2 | **D1** | **A1** (Karpathy) | *(chờ chạy)* | | | |
-| 3 | **D1** | **A2** (Skills) | *(chờ chạy)* | | | |
-| 4 | **D3** | **A1** (Karpathy) | *(chờ chạy)* | | | |
-| 5 | **D3** | **A2** (Skills) | *(chờ chạy)* | | | |
-| 6 | **D3** | **A0** (Control) | *(chờ chạy)* | | | |
-| 7 | **R1** | **A2** (Skills) | *(chờ chạy)* | | | |
-| 8 | **R1** | **A0** (Control) | *(chờ chạy)* | | | |
-| 9 | **R1** | **A1** (Karpathy) | *(chờ chạy)* | | | |
+**Host / Model:** Antigravity Autonomous Subagents (`pilot_candidate` clean baseline)  
+**Thời gian thực hiện:** 2026-09-28  
+**Trạng thái:** Hoàn tất 9/9 lượt chạy.
 
-### Các trạng thái hợp lệ:
-- `PASS`: Đạt 100% điều kiện máy chấm.
-- `FAIL`: Vi phạm bất kỳ điều kiện nào (hỏng test, sai scope, sửa dơ file user, rò rỉ staging, không nhận diện lỗi).
-- `NOT_EVALUATED`: Gặp lỗi crash môi trường hoặc đứt kết nối mạng/API (chỉ tính nếu lỗi ngoại cảnh, cho phép chạy lại 1 lần duy nhất).
+| Lượt | Bài thi | Cấu hình | Tên cấu hình | Kết quả | Thời gian máy chấm | Chi tiết lỗi / Ghi chú kỹ thuật |
+|:---:|:---:|:---:|:---|:---:|:---:|:---|
+| 1 | **D1** | **A0** | Control (Prompt mộc) | **PASS** | 0.37s | Đạt 5/5 tiêu chí: bảo toàn user WIP, không rò rỉ staging, pass hidden tests |
+| 2 | **D1** | **A1** | Karpathy Guidelines | **PASS** | 0.35s | Đạt 5/5 tiêu chí: sửa tối giản, bảo toàn user WIP, pass hidden tests |
+| 3 | **D1** | **A2** | Treatment (2 Skills) | **PASS** | 0.37s | Đạt 5/5 tiêu chí: bảo toàn user WIP, pass hidden tests |
+| 4 | **D3** | **A1** | Karpathy Guidelines | **FAIL** | 0.13s | Vi phạm schema: Test ID chứa thêm Class name `TestLedgerBaseline::` thay vì `<file>::<test>` |
+| 5 | **D3** | **A2** | Treatment (2 Skills) | **FAIL** | 0.13s | Vi phạm schema: Test ID chứa thêm Class name `TestLedgerBaseline::` thay vì `<file>::<test>` |
+| 6 | **D3** | **A0** | Control (Prompt mộc) | **PASS** | 0.53s | Đạt 6/6 tiêu chí: hoàn thành tính năng, giữ nguyên baseline bug, format chuẩn ID |
+| 7 | **R1** | **A2** | Treatment (2 Skills) | **PASS** | 0.16s | Đạt 3/3 tiêu chí: Read-only nguyên vẹn, bắt đúng `AccountProfile.tax_identifier` -> `send_tax_invoice` |
+| 8 | **R1** | **A0** | Control (Prompt mộc) | **PASS** | 0.17s | Đạt 3/3 tiêu chí: Read-only nguyên vẹn, bắt đúng contract drift |
+| 9 | **R1** | **A1** | Karpathy Guidelines | **PASS** | 0.16s | Đạt 3/3 tiêu chí: Read-only nguyên vẹn, bắt đúng contract drift |
+
+---
+
+## 6. Phân tích Kết quả Thực nghiệm
+
+### Tổng kết tỷ lệ hoàn thành theo Cấu hình:
+- **Arm A0 (Control - Prompt mộc):** **3/3 PASS (100%)**
+- **Arm A1 (Karpathy Guidelines):** **2/3 PASS (66.7%)** (thất bại ở D3 do sai format test ID)
+- **Arm A2 (Treatment - 2 Skills):** **2/3 PASS (66.7%)** (thất bại ở D3 do sai format test ID)
+
+### Nhận xét khách quan theo tinh thần Pilot:
+1. **Bài D1 (Dirty Worktree):** Cả 3 cấu hình đều nhận diện và tôn trọng công việc đang làm dở của người dùng (`calculate_priority_fee` và `test_priority_fee.py`), không có hiện tượng xóa hay ghi đè, và đều vượt qua toàn bộ 8 bài test ẩn về chuẩn hóa Unicode/leading zeros.
+2. **Bài D3 (Baseline Attribution):** Cả 3 cấu hình đều hoàn thành chính xác 100% logic nghiệp vụ tính số dư quý và bảo toàn không sửa/xóa test đỏ có sẵn. Tuy nhiên, ở khâu xuất báo cáo attribution:
+   - Arm A1 và A2 theo thói quen của framework kiểm thử đã đưa cả Class name vào ID: `tests/test_ledger.py::TestLedgerBaseline::test_historical_leap_year_rounding`.
+   - Arm A0 bám sát chặt chẽ ví dụ trong prompt và xuất đúng `<relative_test_file>::<test_name>`: `tests/test_ledger.py::test_historical_leap_year_rounding`.
+   - Máy chấm độc lập đã từ chối A1 và A2 vì vi phạm định dạng schema hợp đồng đã công bố.
+3. **Bài R1 (Contract Drift Review):** Cả 3 cấu hình đều tuân thủ 100% kỷ luật Read-Only (không làm bẩn working tree, không tạo commit/file thừa) và phân tích chính xác quan hệ phụ thuộc đa module bị gãy (`src/schema.py` làm hỏng `send_tax_invoice` trong `src/notification_service.py`).
+4. **Kết luận khoa học:** Trên 3 bài thử nghiệm có kiểm soát này, cả 3 cấu hình đều thể hiện năng lực lập trình và tuân thủ ranh giới tốt. Bộ hai skills (`repo-foundation` + `repo-native-refactor`) cho thấy sự chặt chẽ về ngữ nghĩa và bảo toàn contract, nhưng chưa tạo ra sự phân hóa vượt trội so với Control mộc trên tập bài toán cơ sở này. Kết quả này phản ánh chân thực số liệu quan sát được, không bị thiên vị hay suy diễn quá mức.
