@@ -36,15 +36,18 @@ python "$REPO_ROOT/examples/read-only-contract-review/bootstrap.py" "$FIXTURE_DI
 
 # 3. Enter fixture and install skill
 cd "$FIXTURE_DIR"
-npx skills add Natchannnn/repository-engineering-skills --skill repo-native-refactor --agent codex --copy -y
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-native-refactor --agent codex --copy -y
 # Alternatively, manually copy skill into fixture:
 # mkdir -p "$FIXTURE_DIR/.agents/skills"
 # cp -r "$REPO_ROOT/repo-native-refactor" "$FIXTURE_DIR/.agents/skills/repo-native-refactor"
 
-# 4. Prompt the AI agent (see prompt below)
+# 4. Finalize setup before starting agent session (records pristine state & lockfile baseline)
+python "$REPO_ROOT/examples/finalize_setup.py" "$FIXTURE_DIR"
+
+# 5. Prompt the AI agent (see prompt below)
 # Direct agent to save textual output to: "$EVIDENCE_DIR/review_report.txt"
 
-# 5. Run independent verification from any working directory
+# 6. Run independent verification from any working directory
 python "$REPO_ROOT/examples/read-only-contract-review/verify.py" \
   --fixture-dir "$FIXTURE_DIR" \
   --review-output "$EVIDENCE_DIR/review_report.txt"
@@ -64,14 +67,18 @@ python "$RepoRoot\examples\read-only-contract-review\bootstrap.py" "$FixtureDir"
 
 # 3. Enter fixture and install skill
 Set-Location "$FixtureDir"
-# Copy skill into fixture .agents directory
-New-Item -ItemType Directory -Force -Path "$FixtureDir\.agents\skills" | Out-Null
-Copy-Item -Recurse "$RepoRoot\repo-native-refactor" -Destination "$FixtureDir\.agents\skills\repo-native-refactor"
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-native-refactor --agent codex --copy -y
+# Alternatively, manually copy skill into fixture:
+# New-Item -ItemType Directory -Force -Path "$FixtureDir\.agents\skills" | Out-Null
+# Copy-Item -Recurse "$RepoRoot\repo-native-refactor" -Destination "$FixtureDir\.agents\skills\repo-native-refactor"
 
-# 4. Prompt the AI agent (see prompt below)
+# 4. Finalize setup before starting agent session (records pristine state & lockfile baseline)
+python "$RepoRoot\examples\finalize_setup.py" "$FixtureDir"
+
+# 5. Prompt the AI agent (see prompt below)
 # Direct agent to save textual output to: "$EvidenceDir\review_report.txt"
 
-# 5. Run independent verification
+# 6. Run independent verification
 python "$RepoRoot\examples\read-only-contract-review\verify.py" `
   --fixture-dir "$FixtureDir" `
   --review-output "$EvidenceDir\review_report.txt"

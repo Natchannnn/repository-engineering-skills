@@ -144,7 +144,7 @@ To maintain scientific honesty, our evaluation data is categorized into three di
 
 ### A. Harness & Demo Unit Test Suites
 - **Harness Verification:** 59 unit tests (26 for `repo-foundation`, 33 for `repo-native-refactor`) verifying deterministic byte snapshots, atomic staging/rollback on I/O error, metaschema structural validation, exact rational scoring, and runner isolation.
-- **Demo Acceptance Suite:** 23 tests in `scripts/test_demos.py` covering happy paths, negative control probes (path traversal rejection, schema violations, protected state tampering, prompt copy rejection, and substring tricks).
+- **Demo Acceptance Suite:** 41 tests in `scripts/test_demos.py` covering happy paths, negative control probes (path traversal rejection, schema violations, protected state tampering, prompt copy rejection, lockfile mutation, concurrent setup rejection, and substring tricks).
 
 ### B. Archive Integrity Verification
 - **Archived Runs:** 31 independent verification packets in `evals-suite/`.
@@ -188,7 +188,7 @@ pwsh -NoProfile -File ./scripts/test-installer.ps1
 # 6. Verify runtime package generator and Git commit parity (PowerShell):
 pwsh -NoProfile -File ./scripts/test-package.ps1
 
-# 7. Verify demo acceptance suite (PowerShell / Python 23 tests):
+# 7. Verify demo acceptance suite (PowerShell / Python 41 tests):
 pwsh -NoProfile -File ./scripts/test-demos.ps1
 ```
 

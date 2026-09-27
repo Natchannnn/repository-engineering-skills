@@ -21,6 +21,11 @@ import re
 import subprocess
 import sys
 
+_EXAMPLES_DIR = pathlib.Path(__file__).resolve().parent.parent
+if str(_EXAMPLES_DIR) not in sys.path:
+    sys.path.insert(0, str(_EXAMPLES_DIR))
+from finalize_setup import verify_setup_metadata
+
 def run_git(cwd, args):
     cmd = ["git", "-C", str(cwd)] + args
     res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -61,6 +66,9 @@ def verify_protected_state(fixture_dir: pathlib.Path):
     fixture_dir = fixture_dir.resolve()
     meta_dir = fixture_dir.parent
 
+    # 0. Check setup metadata & lockfile integrity
+    setup_meta = verify_setup_metadata(fixture_dir)
+
     # 1. Check INITIAL_HEAD
     head_file = meta_dir / f"{fixture_dir.name}-INITIAL_HEAD"
     if not head_file.is_file():
@@ -73,7 +81,16 @@ def verify_protected_state(fixture_dir: pathlib.Path):
     # 2. Check git status
     status = run_git(fixture_dir, ["status", "--porcelain"])
     # Ignore .agents/ directory if created by skill installation
-    status_lines = [line for line in status.splitlines() if not line.endswith(".agents/") and ".agents/" not in line]
+    # And ignore exact root skills-lock.json ONLY if it was present and verified at setup finalization
+    status_lines = []
+    for line in status.splitlines():
+        if line.endswith(".agents/") or ".agents/" in line:
+            continue
+        status_file = line[3:].strip()
+        if setup_meta["lockfile_status"] == "present" and line.startswith("??") and status_file == "skills-lock.json":
+            continue
+        status_lines.append(line)
+
     if status_lines:
         raise AssertionError(f"Protected state violated: working tree or index is dirty:\n" + "\n".join(status_lines))
 
@@ -108,6 +125,9 @@ def verify_protected_state(fixture_dir: pathlib.Path):
 
     # Check for unmanaged extra files
     extra_files = set(current_files.keys()) - set(baseline.keys())
+    if setup_meta["lockfile_status"] == "present" and "skills-lock.json" in extra_files:
+        extra_files.remove("skills-lock.json")
+
     if extra_files:
         raise AssertionError(f"Unexpected extra files created during review: {extra_files}")
 

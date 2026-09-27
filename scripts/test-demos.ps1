@@ -81,7 +81,7 @@ if (Get-Command Test-Json -ErrorAction SilentlyContinue) {
     Write-Host "    [PASS] Native Test-Json confirmed: valid instance passed, 4 negative control probes rejected." -ForegroundColor Green
 }
 
-# 2. Comprehensive Python Acceptance Suite (23 tests: positive & negative controls)
+# 2. Comprehensive Python Acceptance Suite (41 tests: positive & negative controls)
 $testScript = Join-Path $repoRoot "scripts\test_demos.py"
 if (-not (Test-Path $testScript)) {
     Write-Error "Test runner script not found: $testScript"
