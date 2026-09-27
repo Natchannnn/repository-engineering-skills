@@ -34,6 +34,10 @@ def sha256_file(path: pathlib.Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
+def write_lf_text(path: pathlib.Path, content: str):
+    normalized = content.replace("\r\n", "\n").replace("\r", "\n")
+    path.write_bytes(normalized.encode("utf-8"))
+
 def package():
     EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
     manifest = {}
@@ -55,24 +59,24 @@ def package():
         # 1. Prompt file
         source_prompt = source_run_dir / "PROMPT_TO_PASTE.md"
         if source_prompt.exists():
-            (target_dir / "PROMPT.md").write_text(source_prompt.read_text(encoding="utf-8"), encoding="utf-8")
+            write_lf_text(target_dir / "PROMPT.md", source_prompt.read_text(encoding="utf-8"))
 
         # 2. Verifier evaluation records
         for fn in ["eval_result.json", "eval_output.txt", "status_report.json", "evidence.json"]:
             s_file = source_run_dir / fn
             if s_file.exists():
-                (target_dir / fn).write_bytes(s_file.read_bytes())
+                write_lf_text(target_dir / fn, s_file.read_text(encoding="utf-8", errors="replace"))
 
         # 3. Candidate git diff and git status from workspace
         ws_dir = source_run_dir / "workspace"
         if ws_dir.exists():
             # git diff
             res_diff = subprocess.run(["git", "diff"], cwd=str(ws_dir), capture_output=True, text=True)
-            (target_dir / "candidate_diff.patch").write_text(res_diff.stdout, encoding="utf-8")
+            write_lf_text(target_dir / "candidate_diff.patch", res_diff.stdout)
 
             # git status
             res_stat = subprocess.run(["git", "status"], cwd=str(ws_dir), capture_output=True, text=True)
-            (target_dir / "candidate_status.txt").write_text(res_stat.stdout, encoding="utf-8")
+            write_lf_text(target_dir / "candidate_status.txt", res_stat.stdout)
 
             # Copy newly authored candidate test files if any
             for candidate_test in ["tests/test_order_normalization.py", "tests/test_quarterly_balance.py"]:
@@ -80,7 +84,7 @@ def package():
                 if tf.exists():
                     test_dest = target_dir / "candidate_created_files" / candidate_test
                     test_dest.parent.mkdir(parents=True, exist_ok=True)
-                    test_dest.write_text(tf.read_text(encoding="utf-8"), encoding="utf-8")
+                    write_lf_text(test_dest, tf.read_text(encoding="utf-8"))
 
         # 4. Session metadata and transcript references
         transcript_compact = pathlib.Path(f"C:/Users/Natch/.gemini/antigravity/brain/{cid}/.system_generated/logs/transcript.jsonl")
@@ -100,14 +104,17 @@ def package():
             "arm_name": r["name"],
             "conversation_id": cid,
             "subagent_type": "pilot_candidate",
-            "model_identifier": "Google Antigravity Advanced Agentic Coding Engine (Gemini 2.5 architecture, Model: inherit)",
+            "host": "Antigravity",
+            "requested_model_setting": "inherit",
+            "resolved_model_identifier": "unknown / not recorded",
             "context_loading_mode": "explicit_context_in_prompt",
+            "transcript_distribution_status": "retained_locally_on_operator_host_not_bundled_for_privacy",
             "transcript_step_count": step_count,
             "transcript_compact_has_truncated_fields": has_truncated,
             "transcript_compact_path": str(transcript_compact),
             "transcript_full_path": str(transcript_full)
         }
-        (target_dir / "session_metadata.json").write_text(json.dumps(session_meta, indent=2, ensure_ascii=False), encoding="utf-8")
+        write_lf_text(target_dir / "session_metadata.json", json.dumps(session_meta, indent=2, ensure_ascii=False) + "\n")
 
     # Generate SHA-256 Manifest
     print("[*] Generating MANIFEST.json...")
@@ -120,7 +127,7 @@ def package():
             }
 
     manifest_file = EVIDENCE_DIR / "MANIFEST.json"
-    manifest_file.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    write_lf_text(manifest_file, json.dumps(manifest, indent=2) + "\n")
     print(f"[+] Packaged {len(manifest)} files into evidence bundle.")
     print(f"Manifest written to: {manifest_file}")
 
