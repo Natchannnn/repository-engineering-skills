@@ -1,0 +1,10 @@
+[
+  {
+    "verdict": "defect",
+    "source_file": "src/schema.py",
+    "source_symbol": "AccountProfile.tax_identifier",
+    "broken_caller_file": "src/notification_service.py",
+    "broken_caller_symbol": "send_tax_invoice",
+    "breakage_type": "removed_symbol"
+  }
+]

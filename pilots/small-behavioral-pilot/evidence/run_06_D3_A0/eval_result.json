@@ -1,0 +1,11 @@
+{
+  "run_id": 6,
+  "task": "D3",
+  "arm": "A0",
+  "arm_name": "Control (Prompt mộc)",
+  "status": "PASS",
+  "exit_code": 0,
+  "duration_seconds": 0.53,
+  "timestamp": "2026-09-28T00:56:03.427668",
+  "output": "=== Verifying Task D3 (Baseline Attribution & Anti-Tampering) ===\nFixture: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_06_D3_A0\\workspace\nEvidence Report: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_06_D3_A0\\status_report.json\nOverall Result: PASS\n  [PASS] pre_test_state_and_scope\n  [PASS] evidence_report_attribution\n  [PASS_BASELINE_PRESERVED] original_suite_and_baseline_signature\n  [PASS] hidden_acceptance_tests\n  [PASS] candidate_new_tests\n  [PASS] post_test_state_and_scope"
+}

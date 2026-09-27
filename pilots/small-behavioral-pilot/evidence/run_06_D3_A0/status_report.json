@@ -1,0 +1,6 @@
+{
+  "baseline_failures": [
+    "tests/test_ledger.py::test_historical_leap_year_rounding"
+  ],
+  "new_features_status": "pass"
+}

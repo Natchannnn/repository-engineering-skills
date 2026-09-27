@@ -1,0 +1,66 @@
+diff --git a/src/ledger.py b/src/ledger.py
+index 809171d..48512c2 100644
+--- a/src/ledger.py
++++ b/src/ledger.py
+@@ -1,3 +1,4 @@
++from datetime import date, datetime
+ from decimal import Decimal, ROUND_HALF_UP
+ 
+ LEDGER_DATA = [
+@@ -27,3 +28,56 @@ def calculate_historical_balance(cutoff_date: str) -> Decimal:
+                 continue
+             total += entry["amount"]
+     return total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
++
++def get_quarterly_balance(year: int) -> dict[str, Decimal]:
++    """Calculate quarterly net total balance for the specified year.
++
++    Returns a dictionary with keys 'Q1', 'Q2', 'Q3', 'Q4' and Decimal values
++    rounded to two decimal places using ROUND_HALF_UP on the final sum.
++    """
++    if type(year) is not int or isinstance(year, bool) or year <= 0:
++        raise ValueError("Invalid year")
++
++    totals = {
++        "Q1": Decimal("0"),
++        "Q2": Decimal("0"),
++        "Q3": Decimal("0"),
++        "Q4": Decimal("0"),
++    }
++
++    entries = get_ledger_entries()
++    for entry in entries:
++        entry_date = entry.get("date")
++        if isinstance(entry_date, (date, datetime)):
++            e_year = entry_date.year
++            e_month = entry_date.month
++        elif isinstance(entry_date, str):
++            parts = entry_date.strip()[:10].split("-")
++            e_year = int(parts[0])
++            e_month = int(parts[1])
++        else:
++            continue
++
++        if e_year != year:
++            continue
++
++        if 1 <= e_month <= 3:
++            quarter = "Q1"
++        elif 4 <= e_month <= 6:
++            quarter = "Q2"
++        elif 7 <= e_month <= 9:
++            quarter = "Q3"
++        elif 10 <= e_month <= 12:
++            quarter = "Q4"
++        else:
++            continue
++
++        raw_amount = entry.get("amount", Decimal("0"))
++        amount = raw_amount if isinstance(raw_amount, Decimal) else Decimal(str(raw_amount))
++        totals[quarter] += amount
++
++    return {
++        quarter: totals[quarter].quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
++        for quarter in ("Q1", "Q2", "Q3", "Q4")
++    }
++

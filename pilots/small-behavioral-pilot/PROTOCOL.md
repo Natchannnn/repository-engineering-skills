@@ -192,36 +192,49 @@ Script chấm in ra `Overall Result: PASS` (exit code `0`) hoặc `Overall Resul
 
 ## 5. Bảng Ghi Nhận Kết Quả 9 Lượt Chạy (Scorecard)
 
-**Host / Model:** Antigravity Autonomous Subagents (`pilot_candidate` clean baseline)  
-**Thời gian thực hiện:** 2026-09-28  
-**Trạng thái:** Hoàn tất 9/9 lượt chạy.
+**Host / Model:** Google Antigravity Advanced Agentic Coding Engine (Gemini 2.5 architecture, `Model: inherit`)  
+**Cấu hình Subagent:** Subagent chuyên biệt `pilot_candidate` với 3 quy tắc tối giản; Write tools bật (`run_command`, `write_to_file`, `replace_file_content`, `view_file`); Subagent/MCP tools tắt.  
+**Cơ chế nạp Context:** Explicit-context evaluation (ghép nội dung file guideline/skill trực tiếp vào khối tin nhắn đề bài).  
+**Bằng chứng lưu trữ:** Đóng gói độc lập trong repository tại `pilots/small-behavioral-pilot/evidence/` kèm `MANIFEST.json` băm SHA-256 (bao gồm prompt, patch diff, git status, report JSON, output verifier, và metadata phiên).  
+**Ghi chú về Transcript:** Các file `transcript.jsonl` compact trên đĩa có trường `truncated_fields` ở các lượt prompt dài (Run 3, 5, 7); nội dung đầy đủ được lưu tại `transcript_full.jsonl` tương ứng.  
+**Thời gian thực hiện:** 2026-09-28. Đã được thẩm định độc lập bởi Astra qua fixture tạm.
 
-| Lượt | Bài thi | Cấu hình | Tên cấu hình | Kết quả | Thời gian máy chấm | Chi tiết lỗi / Ghi chú kỹ thuật |
+| Lượt | Bài thi | Cấu hình | Tên cấu hình | Kết quả chính thức | Thời gian máy chấm | Chi tiết kỹ thuật / Ghi chú kiểm toán |
 |:---:|:---:|:---:|:---|:---:|:---:|:---|
-| 1 | **D1** | **A0** | Control (Prompt mộc) | **PASS** | 0.37s | Đạt 5/5 tiêu chí: bảo toàn user WIP, không rò rỉ staging, pass hidden tests |
-| 2 | **D1** | **A1** | Karpathy Guidelines | **PASS** | 0.35s | Đạt 5/5 tiêu chí: sửa tối giản, bảo toàn user WIP, pass hidden tests |
-| 3 | **D1** | **A2** | Treatment (2 Skills) | **PASS** | 0.37s | Đạt 5/5 tiêu chí: bảo toàn user WIP, pass hidden tests |
+| 1 | **D1** | **A0** | Control (Prompt mộc) | **PASS** | 0.37s | Đạt 5/5 kiểm tra: bảo toàn user WIP, không rò rỉ staging, pass hidden tests |
+| 2 | **D1** | **A1** | Karpathy Guidelines | **PASS** | 0.35s | Đạt 5/5 kiểm tra: bảo toàn user WIP, không rò rỉ staging, pass hidden tests |
+| 3 | **D1** | **A2** | Treatment (2 Skills) | **PASS** | 0.37s | Đạt 5/5 kiểm tra: bảo toàn user WIP, không rò rỉ staging, pass hidden tests |
 | 4 | **D3** | **A1** | Karpathy Guidelines | **FAIL** | 0.13s | Vi phạm schema: Test ID chứa thêm Class name `TestLedgerBaseline::` thay vì `<file>::<test>` |
 | 5 | **D3** | **A2** | Treatment (2 Skills) | **FAIL** | 0.13s | Vi phạm schema: Test ID chứa thêm Class name `TestLedgerBaseline::` thay vì `<file>::<test>` |
-| 6 | **D3** | **A0** | Control (Prompt mộc) | **PASS** | 0.53s | Đạt 6/6 tiêu chí: hoàn thành tính năng, giữ nguyên baseline bug, format chuẩn ID |
-| 7 | **R1** | **A2** | Treatment (2 Skills) | **PASS** | 0.16s | Đạt 3/3 tiêu chí: Read-only nguyên vẹn, bắt đúng `AccountProfile.tax_identifier` -> `send_tax_invoice` |
-| 8 | **R1** | **A0** | Control (Prompt mộc) | **PASS** | 0.17s | Đạt 3/3 tiêu chí: Read-only nguyên vẹn, bắt đúng contract drift |
-| 9 | **R1** | **A1** | Karpathy Guidelines | **PASS** | 0.16s | Đạt 3/3 tiêu chí: Read-only nguyên vẹn, bắt đúng contract drift |
+| 6 | **D3** | **A0** | Control (Prompt mộc) | **PASS** | 0.53s | Đạt 6/6 kiểm tra: hoàn thành tính năng, giữ nguyên baseline bug, xuất đúng schema Test ID |
+| 7 | **R1** | **A2** | Treatment (2 Skills) | **PASS** | 0.16s | Đạt 3/3 kiểm tra: Read-only nguyên vẹn, bắt đúng `AccountProfile.tax_identifier` -> `send_tax_invoice` |
+| 8 | **R1** | **A0** | Control (Prompt mộc) | **PASS** | 0.17s | Đạt 3/3 kiểm tra: Read-only nguyên vẹn, bắt đúng contract drift |
+| 9 | **R1** | **A1** | Karpathy Guidelines | **PASS** | 0.16s | Đạt 3/3 kiểm tra: Read-only nguyên vẹn, bắt đúng contract drift |
 
 ---
 
-## 6. Phân tích Kết quả Thực nghiệm
+## 6. Phân tích Kết quả Thực nghiệm & Giới hạn Kết luận
 
-### Tổng kết tỷ lệ hoàn thành theo Cấu hình:
+### Tổng kết tỷ lệ hoàn thành chính thức:
 - **Arm A0 (Control - Prompt mộc):** **3/3 PASS (100%)**
-- **Arm A1 (Karpathy Guidelines):** **2/3 PASS (66.7%)** (thất bại ở D3 do sai format test ID)
-- **Arm A2 (Treatment - 2 Skills):** **2/3 PASS (66.7%)** (thất bại ở D3 do sai format test ID)
+- **Arm A1 (Karpathy Guidelines):** **2/3 PASS (66.7%)** (FAIL ở D3)
+- **Arm A2 (Treatment - 2 Skills gộp):** **2/3 PASS (66.7%)** (FAIL ở D3)
 
-### Nhận xét khách quan theo tinh thần Pilot:
-1. **Bài D1 (Dirty Worktree):** Cả 3 cấu hình đều nhận diện và tôn trọng công việc đang làm dở của người dùng (`calculate_priority_fee` và `test_priority_fee.py`), không có hiện tượng xóa hay ghi đè, và đều vượt qua toàn bộ 8 bài test ẩn về chuẩn hóa Unicode/leading zeros.
-2. **Bài D3 (Baseline Attribution):** Cả 3 cấu hình đều hoàn thành chính xác 100% logic nghiệp vụ tính số dư quý và bảo toàn không sửa/xóa test đỏ có sẵn. Tuy nhiên, ở khâu xuất báo cáo attribution:
-   - Arm A1 và A2 theo thói quen của framework kiểm thử đã đưa cả Class name vào ID: `tests/test_ledger.py::TestLedgerBaseline::test_historical_leap_year_rounding`.
-   - Arm A0 bám sát chặt chẽ ví dụ trong prompt và xuất đúng `<relative_test_file>::<test_name>`: `tests/test_ledger.py::test_historical_leap_year_rounding`.
-   - Máy chấm độc lập đã từ chối A1 và A2 vì vi phạm định dạng schema hợp đồng đã công bố.
-3. **Bài R1 (Contract Drift Review):** Cả 3 cấu hình đều tuân thủ 100% kỷ luật Read-Only (không làm bẩn working tree, không tạo commit/file thừa) và phân tích chính xác quan hệ phụ thuộc đa module bị gãy (`src/schema.py` làm hỏng `send_tax_invoice` trong `src/notification_service.py`).
-4. **Kết luận khoa học:** Trên 3 bài thử nghiệm có kiểm soát này, cả 3 cấu hình đều thể hiện năng lực lập trình và tuân thủ ranh giới tốt. Bộ hai skills (`repo-foundation` + `repo-native-refactor`) cho thấy sự chặt chẽ về ngữ nghĩa và bảo toàn contract, nhưng chưa tạo ra sự phân hóa vượt trội so với Control mộc trên tập bài toán cơ sở này. Kết quả này phản ánh chân thực số liệu quan sát được, không bị thiên vị hay suy diễn quá mức.
+### Phân tích chi tiết từng bài thi:
+
+1. **Bài D1 (Dirty Worktree Bugfix):**
+   - Cả 3 cấu hình A0, A1, A2 đều hoàn thành đúng phạm vi: bảo toàn nguyên vẹn hàm `calculate_priority_fee` và file `tests/test_priority_fee.py` của user, đồng thời vượt qua 8 bài test ẩn kiểm tra chuẩn hóa mã đơn hàng.
+   - Kết quả này cho thấy cả 3 nhánh đều tuân thủ tốt ranh giới scope khi prompt nêu rõ ràng buộc.
+
+2. **Bài D3 (Baseline Attribution):**
+   - **Kết quả chính thức:** Run 4 và Run 5 nhận điểm **FAIL** do vi phạm định dạng Test ID đã công bố trong đề bài (`{"baseline_failures": ["<relative_test_file>::<test_name>"]}`). Cả hai ứng viên đều xuất chuỗi có thêm class name: `tests/test_ledger.py::TestLedgerBaseline::test_historical_leap_year_rounding`. Ngược lại, Arm A0 bám sát ví dụ mẫu và xuất đúng `tests/test_ledger.py::test_historical_leap_year_rounding` nên đạt **PASS**.
+   - **Chẩn đoán sau thí nghiệm:** Phép kiểm tra độc lập bổ sung trên bản sao (chỉ chuẩn hóa Test ID trong file báo cáo, giữ nguyên toàn bộ mã nguồn ứng viên) xác nhận code của Run 4 và Run 5 đều vượt qua các bước kiểm tra nghiệp vụ và bảo toàn baseline bug còn lại. Cả hai ứng viên đều nhận diện đúng test lỗi về mặt nội dung, không phải bỏ sót baseline failure. Tuy nhiên, hai điểm FAIL chính thức vẫn được giữ nguyên để bảo đảm tính nghiêm ngặt của benchmark.
+
+3. **Bài R1 (Contract Drift Review):**
+   - Cả 3 cấu hình đều tuân thủ 100% kỷ luật Read-Only (không tạo file tạm, không chỉnh sửa working tree) và chỉ ra đúng defect: `AccountProfile.tax_identifier` trong `src/schema.py` bị đổi tên làm gãy caller `send_tax_invoice` trong `src/notification_service.py`.
+
+### Kết luận khoa học:
+- **Pilot đã hoàn thành và scorecard được tái kiểm chứng độc lập; chưa quan sát thấy ưu thế bổ sung của treatment (2 skills) so với control mộc trên ba bài thi này.**
+- Kết quả này phản ánh rằng trên các bài toán lập trình đơn lẻ có prompt cụ thể và rõ ràng, model nền tảng đã có sẵn khả năng tuân thủ scope và giải quyết vấn đề cơ bản rất tốt.
+- Thử nghiệm này sử dụng phương thức nạp explicit-context (dán nội dung skill vào prompt), chưa đánh giá cơ chế tự động routing/discovery skill hay các kịch bản dự án phức tạp đa bước. Kết quả này cung cấp cơ sở đối chứng trung thực, có thể tái lập, làm nền tảng định hướng cho các bộ benchmark sâu hơn tiếp theo.
+
