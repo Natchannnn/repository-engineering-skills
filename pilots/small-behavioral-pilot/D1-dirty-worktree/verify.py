@@ -186,7 +186,7 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
     - Process exits with code 0.
     - Test runner ran to true completion (detects early exit like os._exit).
     - Expected number of tests ran.
-    - Output ends with 'OK' (no failures, no errors).
+    - Test runner reported 'OK' status banner (unaffected by application stdout).
     """
     try:
         res = subprocess.run(
@@ -196,6 +196,8 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout
         )
     except subprocess.TimeoutExpired:
@@ -207,7 +209,12 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
         raise AssertionError(f"Test suite execution failed (exit code {res.returncode}):\n{combined_output}")
 
     # Verify that unittest reported test count and completed
-    match = re.search(r"Ran (\d+) tests? in", combined_output)
+    # Check runner stream (stderr by default in unittest, with fallback to stdout if redirected)
+    runner_output = res.stderr or ""
+    match = re.search(r"Ran (\d+) tests? in [0-9.]+s\s*\n\s*(OK(?:\s*\(.*?\))?|FAILED \([^)]+\))", runner_output)
+    if not match:
+        match = re.search(r"Ran (\d+) tests? in [0-9.]+s\s*\n\s*(OK(?:\s*\(.*?\))?|FAILED \([^)]+\))", res.stdout or "")
+
     if not match:
         raise AssertionError(
             f"Test suite did not run to completion (abrupt exit or suppressed output detected):\n{combined_output}"
@@ -223,9 +230,9 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
             f"Test suite test count insufficient: expected at least {expected_min_tests} tests, got {actual_count}.\n{combined_output}"
         )
 
-    lines = [line.strip() for line in combined_output.splitlines() if line.strip()]
-    if not lines or lines[-1] != "OK":
-        raise AssertionError(f"Test suite output did not report 'OK':\n{combined_output}")
+    status_banner = match.group(2).strip()
+    if not status_banner.startswith("OK"):
+        raise AssertionError(f"Test suite output did not report 'OK' (status: {status_banner}):\n{combined_output}")
 
 def verify_d1(fixture_dir: pathlib.Path) -> dict:
     fixture_dir = fixture_dir.resolve()
@@ -251,6 +258,8 @@ def verify_d1(fixture_dir: pathlib.Path) -> dict:
     evaluator_dir = pathlib.Path(__file__).parent.resolve()
     env = os.environ.copy()
     env["PYTHONPATH"] = str(fixture_dir)
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
 
     # === PHASE 2: Subprocess Test Executions ===
     try:

@@ -175,6 +175,8 @@ except Exception as e:
 '''
     env = os.environ.copy()
     env["PYTHONPATH"] = str(fixture_dir)
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
     res = subprocess.run(
         [sys.executable, "-c", oracle_script],
         cwd=str(fixture_dir),
@@ -182,6 +184,8 @@ except Exception as e:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         timeout=10
     )
 

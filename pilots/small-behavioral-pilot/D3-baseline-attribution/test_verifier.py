@@ -15,6 +15,7 @@ import json
 import os
 import pathlib
 import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -152,6 +153,46 @@ class TestQuarterly(unittest.TestCase):
             self.assertEqual(results["overall"], "PASS")
             self.assertEqual(results["checks"]["candidate_new_tests"], "pass")
 
+    def test_canonical_solution_with_stdout_passes(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "d3_fixture"
+            self.bootstrap_mod.bootstrap_d3(fixture_dir)
+            report_path = pathlib.Path(td) / "status_report.json"
+            report_path.write_text(json.dumps(VALID_REPORT_CONTENT, indent=2), encoding="utf-8")
+
+            code_with_print = CANONICAL_QUARTERLY_BALANCE_CODE.replace(
+                'if type(year) is not int or year <= 0:',
+                'print(f"DEBUG: calculating quarterly balance for year {year}")\n    if type(year) is not int or year <= 0:'
+            )
+            self._append_to_ledger(fixture_dir, code_with_print)
+            results = self.verify_mod.verify_d3(fixture_dir, report_path)
+            self.assertEqual(results["overall"], "PASS")
+
+    def test_alternative_solution_committed_and_further_edited_test_passes(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "d3_fixture"
+            self.bootstrap_mod.bootstrap_d3(fixture_dir)
+            report_path = pathlib.Path(td) / "status_report.json"
+            report_path.write_text(json.dumps(VALID_REPORT_CONTENT, indent=2), encoding="utf-8")
+
+            self._append_to_ledger(fixture_dir, CANONICAL_QUARTERLY_BALANCE_CODE)
+            # Create candidate test file and commit it
+            test_file = fixture_dir / "tests" / "test_quarterly_balance.py"
+            test_file.write_text('''import unittest
+from src.ledger import get_quarterly_balance
+class TestQuarterly(unittest.TestCase):
+    def test_basic(self):
+        self.assertIn("Q1", get_quarterly_balance(2020))
+''', encoding="utf-8")
+            subprocess.run(["git", "-C", str(fixture_dir), "add", "."], check=True)
+            subprocess.run(["git", "-C", str(fixture_dir), "commit", "-m", "feat: add quarterly balance tests"], check=True)
+
+            # Continue modifying the test file in working tree (uncommitted comment/test)
+            test_file.write_text(test_file.read_text(encoding="utf-8") + "\n# Further work in progress comment\n", encoding="utf-8")
+
+            results = self.verify_mod.verify_d3(fixture_dir, report_path)
+            self.assertEqual(results["overall"], "PASS")
+
     def test_negative_control_tamper_assertion_fails(self):
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "d3_fixture"
@@ -263,6 +304,23 @@ def get_quarterly_balance(year: int) -> dict[str, Decimal]:
     }
 '''
             self._append_to_ledger(fixture_dir, loose_int_check_code)
+
+            with self.assertRaises(AssertionError) as ctx:
+                self.verify_mod.verify_d3(fixture_dir, report_path)
+            self.assertIn("Quarterly balance hidden test suite failed", str(ctx.exception))
+
+    def test_negative_control_wrong_exception_message_fails(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "d3_fixture"
+            self.bootstrap_mod.bootstrap_d3(fixture_dir)
+            report_path = pathlib.Path(td) / "status_report.json"
+            report_path.write_text(json.dumps(VALID_REPORT_CONTENT, indent=2), encoding="utf-8")
+
+            wrong_msg_code = CANONICAL_QUARTERLY_BALANCE_CODE.replace(
+                'raise ValueError("Invalid year")',
+                'raise ValueError("Year must be a positive int")'
+            )
+            self._append_to_ledger(fixture_dir, wrong_msg_code)
 
             with self.assertRaises(AssertionError) as ctx:
                 self.verify_mod.verify_d3(fixture_dir, report_path)
