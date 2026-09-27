@@ -24,11 +24,8 @@ def run_cmd(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
 
 
 def compute_sha256(path: Path) -> str:
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        while chunk := f.read(65536):
-            h.update(chunk)
-    return h.hexdigest()
+    data = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def bootstrap_d2(target_dir: Path) -> Path:

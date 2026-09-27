@@ -253,7 +253,22 @@ def generate_invoice_line_items(items: list[dict], weight_kg: Decimal, destinati
         )
         with self.assertRaises(AssertionError) as ctx:
             self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertTrue(
+            "caller test suite tampered" in str(ctx.exception).lower()
+            or "emptied" in str(ctx.exception).lower()
+        )
+
+    def test_negative_emptied_shipping_test_fails(self):
+        self._apply_canonical_solution()
+        # Empty out tests/test_shipping.py
+        (self.fixture_dir / "tests" / "test_shipping.py").write_text(
+            "import unittest\nclass TestShipping(unittest.TestCase):\n    pass\n",
+            encoding="utf-8",
+        )
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
         self.assertIn("emptied", str(ctx.exception).lower())
+
 
     def test_negative_integer_rate_per_kg_fails(self):
         self._apply_canonical_solution()
@@ -303,7 +318,7 @@ def generate_invoice_line_items(items: list[dict], weight_kg: Decimal, destinati
 
     def test_negative_skipped_test_rejected(self):
         self._apply_canonical_solution()
-        test_file = self.fixture_dir / "tests" / "test_checkout.py"
+        test_file = self.fixture_dir / "tests" / "test_shipping.py"
         test_file.write_text(
             "import unittest\nclass T(unittest.TestCase):\n    def test_it(self):\n        raise unittest.SkipTest('skip')\n",
             encoding="utf-8",
@@ -311,6 +326,40 @@ def generate_invoice_line_items(items: list[dict], weight_kg: Decimal, destinati
         with self.assertRaises(AssertionError) as ctx:
             self.verify_mod.verify_d2(self.fixture_dir)
         self.assertIn("skipped", str(ctx.exception).lower())
+
+
+    def test_negative_caller_test_tampered_with_trivial_assertion_fails(self):
+        self._apply_canonical_solution()
+        # Tamper with caller test by replacing real assertions with self.assertTrue(True)
+        trivial_test = (
+            "import unittest\n\n"
+            "class TestCheckout(unittest.TestCase):\n"
+            "    def test_checkout_domestic(self):\n"
+            "        self.assertTrue(True)\n"
+        )
+        (self.fixture_dir / "tests" / "test_checkout.py").write_text(trivial_test, encoding="utf-8")
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertTrue(
+            "caller test suite tampered" in str(ctx.exception).lower()
+            or "was modified" in str(ctx.exception).lower()
+        )
+
+    def test_negative_missing_snapshot_fails(self):
+        self._apply_canonical_solution()
+        snapshot_path = self.fixture_dir.parent / f"{self.fixture_dir.name}-d2-snapshot.json"
+        snapshot_path.unlink()
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertIn("mandatory snapshot file missing", str(ctx.exception).lower())
+
+    def test_negative_incomplete_snapshot_fails(self):
+        self._apply_canonical_solution()
+        snapshot_path = self.fixture_dir.parent / f"{self.fixture_dir.name}-d2-snapshot.json"
+        snapshot_path.write_text("{}", encoding="utf-8")
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertIn("missing mandatory", str(ctx.exception).lower())
 
 
 if __name__ == "__main__":

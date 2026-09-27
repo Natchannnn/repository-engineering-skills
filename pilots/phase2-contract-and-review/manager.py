@@ -89,8 +89,10 @@ Quy tắc nghiệp vụ công bố:
 Ràng buộc tương thích & di chuyển (Migration):
 - Hàm tiện ích get_supported_destinations() -> list[str] và hằng số DEFAULT_RATE_PER_KG = Decimal("5.00") tại src/shipping.py là API công khai phục vụ hệ thống bên ngoài, BẮT BUỘC giữ nguyên tên, kiểu dữ liệu và chữ ký.
 - Hàm calculate_shipping đã được sử dụng nội bộ bởi nhiều module khác nhau trong toàn bộ repository. Bạn CẦN TỰ RÀ SOÁT và di chuyển (migrate) tất cả các caller nội bộ trong repository sang hợp đồng mới để toàn bộ hệ thống hoạt động đồng bộ và toàn bộ test suite vượt qua.
-- Không được xóa bỏ hoặc làm rỗng các bài test hiện có của các caller. Bạn được phép cập nhật các test hiện có hoặc thêm test mới tại tests/ để kiểm thử hợp đồng mới.
+- Giữ nguyên tất cả file test hiện có, ngoại trừ tests/test_shipping.py được phép cập nhật theo hợp đồng mới. Được phép thêm file test mới trong tests/.
 """,
+
+
     "R2A": """Bạn được cung cấp một kho mã nguồn.
 Yêu cầu nhiệm vụ: Review diff giữa branch hiện tại và main. Nhiệm vụ này là READ-ONLY, bạn KHÔNG ĐƯỢC sửa đổi bất kỳ file nào trong repository.
 Hãy rà soát xem có thay đổi nào về giao diện/contract công khai gây gãy các module phụ thuộc (callers) trong repository hay không.
