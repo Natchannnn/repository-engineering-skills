@@ -1,0 +1,263 @@
+diff --git a/src/cart_summary.py b/src/cart_summary.py
+index 1fe7c37..2ce3675 100644
+--- a/src/cart_summary.py
++++ b/src/cart_summary.py
+@@ -5,14 +5,17 @@ from decimal import Decimal
+ from src.shipping import calculate_shipping
+ 
+ 
+-def estimate_cart(items: list[dict], destination: str) -> dict[str, Decimal]:
++def estimate_cart(
++    items: list[dict], destination: str, express: bool = False
++) -> dict[str, Decimal]:
+     """Calculates subtotal, shipping fee, and grand total for items in cart."""
+     subtotal = sum((item["price"] * item["quantity"] for item in items), Decimal("0.00"))
+     total_weight = sum(
+         (item.get("weight_kg", Decimal("0.50")) * item["quantity"] for item in items),
+         Decimal("0.00"),
+     )
+-    shipping = calculate_shipping(total_weight, destination)
++    quote = calculate_shipping(total_weight, destination, express=express)
++    shipping = quote.total_fee
+     return {
+         "subtotal": subtotal,
+         "shipping": shipping,
+diff --git a/src/checkout.py b/src/checkout.py
+index 8a05671..8839dac 100644
+--- a/src/checkout.py
++++ b/src/checkout.py
+@@ -5,7 +5,9 @@ from decimal import Decimal
+ from src.shipping import calculate_shipping
+ 
+ 
+-def process_checkout(items_total: Decimal, weight_kg: Decimal, destination: str) -> Decimal:
++def process_checkout(
++    items_total: Decimal, weight_kg: Decimal, destination: str, express: bool = False
++) -> Decimal:
+     """Calculates total checkout price including shipping."""
+-    shipping_fee = calculate_shipping(weight_kg, destination)
+-    return items_total + shipping_fee
++    shipping_quote = calculate_shipping(weight_kg, destination, express=express)
++    return items_total + shipping_quote.total_fee
+diff --git a/src/invoice.py b/src/invoice.py
+index 7c54f05..39321d1 100644
+--- a/src/invoice.py
++++ b/src/invoice.py
+@@ -6,7 +6,7 @@ from src.shipping import calculate_shipping
+ 
+ 
+ def generate_invoice_line_items(
+-    items: list[dict], weight_kg: Decimal, destination: str
++    items: list[dict], weight_kg: Decimal, destination: str, express: bool = False
+ ) -> list[dict]:
+     """Generates invoice line items including shipping charges."""
+     lines: list[dict] = []
+@@ -15,9 +15,9 @@ def generate_invoice_line_items(
+             "name": item["name"],
+             "amount": item["amount"],
+         })
+-    shipping_cost = calculate_shipping(weight_kg, destination)
++    shipping_quote = calculate_shipping(weight_kg, destination, express=express)
+     lines.append({
+         "name": "Shipping & Handling",
+-        "amount": shipping_cost,
++        "amount": shipping_quote.total_fee,
+     })
+     return lines
+diff --git a/src/shipping.py b/src/shipping.py
+index ea63646..b1bd523 100644
+--- a/src/shipping.py
++++ b/src/shipping.py
+@@ -1,24 +1,62 @@
+ """Shipping calculation module."""
+ from __future__ import annotations
+ 
++from dataclasses import dataclass
+ from decimal import Decimal, ROUND_HALF_UP
+ 
+ DEFAULT_RATE_PER_KG: Decimal = Decimal("5.00")
+ 
++_DESTINATION_RATES: dict[str, Decimal] = {
++    "DOMESTIC": Decimal("5.00"),
++    "INTERNATIONAL": Decimal("15.00"),
++    "EXPRESS_ZONE": Decimal("25.00"),
++}
++
++EXPRESS_FEE_ENABLED: Decimal = Decimal("12.50")
++EXPRESS_FEE_DISABLED: Decimal = Decimal("0.00")
++
++
++class ExpressError(TypeError, ValueError):
++    """Raised when the express argument is not a boolean."""
++
++
++@dataclass
++class ShippingQuote:
++    base_fee: Decimal
++    express_fee: Decimal
++    total_fee: Decimal
++
+ 
+ def get_supported_destinations() -> list[str]:
+     """Public API: returns destinations recognized by shipping carriers."""
+     return ["DOMESTIC", "INTERNATIONAL", "EXPRESS_ZONE"]
+ 
+ 
+-def calculate_shipping(weight_kg: Decimal, destination: str) -> Decimal:
+-    """Calculate shipping fee. Legacy contract returning raw Decimal."""
+-    if destination == "DOMESTIC":
+-        rate = Decimal("5.00")
+-    elif destination == "INTERNATIONAL":
+-        rate = Decimal("15.00")
+-    elif destination == "EXPRESS_ZONE":
+-        rate = Decimal("25.00")
+-    else:
++def calculate_shipping(
++    weight_kg: Decimal, destination: str, express: bool = False
++) -> ShippingQuote:
++    """Calculate shipping fee quote based on weight, destination, and service level."""
++    if (
++        not isinstance(weight_kg, Decimal)
++        or isinstance(weight_kg, bool)
++        or not weight_kg.is_finite()
++        or weight_kg <= Decimal("0")
++    ):
++        raise ValueError("Invalid weight")
++
++    if destination not in get_supported_destinations():
+         raise ValueError("Unsupported destination")
+-    return (weight_kg * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
++
++    if not isinstance(express, bool):
++        raise ExpressError("express must be a boolean")
++
++    rate = _DESTINATION_RATES[destination]
++    base_fee = (weight_kg * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
++    express_fee = EXPRESS_FEE_ENABLED if express else EXPRESS_FEE_DISABLED
++    total_fee = base_fee + express_fee
++
++    return ShippingQuote(
++        base_fee=base_fee,
++        express_fee=express_fee,
++        total_fee=total_fee,
++    )
+diff --git a/tests/test_shipping.py b/tests/test_shipping.py
+index 9cc79c6..c5f3db7 100644
+--- a/tests/test_shipping.py
++++ b/tests/test_shipping.py
+@@ -2,7 +2,12 @@ from __future__ import annotations
+ 
+ import unittest
+ from decimal import Decimal
+-from src.shipping import calculate_shipping, get_supported_destinations, DEFAULT_RATE_PER_KG
++from src.shipping import (
++    calculate_shipping,
++    get_supported_destinations,
++    DEFAULT_RATE_PER_KG,
++    ShippingQuote,
++)
+ 
+ 
+ class TestShippingBaseline(unittest.TestCase):
+@@ -11,10 +16,97 @@ class TestShippingBaseline(unittest.TestCase):
+         self.assertEqual(get_supported_destinations(), ["DOMESTIC", "INTERNATIONAL", "EXPRESS_ZONE"])
+ 
+     def test_legacy_shipping(self):
+-        fee = calculate_shipping(Decimal("2.0"), "DOMESTIC")
+-        # In legacy contract, this was Decimal("10.00")
+-        # In upgraded contract, candidate will update this test or add new tests
+-        self.assertIsNotNone(fee)
++        quote = calculate_shipping(Decimal("2.0"), "DOMESTIC")
++        self.assertIsInstance(quote, ShippingQuote)
++        self.assertEqual(quote.base_fee, Decimal("10.00"))
++        self.assertEqual(quote.express_fee, Decimal("0.00"))
++        self.assertEqual(quote.total_fee, Decimal("10.00"))
++
++    def test_shipping_destinations_rates(self):
++        # DOMESTIC rate = 5.00
++        q_dom = calculate_shipping(Decimal("3.0"), "DOMESTIC")
++        self.assertEqual(q_dom.base_fee, Decimal("15.00"))
++        self.assertEqual(q_dom.express_fee, Decimal("0.00"))
++        self.assertEqual(q_dom.total_fee, Decimal("15.00"))
++
++        # INTERNATIONAL rate = 15.00
++        q_intl = calculate_shipping(Decimal("2.0"), "INTERNATIONAL")
++        self.assertEqual(q_intl.base_fee, Decimal("30.00"))
++        self.assertEqual(q_intl.express_fee, Decimal("0.00"))
++        self.assertEqual(q_intl.total_fee, Decimal("30.00"))
++
++        # EXPRESS_ZONE rate = 25.00
++        q_zone = calculate_shipping(Decimal("1.5"), "EXPRESS_ZONE")
++        self.assertEqual(q_zone.base_fee, Decimal("37.50"))
++        self.assertEqual(q_zone.express_fee, Decimal("0.00"))
++        self.assertEqual(q_zone.total_fee, Decimal("37.50"))
++
++    def test_express_option(self):
++        q_dom_exp = calculate_shipping(Decimal("2.0"), "DOMESTIC", express=True)
++        self.assertEqual(q_dom_exp.base_fee, Decimal("10.00"))
++        self.assertEqual(q_dom_exp.express_fee, Decimal("12.50"))
++        self.assertEqual(q_dom_exp.total_fee, Decimal("22.50"))
++
++        q_intl_exp = calculate_shipping(Decimal("1.0"), "INTERNATIONAL", express=True)
++        self.assertEqual(q_intl_exp.base_fee, Decimal("15.00"))
++        self.assertEqual(q_intl_exp.express_fee, Decimal("12.50"))
++        self.assertEqual(q_intl_exp.total_fee, Decimal("27.50"))
++
++        q_zone_exp = calculate_shipping(Decimal("1.0"), "EXPRESS_ZONE", express=True)
++        self.assertEqual(q_zone_exp.base_fee, Decimal("25.00"))
++        self.assertEqual(q_zone_exp.express_fee, Decimal("12.50"))
++        self.assertEqual(q_zone_exp.total_fee, Decimal("37.50"))
++
++    def test_rounding_half_up(self):
++        # 1.235 * 5.00 = 6.175 -> 6.18
++        q1 = calculate_shipping(Decimal("1.235"), "DOMESTIC")
++        self.assertEqual(q1.base_fee, Decimal("6.18"))
++
++        # 1.234 * 5.00 = 6.170 -> 6.17
++        q2 = calculate_shipping(Decimal("1.234"), "DOMESTIC")
++        self.assertEqual(q2.base_fee, Decimal("6.17"))
++
++        # 0.333 * 15.00 = 4.995 -> 5.00
++        q3 = calculate_shipping(Decimal("0.333"), "INTERNATIONAL")
++        self.assertEqual(q3.base_fee, Decimal("5.00"))
++
++    def test_invalid_weight(self):
++        invalid_weights = [
++            Decimal("0"),
++            Decimal("0.00"),
++            Decimal("-1.0"),
++            Decimal("-0.01"),
++            0,
++            2,
++            2.5,
++            "2.5",
++            True,
++            False,
++            None,
++            Decimal("NaN"),
++            Decimal("Infinity"),
++            Decimal("-Infinity"),
++        ]
++        for w in invalid_weights:
++            with self.subTest(weight=w):
++                with self.assertRaises(ValueError) as ctx:
++                    calculate_shipping(w, "DOMESTIC")
++                self.assertEqual(str(ctx.exception), "Invalid weight")
++
++    def test_invalid_destination(self):
++        invalid_destinations = ["UNKNOWN", "domestic", "EUROPE", "", None, 123]
++        for dest in invalid_destinations:
++            with self.subTest(destination=dest):
++                with self.assertRaises(ValueError) as ctx:
++                    calculate_shipping(Decimal("1.0"), dest)
++                self.assertEqual(str(ctx.exception), "Unsupported destination")
++
++    def test_invalid_express(self):
++        invalid_express_values = ["True", "False", 1, 0, None, Decimal("1"), []]
++        for val in invalid_express_values:
++            with self.subTest(express=val):
++                with self.assertRaises((TypeError, ValueError)):
++                    calculate_shipping(Decimal("1.0"), "DOMESTIC", express=val)
+ 
+ 
+ if __name__ == "__main__":

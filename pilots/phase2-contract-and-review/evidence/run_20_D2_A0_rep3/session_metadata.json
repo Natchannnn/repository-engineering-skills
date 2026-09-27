@@ -1,0 +1,18 @@
+{
+  "run_id": 20,
+  "task": "D2",
+  "arm": "A0",
+  "repetition": 3,
+  "arm_name": "Control (Prompt mộc)",
+  "conversation_id": "62644607-0eaf-4c74-b9c3-29bb91ab7c2f",
+  "subagent_type": "pilot_candidate",
+  "host": "Antigravity",
+  "requested_model_setting": "inherit",
+  "resolved_model_identifier": "unknown / not recorded",
+  "context_loading_mode": "explicit_context_in_prompt",
+  "transcript_distribution_status": "retained_locally_on_operator_host_not_bundled_for_privacy",
+  "transcript_step_count": 65,
+  "transcript_compact_has_truncated_fields": true,
+  "transcript_compact_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\62644607-0eaf-4c74-b9c3-29bb91ab7c2f\\.system_generated\\logs\\transcript.jsonl",
+  "transcript_full_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\62644607-0eaf-4c74-b9c3-29bb91ab7c2f\\.system_generated\\logs\\transcript_full.jsonl"
+}

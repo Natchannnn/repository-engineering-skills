@@ -1,0 +1,10 @@
+[
+  {
+    "verdict": "defect",
+    "source_file": "src/auth_service.py",
+    "source_symbol": "AuthService.generate_session_token",
+    "broken_caller_file": "src/api_gateway.py",
+    "broken_caller_symbol": "handle_login",
+    "breakage_type": "signature_changed"
+  }
+]

@@ -4,3 +4,4 @@
 # Freeze sealed evaluation evidence as raw binary to prevent ANY byte mutation on checkout/clone
 evals-suite/** -text -eol
 pilots/small-behavioral-pilot/evidence/** -text -eol
+pilots/phase2-contract-and-review/evidence/** -text -eol

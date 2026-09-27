@@ -1,0 +1,18 @@
+{
+  "run_id": 27,
+  "task": "R2B",
+  "arm": "A1",
+  "repetition": 3,
+  "arm_name": "Karpathy-inspired Guidelines",
+  "conversation_id": "5b092c1e-b71b-4d00-ae93-3a1c67a71f3f",
+  "subagent_type": "pilot_candidate",
+  "host": "Antigravity",
+  "requested_model_setting": "inherit",
+  "resolved_model_identifier": "unknown / not recorded",
+  "context_loading_mode": "explicit_context_in_prompt",
+  "transcript_distribution_status": "retained_locally_on_operator_host_not_bundled_for_privacy",
+  "transcript_step_count": 40,
+  "transcript_compact_has_truncated_fields": false,
+  "transcript_compact_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\5b092c1e-b71b-4d00-ae93-3a1c67a71f3f\\.system_generated\\logs\\transcript.jsonl",
+  "transcript_full_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\5b092c1e-b71b-4d00-ae93-3a1c67a71f3f\\.system_generated\\logs\\transcript_full.jsonl"
+}
