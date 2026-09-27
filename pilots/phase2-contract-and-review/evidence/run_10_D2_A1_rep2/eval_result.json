@@ -5,5 +5,14 @@
   "repetition": 2,
   "name": "Karpathy-inspired Guidelines",
   "status": "PASS",
+  "exit_code": 0,
+  "verifier_command": [
+    "C:\\Python314\\python.exe",
+    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\pilots\\phase2-contract-and-review\\D2-contract-migration\\verify.py",
+    "--fixture-dir",
+    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_10_D2_A1_rep2\\workspace"
+  ],
+  "verifier_duration_sec": 0.545,
+  "verifier_timestamp": "2026-09-27T23:21:12.794268+00:00",
   "evidence_path": null
 }

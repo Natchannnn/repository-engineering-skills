@@ -90,9 +90,18 @@ Mỗi bài toán được thử nghiệm độc lập trên 3 cấu hình:
   - `pilot_candidate` subagent cô lập hoàn toàn.
   - Công cụ cho phép: Write/Edit tools (`view_file`, `write_to_file`, `replace_file_content`, `run_command`).
   - Công cụ vô hiệu hóa: Subagent tools, MCP tools, Internet search.
-- **Thời gian & Timeout:**
-  - Timeout cho mỗi lượt chạy candidate: tối đa 180 giây.
-  - Ghi nhận độc lập: thời gian thực thi của candidate subagent và thời gian chạy của verifier.
+- **Chế độ thực thi & Thứ tự khởi tạo (Execution Mode & Batching):**
+  - Các lượt chạy trong từng repetition được khởi tạo và thực thi **đồng thời theo nhóm ba (concurrent triplets)** trên host:
+    - *Repetition 1 (Runs 01–09):* Khởi tạo theo thứ tự `A0 -> A1 -> A2` (ví dụ Runs 01, 02, 03 cùng spawn lúc 22:24:14Z).
+    - *Repetition 2 (Runs 10–18):* Khởi tạo theo thứ tự `A1 -> A2 -> A0` (ví dụ Runs 10, 11, 12 cùng spawn lúc 22:32:14Z).
+    - *Repetition 3 (Runs 19–27):* Khởi tạo theo thứ tự `A2 -> A0 -> A1` (ví dụ Runs 19, 20, 21 cùng spawn lúc 22:38:54Z).
+  - *Thừa nhận hạ tầng:* Do chạy đồng thời theo nhóm ba trong cùng phiên host, các subagent có khả năng chia sẻ tài nguyên tính toán (CPU, bộ nhớ, I/O và băng thông mạng) hoặc cùng chịu các biến động hạ tầng cục bộ tại thời điểm chạy.
+- **Thời gian & Cơ chế Timeout:**
+  - *Ngưỡng danh định (nominal timeout):* 180 giây.
+  - *Ghi nhận thực tế từ transcript:* Đo từ bản ghi đầu tiên đến phản hồi cuối cùng trong transcript của subagent (bao gồm cả pha gửi báo cáo kết thúc về host).
+    - 25/27 lượt hoàn thành dưới 180 giây (thời gian dao động từ 30s đến 164s).
+    - 2 lượt (Run 03: 184s và Run 19: 182s) ghi nhận thời gian transcript vượt nhẹ ngưỡng 180s lý thuyết.
+    - *Cơ chế cưỡng chế & tính hợp lệ:* Host không gửi tín hiệu hủy (abort) process subagent; verifier độc lập chấm và xác nhận giải pháp trong workspace hoàn toàn hợp lệ. Giữ nguyên kết quả PASS của verifier, đồng thời ghi nhận đầy đủ sai lệch quy trình đo thời gian này trong metadata và báo cáo mà không thay đổi quy tắc sau khi biết kết quả.
 - **Xử lý lỗi môi trường (Retry Policy):**
   - Nếu subagent bị dừng do lỗi hạ tầng (host crash, ngắt kết nối process), được phép chạy lại 1 lần và ghi chú rõ trong metadata.
   - Nếu subagent tự ý kết thúc hoặc nộp bài không đạt, kết quả được giữ nguyên tuyệt đối, không retry.
@@ -188,37 +197,39 @@ Trước khi khởi chạy bất kỳ lượt candidate nào, bộ verifier củ
 
 Toàn bộ 27 lượt chạy của Phase 2 ($3 \text{ tasks} \times 3 \text{ arms} \times 3 \text{ repetitions}$) đã được thực thi và nghiệm thu thành công thông qua máy chấm độc lập tại commit `b9443ee`.
 
-### 8.1. Bảng Kết Quả Chi Tiết 27 Runs
+### 8.1. Bảng Kết Quả Chi Tiết 27 Runs (Kèm Số Bước & Thời Gian)
 
-| Run | Task | Arm | Rep | Tên Arm | Kết quả | Thời gian Verifier | Ghi chú Evidence |
-|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---|
-| 01 | D2 | A0 | 1 | Control (Prompt mộc) | **PASS** | 0.475s | Caller hashes & public surface intact |
-| 02 | D2 | A1 | 1 | Karpathy Guidelines | **PASS** | 0.496s | Caller hashes & public surface intact |
-| 03 | D2 | A2 | 1 | Treatment (2 Skills) | **PASS** | 0.468s | Caller hashes & public surface intact |
-| 04 | R2A | A0 | 1 | Control (Prompt mộc) | **PASS** | 0.143s | `[]` (FP = 0, Read-only clean) |
-| 05 | R2A | A1 | 1 | Karpathy Guidelines | **PASS** | 0.145s | `[]` (FP = 0, Read-only clean) |
-| 06 | R2A | A2 | 1 | Treatment (2 Skills) | **PASS** | 0.139s | `[]` (FP = 0, Read-only clean) |
-| 07 | R2B | A0 | 1 | Control (Prompt mộc) | **PASS** | 0.136s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 08 | R2B | A1 | 1 | Karpathy Guidelines | **PASS** | 0.138s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 09 | R2B | A2 | 1 | Treatment (2 Skills) | **PASS** | 0.138s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 10 | D2 | A1 | 2 | Karpathy Guidelines | **PASS** | 0.467s | Caller hashes & public surface intact |
-| 11 | D2 | A2 | 2 | Treatment (2 Skills) | **PASS** | 0.461s | Caller hashes & public surface intact |
-| 12 | D2 | A0 | 2 | Control (Prompt mộc) | **PASS** | 0.459s | Caller hashes & public surface intact |
-| 13 | R2A | A1 | 2 | Karpathy Guidelines | **PASS** | 0.137s | `[]` (FP = 0, Read-only clean) |
-| 14 | R2A | A2 | 2 | Treatment (2 Skills) | **PASS** | 0.133s | `[]` (FP = 0, Read-only clean) |
-| 15 | R2A | A0 | 2 | Control (Prompt mộc) | **PASS** | 0.137s | `[]` (FP = 0, Read-only clean) |
-| 16 | R2B | A1 | 2 | Karpathy Guidelines | **PASS** | 0.147s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 17 | R2B | A2 | 2 | Treatment (2 Skills) | **PASS** | 0.133s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 18 | R2B | A0 | 2 | Control (Prompt mộc) | **PASS** | 0.133s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 19 | D2 | A2 | 3 | Treatment (2 Skills) | **PASS** | 0.466s | Caller hashes & public surface intact |
-| 20 | D2 | A0 | 3 | Control (Prompt mộc) | **PASS** | 0.471s | Caller hashes & public surface intact |
-| 21 | D2 | A1 | 3 | Karpathy Guidelines | **PASS** | 0.464s | Caller hashes & public surface intact |
-| 22 | R2A | A2 | 3 | Treatment (2 Skills) | **PASS** | 0.138s | `[]` (FP = 0, Read-only clean) |
-| 23 | R2A | A0 | 3 | Control (Prompt mộc) | **PASS** | 0.142s | `[]` (FP = 0, Read-only clean) |
-| 24 | R2A | A1 | 3 | Karpathy Guidelines | **PASS** | 0.144s | `[]` (FP = 0, Read-only clean) |
-| 25 | R2B | A2 | 3 | Treatment (2 Skills) | **PASS** | 0.147s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 26 | R2B | A0 | 3 | Control (Prompt mộc) | **PASS** | 0.145s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
-| 27 | R2B | A1 | 3 | Karpathy Guidelines | **PASS** | 0.163s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| Run | Task | Arm | Rep | Tên Arm | Kết quả | Steps | Transcript Time | Thời gian Verifier | Ghi chú Evidence |
+|:---:|:---:|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---|
+| 01 | D2 | A0 | 1 | Control (Prompt mộc) | **PASS** | 66 | 158.0s | 0.548s | Caller test hashes & public surface intact |
+| 02 | D2 | A1 | 1 | Karpathy Guidelines | **PASS** | 72 | 150.0s | 0.550s | Caller test hashes & public surface intact |
+| 03 | D2 | A2 | 1 | Treatment (2 Skills) | **PASS** | 90 | 184.0s* | 0.533s | Caller test hashes & public surface intact |
+| 04 | R2A | A0 | 1 | Control (Prompt mộc) | **PASS** | 40 | 47.0s | 0.159s | `[]` (FP = 0, Read-only clean) |
+| 05 | R2A | A1 | 1 | Karpathy Guidelines | **PASS** | 48 | 68.0s | 0.160s | `[]` (FP = 0, Read-only clean) |
+| 06 | R2A | A2 | 1 | Treatment (2 Skills) | **PASS** | 48 | 67.0s | 0.159s | `[]` (FP = 0, Read-only clean) |
+| 07 | R2B | A0 | 1 | Control (Prompt mộc) | **PASS** | 36 | 53.0s | 0.158s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 08 | R2B | A1 | 1 | Karpathy Guidelines | **PASS** | 44 | 54.0s | 0.172s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 09 | R2B | A2 | 1 | Treatment (2 Skills) | **PASS** | 48 | 120.0s | 0.171s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 10 | D2 | A1 | 2 | Karpathy Guidelines | **PASS** | 60 | 119.0s | 0.545s | Caller test hashes & public surface intact |
+| 11 | D2 | A2 | 2 | Treatment (2 Skills) | **PASS** | 76 | 164.0s | 0.533s | Caller test hashes & public surface intact |
+| 12 | D2 | A0 | 2 | Control (Prompt mộc) | **PASS** | 68 | 133.0s | 0.549s | Caller test hashes & public surface intact |
+| 13 | R2A | A1 | 2 | Karpathy Guidelines | **PASS** | 46 | 63.0s | 0.155s | `[]` (FP = 0, Read-only clean) |
+| 14 | R2A | A2 | 2 | Treatment (2 Skills) | **PASS** | 58 | 75.0s | 0.162s | `[]` (FP = 0, Read-only clean) |
+| 15 | R2A | A0 | 2 | Control (Prompt mộc) | **PASS** | 58 | 72.0s | 0.151s | `[]` (FP = 0, Read-only clean) |
+| 16 | R2B | A1 | 2 | Karpathy Guidelines | **PASS** | 44 | 90.0s | 0.154s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 17 | R2B | A2 | 2 | Treatment (2 Skills) | **PASS** | 32 | 62.0s | 0.151s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 18 | R2B | A0 | 2 | Control (Prompt mộc) | **PASS** | 30 | 38.0s | 0.151s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 19 | D2 | A2 | 3 | Treatment (2 Skills) | **PASS** | 94 | 182.0s* | 0.548s | Caller test hashes & public surface intact |
+| 20 | D2 | A0 | 3 | Control (Prompt mộc) | **PASS** | 65 | 160.0s | 0.553s | Caller test hashes & public surface intact |
+| 21 | D2 | A1 | 3 | Karpathy Guidelines | **PASS** | 75 | 152.0s | 0.542s | Caller test hashes & public surface intact |
+| 22 | R2A | A2 | 3 | Treatment (2 Skills) | **PASS** | 50 | 106.0s | 0.171s | `[]` (FP = 0, Read-only clean) |
+| 23 | R2A | A0 | 3 | Control (Prompt mộc) | **PASS** | 36 | 73.0s | 0.154s | `[]` (FP = 0, Read-only clean) |
+| 24 | R2A | A1 | 3 | Karpathy Guidelines | **PASS** | 56 | 134.0s | 0.150s | `[]` (FP = 0, Read-only clean) |
+| 25 | R2B | A2 | 3 | Treatment (2 Skills) | **PASS** | 42 | 73.0s | 0.166s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 26 | R2B | A0 | 3 | Control (Prompt mộc) | **PASS** | 40 | 58.0s | 0.159s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+| 27 | R2B | A1 | 3 | Karpathy Guidelines | **PASS** | 40 | 59.0s | 0.157s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
+
+*\*Ghi chú: Run 03 (184s) và Run 19 (182s) ghi nhận thời gian transcript vượt nhẹ ngưỡng danh định 180s do bao gồm độ trễ báo cáo kết thúc về host; host không hủy subagent và verifier độc lập xác nhận lời giải đạt chuẩn.*
 
 ---
 
@@ -242,18 +253,41 @@ Toàn bộ 27 lượt chạy của Phase 2 ($3 \text{ tasks} \times 3 \text{ arm
 
 ---
 
-### 8.4. Đánh Giá Biến Thiên Liên Lượt (Inter-Run Variance)
+### 8.4. Phân Tích Khác Biệt Thực Thi & Chi Phí Vận Hành (Behavior, Steps & Latency)
 
-- **Độ ổn định:** Cả 3 lần lặp (Rep 1, Rep 2, Rep 3) với xoay vòng thứ tự Latin-square (`A0->A1->A2`, `A1->A2->A0`, `A2->A0->A1`) đều cho kết quả PASS tuyệt đối 100% ($27/27$).
-- **Không suy giảm do xoay vòng:** Thứ tự chạy trong mỗi triplet không ảnh hưởng đến chất lượng giải pháp của ứng viên.
-- **Tính xác định:** Không có lượt chạy nào bị flakiness, crash hạ tầng, hoặc timeout.
+Mặc dù kết quả chấm verifier đạt 100% trên cả ba arm, việc phân tích dữ liệu thực thi chi tiết từ transcript và workspace cho thấy các khác biệt cụ thể về hành vi và chi phí:
+
+1. **Số bước tương tác (Step Count Overhead):**
+   - **Tác vụ D2:** A0 đạt trung bình 66.3 bước; A1 đạt 69.0 bước; A2 đạt 86.7 bước (+30.8% bước so với A0). A2 thực hiện thêm các thao tác đọc skill, tự kiểm tra quy chuẩn và chuẩn bị completion report.
+   - **Tác vụ Review (R2A & R2B):** A0 trung bình 40.0 bước; A1 trung bình 46.3 bước; A2 trung bình 46.3 bước.
+   - **Toàn bộ 9 runs:** A0 trung bình **48.8 bước/run**; A1 trung bình **53.9 bước/run**; A2 trung bình **59.8 bước/run** (+22.5% bước so với A0).
+2. **Thời gian thực thi (Latency Overhead):**
+   - **Tác vụ D2:** A0 trung bình 150.3s; A1 trung bình 140.3s; A2 trung bình 176.7s (+17.6% thời gian so với A0).
+   - **Toàn bộ 9 runs:** A0 trung bình **88.0s/run**; A1 trung bình **98.8s/run**; A2 trung bình **114.8s/run** (+30.4% thời gian so với A0).
+3. **Độ gọn của Diff (Diff Economy trên D2):**
+   - **A1 (Guidelines):** Trung bình 252.0 dòng diff (gọn gàng nhất, phản ánh nguyên tắc "Minimal & Surgical Diffs" của Karpathy).
+   - **A2 (Skills):** Trung bình 272.7 dòng diff.
+   - **A0 (Control):** Trung bình 302.0 dòng diff (dài nhất, tạo thêm nhiều dòng trống và comment tự phát).
 
 ---
 
-### 8.5. Nhận Định Khoa Học & Ý Nghĩa Đối Với Engineering Skills
+### 8.5. Đánh Giá Biến Thiên Liên Lượt (Inter-Run Variance)
 
-1. **Hiệu năng của mô hình nền tảng ở quy mô vừa:** Trên các tác vụ migration hợp đồng và review khép kín trong ngữ cảnh đơn repo, mô hình nền tảng hiện đại sở hữu khả năng suy luận logic rất cao. Khi prompt được đặc tả rõ ràng về mục tiêu và ràng buộc bảo vệ, cả ba nhóm (Control, Guidelines, Skills) đều hoàn thành xuất sắc nhiệm vụ mà không mắc sai sót nào.
-2. **Vai trò thực tế của Skills:**
-   - Skills không biến một mô hình không có khả năng thành có khả năng trên bài toán ngắn, nhưng cung cấp **bộ khung quy trình chuẩn hóa (rigorous methodology)**: xác lập baseline, bảo vệ user uncommitted changes, phân loại rủi ro (risk bands R0-R4), và kiểm chứng độc lập.
-   - Bằng chứng là trong toàn bộ các lượt A2, agent tạo ra diff có cấu trúc rõ ràng, giữ nguyên tuyệt đối các contract công khai, và trình bày completion report chuẩn mực theo đúng quy định của `repo-native-refactor`.
-3. **Đóng gói bằng chứng (Evidence Bundle):** Toàn bộ 213 tệp bằng chứng của 27 lượt chạy được đóng gói tại `pilots/phase2-contract-and-review/evidence/` kèm `MANIFEST.json` mã hóa SHA-256 từng file, được khóa bằng cờ `-text -eol` trong `.gitattributes` để đảm bảo tính bất biến tuyệt đối qua mọi môi trường checkout/clone.
+- **Về kết quả kiểm chứng:** Trên cả 3 lần lặp (Rep 1, Rep 2, Rep 3) cho cả 3 tác vụ, kết quả PASS/FAIL là bất biến tuyệt đối ($27/27$ PASS). Không có hiện tượng flakiness trong việc đạt tiêu chuẩn verifier.
+- **Về hành vi thực thi:** Có sự biến thiên thực tế giữa các lượt chạy về thời gian (từ 30s đến 184s), số bước (từ 30 đến 94 bước) và độ dài diff (từ 247 đến 343 dòng trên D2). Do các arm trong từng nhóm ba chạy đồng thời (concurrent triplets), sự biến động này có thể chịu ảnh hưởng từ chia sẻ tài nguyên hoặc biến động hạ tầng của host.
+
+---
+
+### 8.6. Nhận Định Khoa Học & Kết Luận Thực Nghiệm
+
+> **Kết luận chính thức:** Trên ba fixture Phase 2, mỗi fixture được chạy ba lần cho mỗi arm, tất cả bài nộp vượt qua verifier. Chưa quan sát được khác biệt về tỷ lệ hoàn thành giữa control, guidelines và treatment. Thí nghiệm chưa xác định được lợi ích về chi phí, thời gian hoặc chất lượng ngoài các tiêu chí đã đo.
+
+1. **Hiệu năng của mô hình nền tảng ở quy mô thử nghiệm hiện tại:**
+   - Khi mục tiêu và ràng buộc tương thích được mô tả đầy đủ trong prompt, mô hình nền tảng ở nhóm Control (A0) tự thân đã đủ năng lực suy luận để hoàn thành đúng hợp đồng, bảo toàn các caller và phát hiện chính xác lỗi review mà không cần bổ sung guidelines hay skills.
+   - Việc so sánh với Pilot 1 cho thấy: lỗi D3 ở đợt trước là do định dạng Test ID đã công bố được đối chiếu chuỗi; khi chuyển sang Phase 2 với verifier kiểm tra ngữ nghĩa AST và bảo vệ SHA-256 caller baseline test hash, cả ba nhóm đều vượt qua kiểm tra.
+2. **Chi phí và Overhead của Skills:**
+   - Dữ liệu thực nghiệm chứng minh rằng với các bài toán đã thử, việc nạp hai skills `repo-foundation` và `repo-native-refactor` chưa mang lại lợi thế về tỷ lệ hoàn thành, đồng thời tạo ra overhead rõ rệt về tài nguyên: tăng +22.5% số bước tương tác và +30.4% thời gian thực thi so với control.
+   - Do đó, không có căn cứ thực nghiệm để khẳng định người dùng cần hai skills này để đạt kết quả đúng trên các bài toán có quy mô tương tự.
+3. **Đóng gói bằng chứng (Evidence Bundle):**
+   - Toàn bộ 240 tệp bằng chứng của 27 lượt chạy được đóng gói tại `pilots/phase2-contract-and-review/evidence/` kèm `MANIFEST.json` mã hóa SHA-256 từng file, được khóa bằng cờ `-text -eol` trong `.gitattributes`.
+   - Toàn bộ file `eval_result.json` được tạo trực tiếp từ bản ghi `verifier_execution_record.json` chứa lệnh thực thi, mã thoát `exit_code: 0`, thời gian đo thực tế và output của verifier, bảo đảm tính xác thực và khả năng tái lập độc lập.

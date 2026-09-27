@@ -3,7 +3,16 @@
   "task": "D2",
   "arm": "A0",
   "repetition": 1,
-  "name": "Control (Prompt m\u1ed9c)",
+  "name": "Control (Prompt mộc)",
   "status": "PASS",
+  "exit_code": 0,
+  "verifier_command": [
+    "C:\\Python314\\python.exe",
+    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\pilots\\phase2-contract-and-review\\D2-contract-migration\\verify.py",
+    "--fixture-dir",
+    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_01_D2_A0_rep1\\workspace"
+  ],
+  "verifier_duration_sec": 0.548,
+  "verifier_timestamp": "2026-09-27T23:21:10.178483+00:00",
   "evidence_path": null
 }

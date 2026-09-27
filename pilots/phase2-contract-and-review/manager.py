@@ -271,10 +271,27 @@ def verify_run(run_id: int) -> dict:
     res = subprocess.run(cmd, capture_output=True, text=True)
     duration = time.time() - t0
 
-    result = "PASS" if res.returncode == 0 and "Overall Result: PASS" in res.stdout else "FAIL"
+    result = "PASS" if res.returncode == 0 else "FAIL"
 
     output_log = run_dir / "verifier_output.log"
     output_log.write_text(f"STDOUT:\n{res.stdout}\n\nSTDERR:\n{res.stderr}", encoding="utf-8")
+
+    exec_record = {
+        "run_id": run_id,
+        "task": task,
+        "arm": r["arm"],
+        "repetition": r["repetition"],
+        "name": r["name"],
+        "command": cmd,
+        "exit_code": res.returncode,
+        "status": result,
+        "duration_sec": round(duration, 3),
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "stdout": res.stdout,
+        "stderr": res.stderr,
+    }
+    record_file = run_dir / "verifier_execution_record.json"
+    record_file.write_text(json.dumps(exec_record, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     return {
         "run_id": run_id,

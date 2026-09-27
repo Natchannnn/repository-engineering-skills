@@ -3,6 +3,7 @@
 Generates self-contained evidence files and a SHA-256 manifest.
 """
 
+from datetime import datetime, timezone
 import hashlib
 import json
 import os
@@ -50,6 +51,30 @@ RUN_MATRIX = [
     {"run_id": 27, "task": "R2B", "arm": "A1", "rep": 3, "name": "Karpathy-inspired Guidelines", "cid": "5b092c1e-b71b-4d00-ae93-3a1c67a71f3f"},
 ]
 
+SPAWN_STEP_INDEX_MAP = {
+    1: 5050, 2: 5050, 3: 5050,
+    4: 5077, 5: 5077, 6: 5077,
+    7: 5107, 8: 5107, 9: 5107,
+    10: 5126, 11: 5126, 12: 5126,
+    13: 5146, 14: 5146, 15: 5146,
+    16: 5165, 17: 5165, 18: 5165,
+    19: 5185, 20: 5185, 21: 5185,
+    22: 5205, 23: 5205, 24: 5205,
+    25: 5225, 26: 5225, 27: 5225,
+}
+
+BATCH_SPAWN_TIMESTAMP_MAP = {
+    1: "2026-09-27T22:24:14Z", 2: "2026-09-27T22:24:14Z", 3: "2026-09-27T22:24:14Z",
+    4: "2026-09-27T22:27:39Z", 5: "2026-09-27T22:27:39Z", 6: "2026-09-27T22:27:39Z",
+    7: "2026-09-27T22:29:45Z", 8: "2026-09-27T22:29:45Z", 9: "2026-09-27T22:29:45Z",
+    10: "2026-09-27T22:32:14Z", 11: "2026-09-27T22:32:14Z", 12: "2026-09-27T22:32:14Z",
+    13: "2026-09-27T22:35:24Z", 14: "2026-09-27T22:35:24Z", 15: "2026-09-27T22:35:24Z",
+    16: "2026-09-27T22:37:02Z", 17: "2026-09-27T22:37:02Z", 18: "2026-09-27T22:37:02Z",
+    19: "2026-09-27T22:38:54Z", 20: "2026-09-27T22:38:54Z", 21: "2026-09-27T22:38:54Z",
+    22: "2026-09-27T22:47:01Z", 23: "2026-09-27T22:47:01Z", 24: "2026-09-27T22:47:01Z",
+    25: "2026-09-27T22:50:04Z", 26: "2026-09-27T22:50:04Z", 27: "2026-09-27T22:50:04Z",
+}
+
 
 def sha256_file(path: pathlib.Path) -> str:
     h = hashlib.sha256()
@@ -90,7 +115,22 @@ def package():
         if source_prompt.exists():
             write_lf_text(target_dir / "PROMPT.md", source_prompt.read_text(encoding="utf-8"))
 
-        # 2. Verifier evaluation records
+        # 2. Verifier evaluation records - must read from factual execution record
+        exec_record_file = source_run_dir / "verifier_execution_record.json"
+        if not exec_record_file.exists():
+            raise FileNotFoundError(
+                f"Missing factual verifier execution record in {source_run_dir}. "
+                f"Run 'python manager.py verify' first to generate execution records."
+            )
+        exec_record = json.loads(exec_record_file.read_text(encoding="utf-8"))
+        exit_code = exec_record.get("exit_code")
+        if exit_code is None:
+            raise ValueError(f"Execution record in {source_run_dir} lacks 'exit_code'.")
+
+        status = "PASS" if exit_code == 0 else "FAIL"
+
+        write_lf_text(target_dir / "verifier_execution_record.json", json.dumps(exec_record, indent=2, ensure_ascii=False) + "\n")
+
         output_log = source_run_dir / "verifier_output.log"
         if output_log.exists():
             write_lf_text(target_dir / "eval_output.txt", output_log.read_text(encoding="utf-8", errors="replace"))
@@ -101,10 +141,14 @@ def package():
             "arm": arm,
             "repetition": rep,
             "name": r["name"],
-            "status": "PASS",
+            "status": status,
+            "exit_code": exit_code,
+            "verifier_command": exec_record.get("command"),
+            "verifier_duration_sec": exec_record.get("duration_sec"),
+            "verifier_timestamp": exec_record.get("timestamp"),
             "evidence_path": str(source_run_dir / "evidence.json") if task in ("R2A", "R2B") else None,
         }
-        write_lf_text(target_dir / "eval_result.json", json.dumps(eval_result, indent=2) + "\n")
+        write_lf_text(target_dir / "eval_result.json", json.dumps(eval_result, indent=2, ensure_ascii=False) + "\n")
 
         # 3. Task-specific evidence JSON (R2A / R2B)
         ev_file = source_run_dir / "evidence.json"
@@ -135,10 +179,25 @@ def package():
 
         step_count = 0
         has_truncated = False
+        transcript_start = None
+        transcript_end = None
+        elapsed_sec = None
+        exceeded_timeout = False
         if transcript_compact.exists():
-            lines = transcript_compact.read_text(encoding="utf-8").strip().splitlines()
-            step_count = len(lines)
-            has_truncated = any("truncated_fields" in l for l in lines)
+            raw_lines = transcript_compact.read_text(encoding="utf-8").strip().splitlines()
+            parsed_lines = [json.loads(l) for l in raw_lines if l.strip()]
+            step_count = len(parsed_lines)
+            has_truncated = any("truncated_fields" in l for l in raw_lines)
+            if parsed_lines:
+                transcript_start = parsed_lines[0].get("created_at")
+                transcript_end = parsed_lines[-1].get("created_at")
+                try:
+                    t0 = datetime.fromisoformat(transcript_start.replace("Z", "+00:00"))
+                    t1 = datetime.fromisoformat(transcript_end.replace("Z", "+00:00"))
+                    elapsed_sec = (t1 - t0).total_seconds()
+                    exceeded_timeout = (elapsed_sec > 180.0)
+                except Exception:
+                    pass
 
         session_meta = {
             "run_id": run_id,
@@ -149,6 +208,19 @@ def package():
             "conversation_id": cid,
             "subagent_type": "pilot_candidate",
             "host": "Antigravity",
+            "spawn_step_index": SPAWN_STEP_INDEX_MAP.get(run_id),
+            "execution_batch_mode": "concurrent_triplet",
+            "batch_spawn_timestamp": BATCH_SPAWN_TIMESTAMP_MAP.get(run_id),
+            "transcript_start_timestamp": transcript_start,
+            "transcript_end_timestamp": transcript_end,
+            "transcript_duration_sec": elapsed_sec,
+            "nominal_timeout_sec": 180,
+            "transcript_exceeded_nominal_timeout": exceeded_timeout,
+            "timeout_enforcement_note": (
+                "Transcript duration reflects end-to-end wall-clock time from task assignment "
+                "to final agent completion response, including network reporting. Host did not abort "
+                "the subagent; verifier independently certifies solution correctness."
+            ),
             "requested_model_setting": "inherit",
             "resolved_model_identifier": "unknown / not recorded",
             "context_loading_mode": "explicit_context_in_prompt",
