@@ -39,21 +39,22 @@ def verify_state_and_scope(fixture_dir: pathlib.Path, snapshot: dict, stage_name
     """
     initial_head = snapshot["initial_head"]
 
+    ALLOWED_MUTABLE_FILES = {"src/ledger.py", "tests/test_quarterly_balance.py"}
+
     # 1. Git HEAD and Staged/Committed Scope
     current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
-    allowed_committed_files = {"src/ledger.py", "tests/test_quarterly_balance.py"}
     if current_head != initial_head:
         # If agent committed, verify that commits only touched allowed files
         diff_committed = run_git(fixture_dir, ["diff", "--name-only", f"{initial_head}..{current_head}"])
         committed_files = {f.strip() for f in diff_committed.splitlines() if f.strip()}
-        unauthorized_commits = committed_files - allowed_committed_files
+        unauthorized_commits = committed_files - ALLOWED_MUTABLE_FILES
         if unauthorized_commits:
             raise AssertionError(
                 f"Unauthorized files committed ({stage_name}): {sorted(unauthorized_commits)}"
             )
 
     staged_diff = [f.strip() for f in run_git(fixture_dir, ["diff", "--cached", "--name-only"]).splitlines() if f.strip()]
-    unauthorized_staged = set(staged_diff) - allowed_committed_files
+    unauthorized_staged = set(staged_diff) - ALLOWED_MUTABLE_FILES
     if unauthorized_staged:
         raise AssertionError(f"Unauthorized staged files ({stage_name}): {sorted(unauthorized_staged)}")
 
@@ -70,8 +71,7 @@ def verify_state_and_scope(fixture_dir: pathlib.Path, snapshot: dict, stage_name
 
     # 3. Working Tree Scope
     wt_diff = [f.strip() for f in run_git(fixture_dir, ["diff", "--name-only"]).splitlines() if f.strip()]
-    allowed_modified = {"src/ledger.py"}
-    unauthorized_modified = set(wt_diff) - allowed_modified
+    unauthorized_modified = set(wt_diff) - ALLOWED_MUTABLE_FILES
     if unauthorized_modified:
         raise AssertionError(f"Unauthorized tracked files modified ({stage_name}): {sorted(unauthorized_modified)}")
 
@@ -146,6 +146,8 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout
         )
     except subprocess.TimeoutExpired:
@@ -156,7 +158,11 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
     if res.returncode != 0:
         raise AssertionError(f"Test suite execution failed (exit code {res.returncode}):\n{combined_output}")
 
-    match = re.search(r"Ran (\d+) tests? in", combined_output)
+    runner_output = res.stderr or ""
+    match = re.search(r"Ran (\d+) tests? in [0-9.]+s\s*\n\s*(OK(?:\s*\(.*?\))?|FAILED \([^)]+\))", runner_output)
+    if not match:
+        match = re.search(r"Ran (\d+) tests? in [0-9.]+s\s*\n\s*(OK(?:\s*\(.*?\))?|FAILED \([^)]+\))", res.stdout or "")
+
     if not match:
         raise AssertionError(
             f"Test suite did not run to completion (abrupt exit or suppressed output detected):\n{combined_output}"
@@ -172,9 +178,9 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
             f"Test suite test count insufficient: expected at least {expected_min_tests} tests, got {actual_count}.\n{combined_output}"
         )
 
-    lines = [line.strip() for line in combined_output.splitlines() if line.strip()]
-    if not lines or lines[-1] != "OK":
-        raise AssertionError(f"Test suite output did not report 'OK':\n{combined_output}")
+    status_banner = match.group(2).strip()
+    if not status_banner.startswith("OK"):
+        raise AssertionError(f"Test suite output did not report 'OK' (status: {status_banner}):\n{combined_output}")
 
 def verify_original_suite(fixture_dir: pathlib.Path, env: dict, timeout: int = 15):
     cmd = [sys.executable, "-m", "unittest", "tests/test_ledger.py", "-v"]
@@ -186,6 +192,8 @@ def verify_original_suite(fixture_dir: pathlib.Path, env: dict, timeout: int = 1
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=timeout
         )
     except subprocess.TimeoutExpired:
@@ -193,7 +201,11 @@ def verify_original_suite(fixture_dir: pathlib.Path, env: dict, timeout: int = 1
 
     combined_output = (res.stderr or "") + "\n" + (res.stdout or "")
 
-    match = re.search(r"Ran (\d+) tests? in", combined_output)
+    runner_output = res.stderr or ""
+    match = re.search(r"Ran (\d+) tests? in [0-9.]+s\s*\n\s*(OK(?:\s*\(.*?\))?|FAILED \([^)]+\))", runner_output)
+    if not match:
+        match = re.search(r"Ran (\d+) tests? in [0-9.]+s\s*\n\s*(OK(?:\s*\(.*?\))?|FAILED \([^)]+\))", res.stdout or "")
+
     if not match:
         raise AssertionError(
             f"Original test suite did not run to completion (abrupt exit or suppressed output detected):\n{combined_output}"
@@ -203,23 +215,23 @@ def verify_original_suite(fixture_dir: pathlib.Path, env: dict, timeout: int = 1
     if actual_count != 4:
         raise AssertionError(f"Original test suite count mismatch: expected 4 tests, got {actual_count}")
 
-    if "skipped" in combined_output.lower():
+    status_banner = match.group(2).strip()
+    if "skipped" in status_banner.lower() or "skipped" in runner_output.lower():
         raise AssertionError(f"Original tests were skipped or marked xfail:\n{combined_output}")
 
     # Case A: Alternative pass (all tests pass, including the historical bug fixed legitimately in src/ledger.py)
     if res.returncode == 0:
-        lines = [line.strip() for line in combined_output.splitlines() if line.strip()]
-        if not lines or lines[-1] != "OK":
-            raise AssertionError(f"Original test suite reported exit code 0 but output did not end in 'OK':\n{combined_output}")
+        if not status_banner.startswith("OK"):
+            raise AssertionError(f"Original test suite reported exit code 0 but status banner was not 'OK':\n{combined_output}")
         return "pass_all_fixed"
 
     # Case B: Standard expected baseline failure
     if res.returncode != 0:
-        if "errors=" in combined_output:
+        if "errors=" in combined_output or "errors=" in status_banner:
             raise AssertionError(
                 f"Original test suite produced unexpected execution errors:\n{combined_output}"
             )
-        if "FAILED (failures=1)" not in combined_output:
+        if "FAILED (failures=1)" not in status_banner and "FAILED (failures=1)" not in combined_output:
             raise AssertionError(
                 f"Original test suite failed with unexpected error format (expected exactly 1 failure):\n{combined_output}"
             )
@@ -290,6 +302,8 @@ def verify_d3(fixture_dir: pathlib.Path, evidence_report_path: pathlib.Path | No
     evaluator_dir = pathlib.Path(__file__).parent.resolve()
     env = os.environ.copy()
     env["PYTHONPATH"] = str(fixture_dir)
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
 
     # === PHASE 3: Subprocess Test Executions ===
     try:

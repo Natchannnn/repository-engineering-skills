@@ -116,6 +116,19 @@ class TestD1VerifierSelfAudit(unittest.TestCase):
             res = self.verify_mod.verify_d1(fixture_dir)
             self.assertEqual(res["overall"], "PASS")
 
+    def test_canonical_solution_with_stdout_passes(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "d1_fixture"
+            self.bootstrap_mod.bootstrap_d1(fixture_dir)
+
+            code_with_print = CANONICAL_FIX_NORMALIZE.replace(
+                'prefix, number_part = parts[0].upper(), parts[1]',
+                'print(f"DEBUG: normalizing {raw_id}")\n    prefix, number_part = parts[0].upper(), parts[1]'
+            )
+            self._replace_normalize_order_id(fixture_dir, code_with_print)
+            res = self.verify_mod.verify_d1(fixture_dir)
+            self.assertEqual(res["overall"], "PASS")
+
     def test_alternative_solution_longer_body_and_new_test_passes(self):
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "d1_fixture"

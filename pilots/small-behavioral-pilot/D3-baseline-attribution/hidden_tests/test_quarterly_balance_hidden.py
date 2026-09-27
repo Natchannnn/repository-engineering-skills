@@ -38,8 +38,9 @@ class TestQuarterlyBalanceHidden(unittest.TestCase):
         invalid_years = [True, False, 0, -1, -2020, 2020.5, "2020", None, [], {}]
         for val in invalid_years:
             with self.subTest(val=val):
-                with self.assertRaises(ValueError):
+                with self.assertRaises(ValueError) as ctx:
                     get_quarterly_balance(val)
+                self.assertEqual(str(ctx.exception), "Invalid year")
 
     def test_quarter_boundaries_synthetic(self):
         synthetic_entries = [
