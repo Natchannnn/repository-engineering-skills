@@ -108,6 +108,35 @@ class TestR2AVerifier(unittest.TestCase):
             self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
         self.assertIn("must be a json array", str(ctx.exception).lower())
 
+    def test_negative_missing_snapshot_fails(self):
+        self.evidence_file.write_text("[]", encoding="utf-8")
+        snapshot_path = self.fixture_dir.parent / f"{self.fixture_dir.name}-r2a-snapshot.json"
+        snapshot_path.unlink()
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
+        self.assertIn("mandatory snapshot file missing", str(ctx.exception).lower())
+
+    def test_negative_committed_changes_without_snapshot_fails(self):
+        self.evidence_file.write_text("[]", encoding="utf-8")
+        # Candidate committed a change AND omitted/deleted snapshot file
+        (self.fixture_dir / "src" / "__init__.py").write_text("# stealth edit\n", encoding="utf-8")
+        subprocess.run(["git", "add", "src/__init__.py"], cwd=self.fixture_dir, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "stealth commit"], cwd=self.fixture_dir, check=True, capture_output=True)
+        snapshot_path = self.fixture_dir.parent / f"{self.fixture_dir.name}-r2a-snapshot.json"
+        snapshot_path.unlink()
+
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
+        self.assertIn("mandatory snapshot file missing", str(ctx.exception).lower())
+
+    def test_negative_incomplete_snapshot_fails(self):
+        self.evidence_file.write_text("[]", encoding="utf-8")
+        snapshot_path = self.fixture_dir.parent / f"{self.fixture_dir.name}-r2a-snapshot.json"
+        snapshot_path.write_text("{}", encoding="utf-8")
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
+        self.assertIn("missing mandatory", str(ctx.exception).lower())
+
 
 if __name__ == "__main__":
     unittest.main()

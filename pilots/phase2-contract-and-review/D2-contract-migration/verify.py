@@ -208,7 +208,31 @@ sys.exit(0)
             )
 
 
-def verify_repo_tests(fixture_dir: pathlib.Path) -> None:
+def compute_file_sha256(path: pathlib.Path) -> str:
+    data = path.read_bytes().replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
+
+
+def load_snapshot(fixture_dir: pathlib.Path) -> dict:
+    snapshot_path = fixture_dir.parent / f"{fixture_dir.name}-d2-snapshot.json"
+    if not snapshot_path.is_file():
+        raise AssertionError(f"Mandatory snapshot file missing: {snapshot_path}")
+    try:
+        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        raise AssertionError(f"Invalid snapshot JSON file: {e}")
+    if not isinstance(snapshot, dict):
+        raise AssertionError("Snapshot must be a JSON object.")
+    initial_head = snapshot.get("initial_head")
+    manifest = snapshot.get("manifest")
+    if not initial_head or not isinstance(initial_head, str):
+        raise AssertionError("Snapshot missing mandatory 'initial_head'.")
+    if manifest is None or not isinstance(manifest, dict) or len(manifest) == 0:
+        raise AssertionError("Snapshot missing mandatory non-empty 'manifest' mapping.")
+    return snapshot
+
+
+def verify_repo_tests(fixture_dir: pathlib.Path, snapshot: dict) -> None:
     tests_dir = fixture_dir / "tests"
     if not tests_dir.exists():
         raise AssertionError("tests/ directory missing from workspace.")
@@ -225,16 +249,33 @@ def verify_repo_tests(fixture_dir: pathlib.Path) -> None:
         if not test_file.exists():
             raise AssertionError(f"Required test file was deleted: tests/{rt}")
 
-    # 2. Check that caller test files have not been emptied or neutered
+    # 2. Check test_shipping.py is not emptied or neutered
+    check_test_file_not_neutered(tests_dir / "test_shipping.py")
+
+    # 3. Check that caller test files are strictly unmodified and not neutered
     caller_test_files = [
-        "test_checkout.py",
-        "test_cart_summary.py",
-        "test_invoice.py",
+
+        "tests/test_checkout.py",
+        "tests/test_cart_summary.py",
+        "tests/test_invoice.py",
     ]
+    manifest = snapshot.get("manifest", {})
     for ctf in caller_test_files:
-        check_test_file_not_neutered(tests_dir / ctf)
+        meta = manifest.get(ctf)
+        if not meta or "sha256" not in meta:
+            raise AssertionError(f"Snapshot manifest missing baseline entry for: {ctf}")
+        test_file = fixture_dir / ctf
+        if not test_file.is_file():
+            raise AssertionError(f"Required caller test file missing: {ctf}")
+        actual_sha = compute_file_sha256(test_file)
+        if actual_sha != meta["sha256"]:
+            raise AssertionError(
+                f"Caller test suite tampered: {ctf} was modified. "
+                "Caller test files must be preserved exactly as baseline without changes."
+            )
+        check_test_file_not_neutered(test_file)
         # Run caller test file individually to guarantee its assertions actually execute
-        run_test_file(fixture_dir, f"tests/{ctf}")
+        run_test_file(fixture_dir, ctf)
 
     # 3. Discover and run all tests in workspace
     env = os.environ.copy()
@@ -274,16 +315,13 @@ sys.exit(0)
         )
 
 
-def verify_git_state(fixture_dir: pathlib.Path) -> None:
-    snapshot_path = fixture_dir.parent / f"{fixture_dir.name}-d2-snapshot.json"
-    if snapshot_path.is_file():
-        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-        initial_head = snapshot.get("initial_head")
-        current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
-        if initial_head and current_head != initial_head:
-            raise AssertionError(
-                f"Git HEAD tampered: unauthorized commit detected. Expected {initial_head}, got {current_head}."
-            )
+def verify_git_state(fixture_dir: pathlib.Path, snapshot: dict) -> None:
+    initial_head = snapshot.get("initial_head")
+    current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
+    if current_head != initial_head:
+        raise AssertionError(
+            f"Git HEAD tampered: unauthorized commit detected. Expected {initial_head}, got {current_head}."
+        )
 
     staged = run_git(fixture_dir, ["diff", "--cached"])
     if staged:
@@ -311,6 +349,9 @@ def verify_git_state(fixture_dir: pathlib.Path) -> None:
 def verify_d2(fixture_dir: pathlib.Path) -> bool:
     print(f"=== Verifying Task D2 at {fixture_dir} ===")
 
+    # 0. Load snapshot (MANDATORY)
+    snapshot = load_snapshot(fixture_dir)
+
     # 1. Compatibility surface
     print("[1/4] Checking public compatibility surface...")
     verify_compatibility_surface(fixture_dir)
@@ -323,16 +364,17 @@ def verify_d2(fixture_dir: pathlib.Path) -> bool:
 
     # 3. Workspace test suite execution (All callers)
     print("[3/4] Running workspace test suite for all callers...")
-    verify_repo_tests(fixture_dir)
+    verify_repo_tests(fixture_dir, snapshot)
     print("      PASS: Workspace test suite passed.")
 
     # 4. Git sanity check
     print("[4/4] Checking git repository state...")
-    verify_git_state(fixture_dir)
+    verify_git_state(fixture_dir, snapshot)
     print("      PASS: Git state verified.")
 
     print("\nOverall Result: PASS")
     return True
+
 
 
 def main() -> None:

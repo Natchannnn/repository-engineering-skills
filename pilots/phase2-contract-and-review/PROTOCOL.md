@@ -67,6 +67,12 @@ Mỗi bài toán được thử nghiệm độc lập trên 3 cấu hình:
 ## 4. Quy Mô & Bản Chất của 27 Lượt Chạy (Cohorts)
 
 - **Số lượng:** 3 bài (`D2`, `R2A`, `R2B`) × 3 cấu hình (`A0`, `A1`, `A2`) × 3 lần lặp độc lập = **27 runs**.
+- **Cân bằng vị trí & Giảm ảnh hưởng thứ tự (Balanced Arm Rotation):**
+  - Thứ tự các arm được hoán vị xoay vòng theo ma trận Latin-square qua 3 repetition:
+    - **Rep 1:** `A0 -> A1 -> A2`
+    - **Rep 2:** `A1 -> A2 -> A0`
+    - **Rep 3:** `A2 -> A0 -> A1`
+  - Cơ chế xoay vòng giúp cân bằng vị trí thực thi và giảm thiểu tác động của thứ tự chạy giữa các nhóm can thiệp.
 - **Ý nghĩa khoa học của 3 lần lặp:**
   - 3 lần lặp trên cùng 1 bài toán nhằm đo lường **độ biến thiên ngẫu nhiên giữa các phiên chạy (inter-run variance / non-determinism)** của cùng một mô hình với cùng một prompt.
   - Ba lần lặp **không đại diện cho sự đa dạng của bài toán**. Do đó, kết quả 27 lượt này là một cuộc **khảo sát thăm dò (exploratory cohort)**, không dùng để đưa ra các tuyên bố khái quát hóa quy mô lớn về toàn bộ thế giới phần mềm.
@@ -96,14 +102,22 @@ Mỗi bài toán được thử nghiệm độc lập trên 3 cấu hình:
 ## 6. Tiêu Chí Chấm Điểm & Đánh Giá Tách Bạch
 
 ### 6.1. Tiêu chí cho Task D2
-1. **Toàn vẹn kho mã nguồn:** Không xóa baseline test, không commit rác.
-2. **Bề mặt tương thích:** `DEFAULT_RATE_PER_KG` và `get_supported_destinations()` tồn tại và giữ nguyên hợp đồng.
-3. **Hidden Tests cho API mới:** Kiểm tra `calculate_shipping` với các trường hợp: tính đúng `base_fee`, `express_fee`, `total_fee`; kiểm tra cờ `express`; raise `ValueError` khi sai weight hoặc sai destination.
-4. **Hidden Tests cho 3 Callers:** Gọi độc lập `process_checkout`, `estimate_cart`, `generate_invoice_line_items` để xác nhận tất cả callers đều đã được di chuyển sang `ShippingQuote.total_fee` và trả về kết quả nghiệp vụ chính xác.
-5. **Suite Test hiện có:** Toàn bộ test trong `tests/` chạy thành công với banner `OK`.
+1. **Bắt buộc Snapshot:** Sidecar snapshot (`d2-snapshot.json`) là bắt buộc để xác thực `initial_head` và `manifest`. Thiếu snapshot, snapshot hỏng hoặc thiếu metadata đều bị từ chối ngay lập tức.
+2. **Toàn vẹn Git & Không commit bừa:** `git rev-parse HEAD` bắt buộc trùng khớp tuyệt đối với `initial_head`. Staging index phải sạch.
+3. **Bảo vệ 3 Test Callers Gốc:** Ba file test `tests/test_checkout.py`, `tests/test_cart_summary.py`, và `tests/test_invoice.py` bắt buộc phải khớp byte-exact với SHA-256 gốc trong manifest (chuẩn hóa CRLF -> LF), đồng thời phải có test methods thực thi được và pass hoàn toàn. Mọi hành vi sửa đổi, làm rỗng, hay thay bằng `assertTrue(True)` đều bị từ chối.
+4. **Bề mặt tương thích:** `DEFAULT_RATE_PER_KG` (kiểu strictly `Decimal("5.00")`) và `get_supported_destinations()` tồn tại và giữ nguyên hợp đồng.
+5. **Hidden Tests cho API mới:** Kiểm tra `calculate_shipping` với các trường hợp: tính đúng `base_fee`, `express_fee`, `total_fee`; kiểm tra cờ `express`; trả về đúng frozen dataclass `ShippingQuote`; raise `ValueError("Invalid weight")` hoặc `ValueError("Unsupported destination")`.
+6. **Hidden Tests cho 3 Callers:** Gọi độc lập `process_checkout`, `estimate_cart`, `generate_invoice_line_items` để xác nhận tất cả callers đều đã được di chuyển sang `ShippingQuote.total_fee` và trả về kết quả nghiệp vụ chính xác.
+7. **Suite Test hiện có:** Toàn bộ test trong `tests/` chạy thành công với banner `OK` (không có `SkipTest`).
 
 ### 6.2. Tiêu chí cho Tasks R2A & R2B
-- Xuất kết quả ra file JSON ngoài repository theo schema:
+- **Bắt buộc Snapshot:** Sidecar snapshot (`r2a-snapshot.json` / `r2b-snapshot.json`) là bắt buộc để xác thực `feature_head` và `manifest`. Thiếu snapshot hoặc metadata không đầy đủ đều bị từ chối với lỗi rõ ràng.
+- **Bảo toàn Read-Only Tuyệt Đối:**
+  - `git rev-parse HEAD` bắt buộc trùng khớp với `feature_head` ban đầu (không commit sửa mã).
+  - `git diff HEAD` và staged index phải sạch hoàn toàn.
+  - Toàn bộ file tracked trong manifest phải khớp SHA-256 nguyên bản (chuẩn hóa CRLF -> LF).
+  - Cho phép bytecode sinh ra từ quá trình chạy test (`__pycache__`, `.pyc`).
+- **Xuất kết quả:** File JSON ngoài repository theo cờ `--evidence-file`.
   ```json
   [
     {
@@ -129,18 +143,41 @@ Mỗi bài toán được thử nghiệm độc lập trên 3 cấu hình:
 ---
 
 ## 7. Quy Trình Nghiệm Thu Máy Chấm (Self-Audit)
-Trước khi khởi chạy bất kỳ lượt candidate nào, bộ verifier của Phase 2 bắt buộc phải vượt qua bộ tự kiểm thử (Positive & Negative Controls):
-1. **D2 Controls:**
+Trước khi khởi chạy bất kỳ lượt candidate nào, bộ verifier của Phase 2 bắt buộc phải vượt qua toàn bộ 35 unit tests đối chứng (Positive & Negative Controls):
+1. **D2 Controls (15 tests):**
    - Canonical Solution (sửa shipping + di chuyển cả 3 callers) -> PASS.
-   - Alternative Solution (cách viết cú pháp di chuyển khác) -> PASS.
+   - Alternative Solution (cú pháp di chuyển khác) -> PASS.
    - Negative 1: Chỉ sửa shipping, không sửa callers -> FAIL.
    - Negative 2: Di chuyển thiếu 1 caller -> FAIL.
-   - Negative 3: Xóa hoặc đổi hằng số/helper tương thích -> FAIL.
-   - Negative 4: Xóa hoặc can thiệp file test để che lỗi -> FAIL.
-2. **R2A Controls:**
-   - Canonical Solution (trả `[]`) -> PASS (Precision: 1.0, Recall: 1.0).
+   - Negative 3: Xóa hoặc đổi hằng số tương thích / gán int 5 -> FAIL.
+   - Negative 4: Sai thông báo ngoại lệ ("Invalid weight") -> FAIL.
+   - Negative 5: Xóa file test baseline -> FAIL.
+   - Negative 6: Caller test bị làm rỗng / neutered -> FAIL.
+   - Negative 7: Shipping test bị làm rỗng / neutered -> FAIL.
+   - Negative 8: Caller test bị thay bằng assert tầm thường (`assertTrue(True)`) -> FAIL (phát hiện bằng SHA-256 manifest hash).
+   - Negative 9: Candidate commit vào workspace -> FAIL.
+   - Negative 10: Chứa test bị bỏ qua (`SkipTest`) -> FAIL.
+   - Negative 11: Thiếu sidecar snapshot file -> FAIL.
+   - Negative 12: Snapshot file thiếu metadata bắt buộc (`initial_head`, `manifest`) -> FAIL.
+2. **R2A Controls (9 tests):**
+   - Canonical Solution (trả `[]`) -> PASS (Precision: N/A (FP=0), Recall: N/A).
+   - Chạy `unittest discover` sinh ra `__pycache__` -> PASS đúng.
    - Negative 1: Bịa lỗi trên mã sạch -> FAIL (FP > 0).
-3. **R2B Controls:**
+   - Negative 2: Chỉnh sửa mã nguồn chưa commit -> FAIL.
+   - Negative 3: Sửa mã nguồn rồi commit -> FAIL.
+   - Negative 4: Sửa mã nguồn, commit và xóa snapshot -> FAIL.
+   - Negative 5: Sai schema JSON mảng -> FAIL.
+   - Negative 6: Thiếu sidecar snapshot file -> FAIL.
+   - Negative 7: Snapshot file thiếu metadata bắt buộc (`feature_head`, `manifest`) -> FAIL.
+3. **R2B Controls (11 tests):**
    - Canonical Solution (báo đúng source & caller gãy) -> PASS (TP=1, FP=0).
+   - Alternative Solution (chấp nhận alias symbol / file tương đương) -> PASS.
+   - Chạy `unittest discover` sinh ra `__pycache__` -> PASS đúng.
    - Negative 1: Trả `[]` (bỏ sót lỗi) -> FAIL (FN=1).
-   - Negative 2: Báo sai file hoặc symbol không liên quan -> FAIL (TP=0, FP=1).
+   - Negative 2: Báo sai caller không liên quan -> FAIL (TP=0, FP=1).
+   - Negative 3: Báo đúng lỗi kèm 1 lỗi ảo phụ -> FAIL (TP=1, FP=1).
+   - Negative 4: Chỉnh sửa mã nguồn chưa commit -> FAIL.
+   - Negative 5: Sửa mã nguồn rồi commit -> FAIL.
+   - Negative 6: Sửa mã nguồn, commit và xóa snapshot -> FAIL.
+   - Negative 7: Thiếu sidecar snapshot file -> FAIL.
+   - Negative 8: Snapshot file thiếu metadata bắt buộc (`feature_head`, `manifest`) -> FAIL.

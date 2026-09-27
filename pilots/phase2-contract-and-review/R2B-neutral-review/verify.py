@@ -64,25 +64,39 @@ def compute_sha256(data: bytes) -> str:
 
 
 def verify_read_only(fixture_dir: pathlib.Path) -> None:
-    # 1. Snapshot check if available
+    # 1. Snapshot check (MANDATORY)
     snapshot_path = fixture_dir.parent / f"{fixture_dir.name}-r2b-snapshot.json"
-    if snapshot_path.is_file():
+    if not snapshot_path.is_file():
+        raise AssertionError(f"Mandatory snapshot file missing: {snapshot_path}")
+    try:
         snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
-        expected_head = snapshot.get("feature_head")
-        current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
-        if expected_head and current_head != expected_head:
-            raise AssertionError(
-                f"Read-only violated: git HEAD was moved / committed. Expected {expected_head}, got {current_head}."
-            )
+    except Exception as e:
+        raise AssertionError(f"Invalid snapshot JSON file: {e}")
+    if not isinstance(snapshot, dict):
+        raise AssertionError("Snapshot must be a JSON object.")
 
-        manifest = snapshot.get("manifest", {})
-        for rel_path, meta in manifest.items():
-            target_file = fixture_dir / rel_path
-            if not target_file.is_file():
-                raise AssertionError(f"Read-only violated: tracked file is missing: {rel_path}")
-            actual_sha = compute_sha256(target_file.read_bytes())
-            if actual_sha != meta["sha256"]:
-                raise AssertionError(f"Read-only violated: tracked file hash mismatch: {rel_path}")
+    expected_head = snapshot.get("feature_head")
+    manifest = snapshot.get("manifest")
+    if not expected_head or not isinstance(expected_head, str):
+        raise AssertionError("Snapshot missing mandatory 'feature_head'.")
+    if manifest is None or not isinstance(manifest, dict) or len(manifest) == 0:
+        raise AssertionError("Snapshot missing mandatory non-empty 'manifest' mapping.")
+
+    current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
+    if current_head != expected_head:
+        raise AssertionError(
+            f"Read-only violated: git HEAD was moved / committed. Expected {expected_head}, got {current_head}."
+        )
+
+    for rel_path, meta in manifest.items():
+        if not isinstance(meta, dict) or "sha256" not in meta:
+            raise AssertionError(f"Snapshot manifest entry for {rel_path} is invalid.")
+        target_file = fixture_dir / rel_path
+        if not target_file.is_file():
+            raise AssertionError(f"Read-only violated: tracked file is missing: {rel_path}")
+        actual_sha = compute_sha256(target_file.read_bytes())
+        if actual_sha != meta["sha256"]:
+            raise AssertionError(f"Read-only violated: tracked file hash mismatch: {rel_path}")
 
     # 2. Working tree diff check
     diff = run_git(fixture_dir, ["diff", "HEAD"])
