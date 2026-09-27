@@ -192,7 +192,7 @@ Script chấm in ra `Overall Result: PASS` (exit code `0`) hoặc `Overall Resul
 
 ## 5. Bảng Ghi Nhận Kết Quả 9 Lượt Chạy (Scorecard)
 
-**Host / Model:** Google Antigravity Advanced Agentic Coding Engine (Gemini 2.5 architecture, `Model: inherit`)  
+**Host / Model:** Host: Antigravity; requested model: inherit; resolved model: unknown / not recorded
 **Cấu hình Subagent:** Subagent chuyên biệt `pilot_candidate` với 3 quy tắc tối giản; Write tools bật (`run_command`, `write_to_file`, `replace_file_content`, `view_file`); Subagent/MCP tools tắt.  
 **Cơ chế nạp Context:** Explicit-context evaluation (ghép nội dung file guideline/skill trực tiếp vào khối tin nhắn đề bài).  
 **Bằng chứng lưu trữ:** Đóng gói độc lập trong repository tại `pilots/small-behavioral-pilot/evidence/` kèm `MANIFEST.json` băm SHA-256 (bao gồm prompt, patch diff, git status, report JSON, output verifier, và metadata phiên).  
