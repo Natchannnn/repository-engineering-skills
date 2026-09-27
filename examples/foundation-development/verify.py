@@ -16,6 +16,11 @@ import pathlib
 import subprocess
 import sys
 
+_EXAMPLES_DIR = pathlib.Path(__file__).resolve().parent.parent
+if str(_EXAMPLES_DIR) not in sys.path:
+    sys.path.insert(0, str(_EXAMPLES_DIR))
+from finalize_setup import verify_setup_metadata
+
 ALLOWED_EXACT_FILES = {
     "README.md",
 }
@@ -44,7 +49,7 @@ def get_git_paths(cwd: pathlib.Path, args: list[str]) -> list[str]:
     # NUL-delimited entries: do not strip whitespace from paths
     return [p.decode("utf-8", errors="replace") for p in raw.split(b"\0") if len(p) > 0]
 
-def is_path_allowed(path_str: str) -> bool:
+def is_path_allowed(path_str: str, allow_root_lockfile: bool = False) -> bool:
     p = path_str.replace("\\", "/")
 
     # 1. Ignore tooling directories (.agents/) and ephemeral test caches
@@ -56,6 +61,9 @@ def is_path_allowed(path_str: str) -> bool:
     if p in ALLOWED_EXACT_FILES:
         return True
 
+    if allow_root_lockfile and p == "skills-lock.json":
+        return True
+
     # 3. Directory prefixes (strictly ending in /)
     for prefix in ALLOWED_DIRECTORY_PREFIXES:
         if p.startswith(prefix):
@@ -63,7 +71,7 @@ def is_path_allowed(path_str: str) -> bool:
 
     return False
 
-def check_scope_boundaries(fixture_dir: pathlib.Path) -> list[str]:
+def check_scope_boundaries(fixture_dir: pathlib.Path, setup_meta: dict) -> list[str]:
     fixture_dir = fixture_dir.resolve()
     meta_dir = fixture_dir.parent
     head_file = meta_dir / f"{fixture_dir.name}-INITIAL_HEAD"
@@ -83,9 +91,10 @@ def check_scope_boundaries(fixture_dir: pathlib.Path) -> list[str]:
 
     all_changed_paths = sorted(set(wt_diff) | set(cached_diff) | set(untracked))
 
+    allow_root_lockfile = (setup_meta.get("lockfile_status") == "present")
     disallowed = []
     for f in all_changed_paths:
-        if not is_path_allowed(f):
+        if not is_path_allowed(f, allow_root_lockfile=allow_root_lockfile):
             disallowed.append(f)
 
     if disallowed:
@@ -94,8 +103,12 @@ def check_scope_boundaries(fixture_dir: pathlib.Path) -> list[str]:
             + "\n".join(f"  - DISALLOWED: {d}" for d in disallowed)
         )
 
-    # Filter out tooling for reporting
-    return [f for f in all_changed_paths if not any(part in IGNORED_TOOLING_PARTS for part in f.replace("\\", "/").split("/"))]
+    # Filter out tooling and setup lockfile for reporting task modifications
+    return [
+        f for f in all_changed_paths
+        if f != "skills-lock.json"
+        and not any(part in IGNORED_TOOLING_PARTS for part in f.replace("\\", "/").split("/"))
+    ]
 
 def run_author_test_suite(test_script: pathlib.Path, fixture_dir: pathlib.Path) -> str:
     cmd = [sys.executable, str(test_script)]
@@ -143,10 +156,19 @@ def main():
     print("=== Verifying Foundation Development Demo ===")
     print(f"Workspace: {fixture_dir}\n")
 
-    # 1. Scope Boundary Check
-    print("--> Check 1: Verifying change set scope boundaries...")
+    # 0. Setup Metadata & Lockfile Integrity Check
+    print("--> Check 0: Verifying setup metadata & lockfile integrity...")
     try:
-        modified = check_scope_boundaries(fixture_dir)
+        setup_meta = verify_setup_metadata(fixture_dir)
+        print(f"    [PASS] Setup metadata verified (INITIAL_HEAD: {setup_meta['initial_head'][:10]}..., lockfile: {setup_meta['lockfile_status']}).")
+    except Exception as e:
+        print(f"    [FAIL] Setup metadata check failed: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # 1. Scope Boundary Check
+    print("\n--> Check 1: Verifying change set scope boundaries...")
+    try:
+        modified = check_scope_boundaries(fixture_dir, setup_meta)
         print(f"    [PASS] Scope preserved: {len(modified)} files changed strictly within authorized boundaries.")
         for m in modified:
             print(f"           - {m}")

@@ -47,14 +47,17 @@ python "$REPO_ROOT/examples/foundation-development/bootstrap.py" "$FIXTURE_DIR"
 
 # 3. Enter fixture and install skill
 cd "$FIXTURE_DIR"
-npx skills add Natchannnn/repository-engineering-skills --skill repo-foundation --agent codex --copy -y
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation --agent codex --copy -y
 # Alternatively, manually copy skill into fixture:
 # mkdir -p "$FIXTURE_DIR/.agents/skills"
 # cp -r "$REPO_ROOT/repo-foundation" "$FIXTURE_DIR/.agents/skills/repo-foundation"
 
-# 4. Prompt the AI agent (see prompt below)
+# 4. Finalize setup before starting agent session (records pristine state & lockfile baseline)
+python "$REPO_ROOT/examples/finalize_setup.py" "$FIXTURE_DIR"
 
-# 5. Run independent verification from any working directory
+# 5. Prompt the AI agent (see prompt below)
+
+# 6. Run independent verification from any working directory
 python "$REPO_ROOT/examples/foundation-development/verify.py" \
   --fixture-dir "$FIXTURE_DIR"
 ```
@@ -71,13 +74,17 @@ python "$RepoRoot\examples\foundation-development\bootstrap.py" "$FixtureDir"
 
 # 3. Enter fixture and install skill
 Set-Location "$FixtureDir"
-# Copy skill into fixture .agents directory
-New-Item -ItemType Directory -Force -Path "$FixtureDir\.agents\skills" | Out-Null
-Copy-Item -Recurse "$RepoRoot\repo-foundation" -Destination "$FixtureDir\.agents\skills\repo-foundation"
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation --agent codex --copy -y
+# Alternatively, manually copy skill into fixture:
+# New-Item -ItemType Directory -Force -Path "$FixtureDir\.agents\skills" | Out-Null
+# Copy-Item -Recurse "$RepoRoot\repo-foundation" -Destination "$FixtureDir\.agents\skills\repo-foundation"
 
-# 4. Prompt the AI agent (see prompt below)
+# 4. Finalize setup before starting agent session (records pristine state & lockfile baseline)
+python "$RepoRoot\examples\finalize_setup.py" "$FixtureDir"
 
-# 5. Run independent verification
+# 5. Prompt the AI agent (see prompt below)
+
+# 6. Run independent verification
 python "$RepoRoot\examples\foundation-development\verify.py" `
   --fixture-dir "$FixtureDir"
 ```

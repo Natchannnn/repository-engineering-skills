@@ -6,6 +6,7 @@ Executes both happy paths and negative control probes against bootstraps and ver
 
 import copy
 import hashlib
+import importlib.util
 import json
 import os
 import pathlib
@@ -35,6 +36,12 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
         cls.template_path = REPO_ROOT / "examples" / "template" / "run-template.json"
         cls.demo1_dir = REPO_ROOT / "examples" / "read-only-contract-review"
         cls.demo2_dir = REPO_ROOT / "examples" / "foundation-development"
+        cls.finalize_script = REPO_ROOT / "examples" / "finalize_setup.py"
+
+    def _finalize_setup(self, fixture_dir: pathlib.Path):
+        cmd = [sys.executable, str(self.finalize_script), str(fixture_dir)]
+        res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        self.assertEqual(res.returncode, 0, f"finalize_setup.py failed:\n{res.stderr}\n{res.stdout}")
 
     # =========================================================================
     # Group 1: Template & Schema Tests
@@ -102,6 +109,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             cmd_boot = [sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)]
             res_boot = subprocess.run(cmd_boot, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             self.assertEqual(res_boot.returncode, 0, f"Bootstrap failed:\n{res_boot.stderr}")
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -136,6 +144,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             readme_text = (self.demo1_dir / "README.md").read_text(encoding="utf-8")
             # Extract sample report from README code fence
@@ -163,6 +172,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             readme_text = (self.demo1_dir / "README.md").read_text(encoding="utf-8")
             m = re.search(r"```text\s*(Use repo-native-refactor to review.*?```)", readme_text, re.DOTALL)
@@ -188,6 +198,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -212,6 +223,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -234,6 +246,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -264,6 +277,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -295,6 +309,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             # Probe 1: parent traversal ..
             report_file1 = evidence_dir / "report1.txt"
@@ -337,6 +352,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -366,6 +382,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             report_file = evidence_dir / "review_report.txt"
             report_file.write_text(
@@ -399,6 +416,7 @@ class DemoAcceptanceTestSuite(unittest.TestCase):
             evidence_dir.mkdir(parents=True, exist_ok=True)
 
             subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             # Test LF and CRLF file byte hash binding
             for nl in ("\n", "\r\n"):
@@ -614,6 +632,7 @@ if __name__ == "__main__":
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "foundation_fixture"
             subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             self._apply_working_export_json_implementation(fixture_dir)
 
@@ -626,6 +645,7 @@ if __name__ == "__main__":
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "foundation_fixture"
             subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
 
             cli_py = fixture_dir / "src" / "metric_hub" / "cli.py"
             broken_cli = '''import argparse, pathlib, sys
@@ -668,6 +688,7 @@ if __name__ == "__main__":
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "foundation_fixture"
             subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
             self._apply_working_export_json_implementation(fixture_dir)
 
             # Probe 3a: git mv pyproject.toml tests/pyproject.toml
@@ -682,6 +703,7 @@ if __name__ == "__main__":
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "foundation_fixture"
             subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
             self._apply_working_export_json_implementation(fixture_dir)
 
             # Probe 3b: File with leading space ' README.md'
@@ -696,6 +718,7 @@ if __name__ == "__main__":
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "foundation_fixture"
             subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
             self._apply_working_export_json_implementation(fixture_dir)
 
             (fixture_dir / "README.md.secret").write_text("secret leak", encoding="utf-8")
@@ -709,6 +732,7 @@ if __name__ == "__main__":
         with tempfile.TemporaryDirectory() as td:
             fixture_dir = pathlib.Path(td) / "foundation_fixture"
             subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
             self._apply_working_export_json_implementation(fixture_dir)
 
             pyproject = fixture_dir / "pyproject.toml"
@@ -745,6 +769,387 @@ if __name__ == "__main__":
             res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             self.assertNotEqual(res.returncode, 0, "Bootstrap must abort if INITIAL_HEAD sidecar already exists")
             self.assertEqual(sidecar.read_text(encoding="utf-8"), "existing_head")
+
+    # =========================================================================
+    # Group 4: Step 1 (Setup Finalization & Lockfile Handling) Acceptance Tests
+    # =========================================================================
+    def _create_sample_lockfile(self, fixture_dir: pathlib.Path, skill_name: str = "repo-native-refactor"):
+        lockfile_data = {
+            "version": 1,
+            "skills": {
+                skill_name: {
+                    "source": "Natchannnn/repository-engineering-skills",
+                    "sourceType": "github",
+                    "computedHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                }
+            }
+        }
+        lockfile = fixture_dir / "skills-lock.json"
+        lockfile.write_text(json.dumps(lockfile_data, indent=2) + "\n", encoding="utf-8")
+        skill_dir = fixture_dir / ".agents" / "skills" / skill_name
+        skill_dir.mkdir(parents=True, exist_ok=True)
+        (skill_dir / "SKILL.md").write_text(f"# {skill_name}\nSkill instructions.\n", encoding="utf-8")
+        return lockfile
+
+    # Case 1: Fresh fixture -> simulated CLI setup via lockfile -> finalize setup -> state/scope checks pass
+    def test_demo1_case1_fresh_fixture_simulated_cli_setup_finalize_passes_state_check(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._create_sample_lockfile(fixture_dir, "repo-native-refactor")
+            self._finalize_setup(fixture_dir)
+
+            spec = importlib.util.spec_from_file_location("demo1_verify_mod", str(self.demo1_dir / "verify.py"))
+            d1_verify = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(d1_verify)
+            count = d1_verify.verify_protected_state(fixture_dir)
+            self.assertGreater(count, 0)
+
+    def test_demo2_case1_fresh_fixture_simulated_cli_setup_finalize_passes_scope_check(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._create_sample_lockfile(fixture_dir, "repo-foundation")
+            self._finalize_setup(fixture_dir)
+
+            spec = importlib.util.spec_from_file_location("demo2_verify_mod", str(self.demo2_dir / "verify.py"))
+            d2_verify = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(d2_verify)
+            setup_meta = d2_verify.verify_setup_metadata(fixture_dir)
+            modified = d2_verify.check_scope_boundaries(fixture_dir, setup_meta)
+            self.assertEqual(modified, [])
+
+    # Case 2: Demo 1 valid review report with lockfile present -> complete pass
+    def test_demo1_case2_valid_review_report_with_lockfile_passes(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            evidence_dir = pathlib.Path(td) / "evidence"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._create_sample_lockfile(fixture_dir, "repo-native-refactor")
+            self._finalize_setup(fixture_dir)
+
+            report_file = evidence_dir / "review_report.txt"
+            report_file.write_text(
+                "## Review Summary\n"
+                "### Finding: Public Contract Drift\n"
+                "- verdict: defect\n"
+                "- source_file: src/profile.py\n"
+                "- source_symbol: get_account_tier\n"
+                "- affected_caller_file: src/billing.py\n"
+                "- affected_caller_symbol: calculate_invoice\n"
+                "- exception_type: KeyError\n"
+                "- missing_key: discount_pct\n",
+                encoding="utf-8"
+            )
+
+            cmd_ver = [
+                sys.executable, str(self.demo1_dir / "verify.py"),
+                "--fixture-dir", str(fixture_dir),
+                "--review-output", str(report_file)
+            ]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertEqual(res_ver.returncode, 0, f"verify.py failed:\n{res_ver.stderr}\n{res_ver.stdout}")
+            self.assertIn("OVERALL VERIFICATION: PASSED", res_ver.stdout)
+
+    # Case 3: Demo 2 valid implementation with lockfile present -> complete pass
+    def test_demo2_case3_valid_implementation_with_lockfile_passes(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._create_sample_lockfile(fixture_dir, "repo-foundation")
+            self._finalize_setup(fixture_dir)
+            self._apply_working_export_json_implementation(fixture_dir)
+
+            cmd_ver = [sys.executable, str(self.demo2_dir / "verify.py"), "--fixture-dir", str(fixture_dir)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertEqual(res_ver.returncode, 0, f"verify.py failed:\n{res_ver.stderr}\n{res_ver.stdout}")
+            self.assertIn("OVERALL VERIFICATION: PASSED", res_ver.stdout)
+
+    # Case 4: Modified or deleted skills-lock.json post-setup -> FAIL
+    def test_demo1_case4_lockfile_modified_post_setup_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            evidence_dir = pathlib.Path(td) / "evidence"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            lockfile = self._create_sample_lockfile(fixture_dir, "repo-native-refactor")
+            self._finalize_setup(fixture_dir)
+
+            lockfile.write_text('{"version": 2, "tampered": true}', encoding="utf-8")
+
+            report_file = evidence_dir / "review_report.txt"
+            report_file.write_text(
+                "- verdict: defect\n- source_file: src/profile.py\n- source_symbol: get_account_tier\n"
+                "- affected_caller_file: src/billing.py\n- affected_caller_symbol: calculate_invoice\n"
+                "- exception_type: KeyError\n- missing_key: discount_pct\n",
+                encoding="utf-8"
+            )
+
+            cmd_ver = [sys.executable, str(self.demo1_dir / "verify.py"), "--fixture-dir", str(fixture_dir), "--review-output", str(report_file)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Lockfile integrity violation", res_ver.stderr)
+            self.assertIn("modified post-setup", res_ver.stderr)
+
+    def test_demo1_case4_lockfile_deleted_post_setup_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            evidence_dir = pathlib.Path(td) / "evidence"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            lockfile = self._create_sample_lockfile(fixture_dir, "repo-native-refactor")
+            self._finalize_setup(fixture_dir)
+
+            lockfile.unlink()
+
+            report_file = evidence_dir / "review_report.txt"
+            report_file.write_text(
+                "- verdict: defect\n- source_file: src/profile.py\n- source_symbol: get_account_tier\n"
+                "- affected_caller_file: src/billing.py\n- affected_caller_symbol: calculate_invoice\n"
+                "- exception_type: KeyError\n- missing_key: discount_pct\n",
+                encoding="utf-8"
+            )
+
+            cmd_ver = [sys.executable, str(self.demo1_dir / "verify.py"), "--fixture-dir", str(fixture_dir), "--review-output", str(report_file)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Lockfile integrity violation", res_ver.stderr)
+            self.assertIn("missing", res_ver.stderr)
+
+    def test_demo2_case4_lockfile_modified_post_setup_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            lockfile = self._create_sample_lockfile(fixture_dir, "repo-foundation")
+            self._finalize_setup(fixture_dir)
+            self._apply_working_export_json_implementation(fixture_dir)
+
+            lockfile.write_text('{"modified": true}', encoding="utf-8")
+
+            cmd_ver = [sys.executable, str(self.demo2_dir / "verify.py"), "--fixture-dir", str(fixture_dir)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Lockfile integrity violation", res_ver.stderr)
+
+    def test_demo2_case4_lockfile_deleted_post_setup_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            lockfile = self._create_sample_lockfile(fixture_dir, "repo-foundation")
+            self._finalize_setup(fixture_dir)
+            self._apply_working_export_json_implementation(fixture_dir)
+
+            lockfile.unlink()
+
+            cmd_ver = [sys.executable, str(self.demo2_dir / "verify.py"), "--fixture-dir", str(fixture_dir)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Lockfile integrity violation", res_ver.stderr)
+
+    # Case 5: Lockfile absent at setup, but created during agent run -> FAIL
+    def test_demo1_case5_lockfile_appeared_post_setup_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            evidence_dir = pathlib.Path(td) / "evidence"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
+
+            (fixture_dir / "skills-lock.json").write_text('{"unexpected": true}', encoding="utf-8")
+
+            report_file = evidence_dir / "review_report.txt"
+            report_file.write_text(
+                "- verdict: defect\n- source_file: src/profile.py\n- source_symbol: get_account_tier\n"
+                "- affected_caller_file: src/billing.py\n- affected_caller_symbol: calculate_invoice\n"
+                "- exception_type: KeyError\n- missing_key: discount_pct\n",
+                encoding="utf-8"
+            )
+
+            cmd_ver = [sys.executable, str(self.demo1_dir / "verify.py"), "--fixture-dir", str(fixture_dir), "--review-output", str(report_file)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Lockfile state violation", res_ver.stderr)
+            self.assertIn("appeared during or after agent task", res_ver.stderr)
+
+    def test_demo2_case5_lockfile_appeared_post_setup_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
+            self._apply_working_export_json_implementation(fixture_dir)
+
+            (fixture_dir / "skills-lock.json").write_text('{"unexpected": true}', encoding="utf-8")
+
+            cmd_ver = [sys.executable, str(self.demo2_dir / "verify.py"), "--fixture-dir", str(fixture_dir)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Lockfile state violation", res_ver.stderr)
+
+    # Case 7: Bypassing setup finalization (missing metadata) -> FAIL with clear diagnostic
+    def test_demo1_case7_bypassing_setup_metadata_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            evidence_dir = pathlib.Path(td) / "evidence"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+
+            report_file = evidence_dir / "review_report.txt"
+            report_file.write_text("- verdict: defect\n", encoding="utf-8")
+
+            cmd_ver = [sys.executable, str(self.demo1_dir / "verify.py"), "--fixture-dir", str(fixture_dir), "--review-output", str(report_file)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Missing setup metadata file", res_ver.stderr)
+            self.assertIn("finalize_setup.py", res_ver.stderr)
+
+    def test_demo2_case7_bypassing_setup_metadata_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._apply_working_export_json_implementation(fixture_dir)
+
+            cmd_ver = [sys.executable, str(self.demo2_dir / "verify.py"), "--fixture-dir", str(fixture_dir)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Missing setup metadata file", res_ver.stderr)
+            self.assertIn("finalize_setup.py", res_ver.stderr)
+
+    # Case 8: Attempting to re-run setup on finalized metadata -> FAIL (no silent overwrite)
+    def test_setup_case8_cannot_overwrite_finalized_metadata(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._finalize_setup(fixture_dir)
+
+            cmd = [sys.executable, str(self.finalize_script), str(fixture_dir)]
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res.returncode, 0)
+            self.assertIn("Setup metadata already exists", res.stderr)
+            self.assertIn("cannot be re-finalized", res.stderr)
+
+    def test_setup_case8_concurrent_finalize_exclusive_creation_rejects_second_writer(self):
+        import threading
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+
+            spec = importlib.util.spec_from_file_location("finalize_setup_mod", str(self.finalize_script))
+            setup_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(setup_mod)
+
+            original_validate = setup_mod.validate_pristine_source
+            barrier = threading.Barrier(2)
+
+            def synchronized_validate(fixture):
+                original_validate(fixture)
+                barrier.wait(timeout=15)
+
+            setup_mod.validate_pristine_source = synchronized_validate
+
+            results = []
+            exceptions = []
+
+            def worker():
+                try:
+                    res = setup_mod.finalize_setup(fixture_dir)
+                    results.append(res)
+                except Exception as ex:
+                    exceptions.append(ex)
+
+            t1 = threading.Thread(target=worker)
+            t2 = threading.Thread(target=worker)
+            t1.start()
+            t2.start()
+            t1.join(timeout=15)
+            t2.join(timeout=15)
+
+            # Exactly one worker must succeed; the other must receive FileExistsError
+            self.assertEqual(len(results), 1)
+            self.assertEqual(len(exceptions), 1)
+            self.assertIsInstance(exceptions[0], FileExistsError)
+            self.assertIn("Setup metadata already exists", str(exceptions[0]))
+
+            # The resulting metadata file is intact, valid JSON, and not truncated
+            meta_path = results[0]
+            self.assertTrue(meta_path.is_file())
+            loaded = json.loads(meta_path.read_text(encoding="utf-8"))
+            self.assertEqual(loaded.get("schema_version"), "1.0")
+
+    def test_setup_case8_dirty_source_before_setup_aborts(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+
+            (fixture_dir / "src" / "profile.py").write_text("# premature modification", encoding="utf-8")
+
+            cmd = [sys.executable, str(self.finalize_script), str(fixture_dir)]
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res.returncode, 0)
+            self.assertIn("Pristine source check failed", res.stderr)
+
+            meta_file = fixture_dir.parent / f"{fixture_dir.name}-setup-metadata.json"
+            self.assertFalse(meta_file.exists())
+
+    def test_setup_negative_control_unauthorized_root_json_aborts(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+
+            (fixture_dir / "package.json").write_text('{"name": "unauthorized"}', encoding="utf-8")
+
+            cmd = [sys.executable, str(self.finalize_script), str(fixture_dir)]
+            res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res.returncode, 0)
+            self.assertIn("unauthorized untracked file detected", res.stderr)
+
+    # Subfolder lockfile negative controls: only root skills-lock.json receives special exemption
+    def test_demo2_negative_control_subfolder_lockfile_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "foundation_fixture"
+            subprocess.run([sys.executable, str(self.demo2_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._create_sample_lockfile(fixture_dir, "repo-foundation")
+            self._finalize_setup(fixture_dir)
+            self._apply_working_export_json_implementation(fixture_dir)
+
+            # Placing lockfile in samples/ (outside allowed prefixes) must violate scope
+            (fixture_dir / "samples" / "skills-lock.json").write_text('{"sub": true}', encoding="utf-8")
+
+            cmd_ver = [sys.executable, str(self.demo2_dir / "verify.py"), "--fixture-dir", str(fixture_dir)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Scope boundary violated", res_ver.stderr)
+
+    def test_demo1_negative_control_subfolder_lockfile_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "contract_review_fixture"
+            evidence_dir = pathlib.Path(td) / "evidence"
+            evidence_dir.mkdir(parents=True, exist_ok=True)
+
+            subprocess.run([sys.executable, str(self.demo1_dir / "bootstrap.py"), str(fixture_dir)], check=True)
+            self._create_sample_lockfile(fixture_dir, "repo-native-refactor")
+            self._finalize_setup(fixture_dir)
+
+            (fixture_dir / "src" / "skills-lock.json").write_text('{"sub": true}', encoding="utf-8")
+
+            report_file = evidence_dir / "review_report.txt"
+            report_file.write_text(
+                "- verdict: defect\n- source_file: src/profile.py\n- source_symbol: get_account_tier\n"
+                "- affected_caller_file: src/billing.py\n- affected_caller_symbol: calculate_invoice\n"
+                "- exception_type: KeyError\n- missing_key: discount_pct\n",
+                encoding="utf-8"
+            )
+
+            cmd_ver = [sys.executable, str(self.demo1_dir / "verify.py"), "--fixture-dir", str(fixture_dir), "--review-output", str(report_file)]
+            res_ver = subprocess.run(cmd_ver, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            self.assertNotEqual(res_ver.returncode, 0)
+            self.assertIn("Protected state violated", res_ver.stderr)
+            self.assertIn("src/skills-lock.json", res_ver.stderr)
 
 if __name__ == "__main__":
     unittest.main()
