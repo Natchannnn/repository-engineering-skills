@@ -25,6 +25,9 @@ jobs:
         with:
           python-version: '3.14'
 
+      - name: Install test dependencies
+        run: python -m pip install jsonschema
+
       - name: Refactor harness tests
         run: python -B -m unittest discover -s repo-native-refactor/evals/tests -v
 
@@ -45,6 +48,10 @@ jobs:
       - name: Verify runtime package generator
         shell: pwsh
         run: ./scripts/test-package.ps1
+
+      - name: Verify skill demo acceptance suite
+        shell: pwsh
+        run: ./scripts/test-demos.ps1
 
       - name: CP2 treatment
         run: python -B repo-foundation/evals/harness.py verify CP2_SLICE evals-suite/ablation_cp2/treatment/workspace
