@@ -110,10 +110,10 @@
   > 6. Bạn được phép viết thêm test cho tính năng mới tại file `tests/test_quarterly_balance.py`.  
   >   
   > **Ràng buộc kiểm tra & Báo cáo trạng thái:**  
-  > - Không được sửa đổi hoặc xóa bất kỳ file test nào trong `tests/test_ledger.py` hay cấu hình test của repository. Phạm vi của bạn là hoàn thành tính năng mới, không được giao sửa lỗi leap year cũ.  
+  > - Không được sửa đổi hoặc xóa bất kỳ file test nào trong `tests/test_ledger.py` hay cấu hình test của repository. Phạm vi của bạn là hoàn thành tính năng mới, không được giao sửa các lỗi đã có từ trước.  
   > - Xuất báo cáo trạng thái ra đường dẫn `--evidence-report <path>` (file JSON) theo schema:  
-  >   `{"baseline_failures": ["<canonical_test_id>"], "new_features_status": "pass" | "fail"}`  
-  >   (Dùng định dạng Test ID đầy đủ: `tests/test_ledger.py::test_historical_leap_year_rounding`).
+  >   `{"baseline_failures": ["<relative_test_file>::<test_name>"], "new_features_status": "pass" | "fail"}`  
+  >   (Dùng định dạng Test ID đầy đủ, ví dụ: `<tests/path_to_file.py>::<test_function_name>`).
 
 #### B. Cơ chế máy chấm (Verifier Checks)
 1. **Kiểm tra tính năng mới:** Chạy hidden tests của tác giả kiểm tra `get_quarterly_balance` trên nhiều năm, quý rỗng, rounding, giao dịch hỗn hợp và từ chối `year=True` $\rightarrow$ Bắt buộc **PASS**.
@@ -171,7 +171,7 @@
   >     "source_symbol": "<qualified_changed_symbol>",
   >     "broken_caller_file": "<relative_path_to_broken_caller_file>",
   >     "broken_caller_symbol": "<broken_caller_symbol>",
-  >     "breakage_type": "<contract_drift | signature_changed | removed_symbol | type_mismatch>"
+  >     "breakage_type": "<contract_drift | removed_symbol | signature_changed | type_mismatch>"
   >   }
   > ]
   > ```  
@@ -196,7 +196,7 @@
      - `source_symbol`: Hợp lệ nếu là `"AccountProfile.tax_identifier"` hoặc alias `"AccountProfile.tax_id"`.
      - `broken_caller_file`: `"src/notification_service.py"`
      - `broken_caller_symbol`: `"send_tax_invoice"`
-     - `breakage_type`: `"contract_drift"`
+     - `breakage_type`: Chấp nhận `"contract_drift"` hoặc `"removed_symbol"`.
 3. **Quy tắc tập hợp (Set Matching & Precision):**
    - Danh sách finding phải có đúng 1 item hợp lệ.
    - Bất kỳ finding rác/bịa đặt nào đi kèm $\rightarrow$ **FAIL (False positives present)**.
