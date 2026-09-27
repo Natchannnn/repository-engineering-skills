@@ -382,5 +382,26 @@ def get_quarterly_balance(year: int) -> dict[str, Decimal]:
                 "failed" in str(ctx.exception)
             )
 
+    def test_negative_control_skiptest_fails(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "d3_fixture"
+            self.bootstrap_mod.bootstrap_d3(fixture_dir)
+            report_path = pathlib.Path(td) / "status_report.json"
+            report_path.write_text(json.dumps(VALID_REPORT_CONTENT, indent=2), encoding="utf-8")
+
+            skiptest_code = '''def get_quarterly_balance(year: int) -> dict[str, Decimal]:
+    import unittest
+    raise unittest.SkipTest("not implemented")
+'''
+            self._append_to_ledger(fixture_dir, skiptest_code)
+
+            with self.assertRaises(AssertionError) as ctx:
+                self.verify_mod.verify_d3(fixture_dir, report_path)
+            self.assertTrue(
+                "did not report clean 'OK'" in str(ctx.exception) or
+                "skipped" in str(ctx.exception).lower() or
+                "failed" in str(ctx.exception).lower()
+            )
+
 if __name__ == "__main__":
     unittest.main()

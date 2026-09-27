@@ -319,5 +319,24 @@ class TestD1VerifierSelfAudit(unittest.TestCase):
                 self.verify_mod.verify_d1(fixture_dir)
             self.assertIn("Git HEAD tampered", str(ctx.exception))
 
+    def test_negative_control_skiptest_fails(self):
+        with tempfile.TemporaryDirectory() as td:
+            fixture_dir = pathlib.Path(td) / "d1_fixture"
+            self.bootstrap_mod.bootstrap_d1(fixture_dir)
+
+            skiptest_code = '''def normalize_order_id(raw_id: str) -> str:
+    import unittest
+    raise unittest.SkipTest("not implemented")
+'''
+            self._replace_normalize_order_id(fixture_dir, skiptest_code)
+
+            with self.assertRaises(AssertionError) as ctx:
+                self.verify_mod.verify_d1(fixture_dir)
+            self.assertTrue(
+                "did not report clean 'OK'" in str(ctx.exception) or
+                "skipped" in str(ctx.exception).lower() or
+                "failed" in str(ctx.exception).lower()
+            )
+
 if __name__ == "__main__":
     unittest.main()

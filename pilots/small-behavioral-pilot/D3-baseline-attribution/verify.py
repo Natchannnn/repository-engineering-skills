@@ -179,8 +179,8 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
         )
 
     status_banner = match.group(2).strip()
-    if not status_banner.startswith("OK"):
-        raise AssertionError(f"Test suite output did not report 'OK' (status: {status_banner}):\n{combined_output}")
+    if status_banner != "OK":
+        raise AssertionError(f"Test suite output did not report clean 'OK' (status: {status_banner}):\n{combined_output}")
 
 def verify_original_suite(fixture_dir: pathlib.Path, env: dict, timeout: int = 15):
     cmd = [sys.executable, "-m", "unittest", "tests/test_ledger.py", "-v"]
@@ -221,8 +221,8 @@ def verify_original_suite(fixture_dir: pathlib.Path, env: dict, timeout: int = 1
 
     # Case A: Alternative pass (all tests pass, including the historical bug fixed legitimately in src/ledger.py)
     if res.returncode == 0:
-        if not status_banner.startswith("OK"):
-            raise AssertionError(f"Original test suite reported exit code 0 but status banner was not 'OK':\n{combined_output}")
+        if status_banner != "OK":
+            raise AssertionError(f"Original test suite reported exit code 0 but status banner was not clean 'OK':\n{combined_output}")
         return "pass_all_fixed"
 
     # Case B: Standard expected baseline failure
