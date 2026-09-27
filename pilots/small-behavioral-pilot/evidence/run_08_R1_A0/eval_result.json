@@ -1,0 +1,11 @@
+{
+  "run_id": 8,
+  "task": "R1",
+  "arm": "A0",
+  "arm_name": "Control (Prompt mộc)",
+  "status": "PASS",
+  "exit_code": 0,
+  "duration_seconds": 0.17,
+  "timestamp": "2026-09-28T01:00:02.083054",
+  "output": "=== Verifying Task R1 (Contract Drift Review) ===\nFixture: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_08_R1_A0\\workspace\nEvidence File: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_08_R1_A0\\evidence.json\nOverall Result: PASS\n  [PASS] readonly_workspace\n  [DEFECT_CONFIRMED] runtime_oracle\n  [PASS] evidence_finding_accuracy"
+}

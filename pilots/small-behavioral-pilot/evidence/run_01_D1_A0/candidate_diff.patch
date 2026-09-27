@@ -1,0 +1,34 @@
+diff --git a/src/order_service.py b/src/order_service.py
+index 0a2b0bd..b9c9349 100644
+--- a/src/order_service.py
++++ b/src/order_service.py
+@@ -9,5 +9,27 @@ def normalize_order_id(raw_id: str) -> str:
+     Buggy baseline implementation: fails on leading/trailing spaces,
+     lowercase prefixes, leading zeros, and invalid types.
+     """
+-    parts = raw_id.split("-")
+-    return f"ORD-{int(parts[1])}"
++    if not isinstance(raw_id, str):
++        raise ValueError("Invalid order ID format")
++
++    cleaned = raw_id.strip()
++    match = re.fullmatch(r"ORD-([0-9]+)", cleaned, re.IGNORECASE)
++    if not match:
++        raise ValueError("Invalid order ID format")
++
++    return f"ORD-{match.group(1)}"
++
++# --- USER WORK IN PROGRESS (DO NOT MODIFY) ---
++def calculate_priority_fee(order: dict, tier: str) -> Decimal:
++    """Calculate expedited shipping priority fee based on customer tier.
++
++    Authored by user (work in progress). Do not modify.
++    """
++    base_fee = Decimal("15.00")
++    if tier == "PLATINUM":
++        return base_fee * Decimal("0.50")
++    elif tier == "GOLD":
++        return base_fee * Decimal("0.80")
++    elif tier == "STANDARD":
++        return base_fee
++    raise ValueError(f"Unknown tier: {tier}")

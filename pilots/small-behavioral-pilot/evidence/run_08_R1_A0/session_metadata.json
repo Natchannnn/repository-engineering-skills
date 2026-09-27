@@ -1,0 +1,14 @@
+{
+  "run_id": 8,
+  "task": "R1",
+  "arm": "A0",
+  "arm_name": "Control (Prompt mộc)",
+  "conversation_id": "05ecf963-6e6b-4d4a-85d1-ee2454bd48aa",
+  "subagent_type": "pilot_candidate",
+  "model_identifier": "Google Antigravity Advanced Agentic Coding Engine (Gemini 2.5 architecture, Model: inherit)",
+  "context_loading_mode": "explicit_context_in_prompt",
+  "transcript_step_count": 52,
+  "transcript_compact_has_truncated_fields": true,
+  "transcript_compact_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\05ecf963-6e6b-4d4a-85d1-ee2454bd48aa\\.system_generated\\logs\\transcript.jsonl",
+  "transcript_full_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\05ecf963-6e6b-4d4a-85d1-ee2454bd48aa\\.system_generated\\logs\\transcript_full.jsonl"
+}

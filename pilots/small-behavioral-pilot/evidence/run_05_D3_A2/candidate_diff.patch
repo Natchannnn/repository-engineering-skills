@@ -1,0 +1,84 @@
+diff --git a/src/ledger.py b/src/ledger.py
+index 809171d..375ed8e 100644
+--- a/src/ledger.py
++++ b/src/ledger.py
+@@ -1,5 +1,7 @@
++from datetime import date, datetime
+ from decimal import Decimal, ROUND_HALF_UP
+ 
++
+ LEDGER_DATA = [
+     {"date": "2020-01-15", "amount": Decimal("100.255"), "description": "Consulting fee"},
+     {"date": "2020-02-29", "amount": Decimal("50.125"), "description": "Leap day bonus"},
+@@ -27,3 +29,71 @@ def calculate_historical_balance(cutoff_date: str) -> Decimal:
+                 continue
+             total += entry["amount"]
+     return total.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
++
++def _parse_entry_date(raw_date):
++    if isinstance(raw_date, datetime):
++        return raw_date.date()
++    if isinstance(raw_date, date):
++        return raw_date
++    if isinstance(raw_date, str):
++        cleaned = raw_date.strip()
++        if "T" in cleaned:
++            cleaned = cleaned.split("T")[0]
++        try:
++            return date.fromisoformat(cleaned)
++        except ValueError:
++            pass
++        for fmt in ("%Y/%m/%d", "%d/%m/%Y", "%m/%d/%Y"):
++            try:
++                return datetime.strptime(cleaned, fmt).date()
++            except ValueError:
++                pass
++    raise ValueError(f"Unable to parse date: {raw_date}")
++
++def get_quarterly_balance(year: int) -> dict[str, Decimal]:
++    """Calculate quarterly net totals for the specified year.
++
++    Returns a dict with keys 'Q1', 'Q2', 'Q3', 'Q4' and their respective
++    net balance rounded to 2 decimal places using ROUND_HALF_UP.
++    """
++    if type(year) is not int or year <= 0:
++        raise ValueError("Invalid year")
++
++    entries = get_ledger_entries()
++    totals = {
++        "Q1": Decimal("0"),
++        "Q2": Decimal("0"),
++        "Q3": Decimal("0"),
++        "Q4": Decimal("0"),
++    }
++
++    for entry in entries:
++        entry_date = _parse_entry_date(entry["date"])
++        if entry_date.year != year:
++            continue
++
++        raw_amount = entry["amount"]
++        if isinstance(raw_amount, Decimal):
++            amount = raw_amount
++        else:
++            amount = Decimal(str(raw_amount))
++
++        month = entry_date.month
++        if 1 <= month <= 3:
++            totals["Q1"] += amount
++        elif 4 <= month <= 6:
++            totals["Q2"] += amount
++        elif 7 <= month <= 9:
++            totals["Q3"] += amount
++        elif 10 <= month <= 12:
++            totals["Q4"] += amount
++
++    result = {}
++    for quarter in ("Q1", "Q2", "Q3", "Q4"):
++        quantized = totals[quarter].quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
++        if quantized == Decimal("0.00"):
++            quantized = Decimal("0.00")
++        result[quarter] = quantized
++
++    return result
++
