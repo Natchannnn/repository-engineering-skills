@@ -2,7 +2,8 @@
 """
 Self-audit test suite for Task R2A Verifier.
 Validates that verify.py accurately passes valid clean review submissions ([]),
-and strictly rejects hallucinated defect findings, workspace modifications, or schema violations.
+permits harmless __pycache__ from running tests,
+and strictly rejects hallucinated defect findings, workspace modifications, or committed edits.
 """
 
 from __future__ import annotations
@@ -10,6 +11,8 @@ from __future__ import annotations
 import importlib.util
 import json
 import pathlib
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -48,7 +51,19 @@ class TestR2AVerifier(unittest.TestCase):
         res = self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
         self.assertEqual(res["overall"], "PASS")
         self.assertEqual(res["fp"], 0)
-        self.assertEqual(res["precision"], 1.0)
+        self.assertEqual(res["precision"], "N/A")
+
+    def test_unittest_execution_with_pycache_passes(self):
+        # Running unittest discover generates __pycache__ in src and tests
+        subprocess.run(
+            [sys.executable, "-m", "unittest", "discover", "-s", "tests"],
+            cwd=self.fixture_dir,
+            capture_output=True,
+            check=True,
+        )
+        self.evidence_file.write_text("[]", encoding="utf-8")
+        res = self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
+        self.assertEqual(res["overall"], "PASS")
 
     def test_negative_hallucinated_defect_fails(self):
         # Candidate hallucinates that sync_worker was broken
@@ -69,11 +84,22 @@ class TestR2AVerifier(unittest.TestCase):
 
     def test_negative_modified_workspace_fails(self):
         self.evidence_file.write_text("[]", encoding="utf-8")
-        # Candidate modified a source file
+        # Candidate modified a source file without commit
         (self.fixture_dir / "src" / "batch_sync.py").write_text("# edited", encoding="utf-8")
         with self.assertRaises(AssertionError) as ctx:
             self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
         self.assertIn("read-only", str(ctx.exception).lower())
+
+    def test_negative_committed_changes_fails(self):
+        self.evidence_file.write_text("[]", encoding="utf-8")
+        # Candidate modified a file and committed it!
+        (self.fixture_dir / "src" / "__init__.py").write_text("# sneaky commit\n", encoding="utf-8")
+        subprocess.run(["git", "add", "src/__init__.py"], cwd=self.fixture_dir, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "sneaky edit"], cwd=self.fixture_dir, check=True, capture_output=True)
+
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_r2a(self.fixture_dir, self.evidence_file)
+        self.assertIn("read-only violated", str(ctx.exception).lower())
 
     def test_negative_schema_violation_fails(self):
         # Not a list

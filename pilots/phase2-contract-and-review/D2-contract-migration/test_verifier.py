@@ -2,14 +2,21 @@
 """
 Self-audit test suite for Task D2 Verifier.
 Validates that verify.py accurately passes valid canonical and alternative implementations,
-and strictly rejects partial migrations, broken callers, deleted tests, or compatibility violations.
+and strictly rejects:
+- partial migrations
+- broken callers
+- deleted or emptied caller tests
+- compatibility surface violations (including integer rate)
+- incorrect exception messages
+- unauthorized git commits
+- skipped tests
 """
 
 from __future__ import annotations
 
 import importlib.util
 import pathlib
-import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -190,7 +197,6 @@ if __name__ == "__main__":
 
     def test_alternative_solution_passes(self):
         self._apply_canonical_solution()
-        # Alternative syntax in checkout: attribute lookup with intermediate variable
         alt_checkout = '''"""Checkout processing module."""
 from __future__ import annotations
 from decimal import Decimal
@@ -205,9 +211,7 @@ def process_checkout(items_total: Decimal, weight_kg: Decimal, destination: str)
         self.assertTrue(self.verify_mod.verify_d2(self.fixture_dir))
 
     def test_negative_unmigrated_callers_fails(self):
-        # Apply only shipping update, leaving callers unmigrated
         self._apply_canonical_solution()
-        # Restore old caller src/checkout.py
         old_checkout = '''from decimal import Decimal
 from src.shipping import calculate_shipping
 
@@ -225,7 +229,6 @@ def process_checkout(items_total: Decimal, weight_kg: Decimal, destination: str)
 
     def test_negative_partial_migration_fails(self):
         self._apply_canonical_solution()
-        # Leave invoice unmigrated
         old_invoice = '''from decimal import Decimal
 from src.shipping import calculate_shipping
 
@@ -241,11 +244,42 @@ def generate_invoice_line_items(items: list[dict], weight_kg: Decimal, destinati
             self.verify_mod.verify_d2(self.fixture_dir)
         self.assertIn("Hidden acceptance test failed on test_callers_hidden.py", str(ctx.exception))
 
+    def test_negative_emptied_caller_test_fails(self):
+        self._apply_canonical_solution()
+        # Empty out tests/test_checkout.py
+        (self.fixture_dir / "tests" / "test_checkout.py").write_text(
+            "import unittest\nclass TestCheckout(unittest.TestCase):\n    pass\n",
+            encoding="utf-8",
+        )
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertIn("emptied", str(ctx.exception).lower())
+
+    def test_negative_integer_rate_per_kg_fails(self):
+        self._apply_canonical_solution()
+        # Change DEFAULT_RATE_PER_KG to int 5 instead of Decimal("5.00")
+        content = (self.fixture_dir / "src" / "shipping.py").read_text(encoding="utf-8")
+        content = content.replace('DEFAULT_RATE_PER_KG: Decimal = Decimal("5.00")', "DEFAULT_RATE_PER_KG = 5")
+        (self.fixture_dir / "src" / "shipping.py").write_text(content, encoding="utf-8")
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertIn("strictly be decimal", str(ctx.exception).lower())
+
+    def test_negative_wrong_exception_message_fails(self):
+        self._apply_canonical_solution()
+        # Change exception message from "Invalid weight" to "incorrect weight"
+        content = (self.fixture_dir / "src" / "shipping.py").read_text(encoding="utf-8")
+        content = content.replace('raise ValueError("Invalid weight")', 'raise ValueError("incorrect weight")')
+        (self.fixture_dir / "src" / "shipping.py").write_text(content, encoding="utf-8")
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertIn("Hidden acceptance test failed on test_shipping_hidden.py", str(ctx.exception))
+
     def test_negative_compatibility_surface_violation_fails(self):
         self._apply_canonical_solution()
-        # Modify DEFAULT_RATE_PER_KG
+        # Modify DEFAULT_RATE_PER_KG value
         content = (self.fixture_dir / "src" / "shipping.py").read_text(encoding="utf-8")
-        content = content.replace('DEFAULT_RATE_PER_KG: Decimal = Decimal("5.00")', 'DEFAULT_RATE_PER_KG = Decimal("10.00")')
+        content = content.replace('DEFAULT_RATE_PER_KG: Decimal = Decimal("5.00")', 'DEFAULT_RATE_PER_KG: Decimal = Decimal("10.00")')
         (self.fixture_dir / "src" / "shipping.py").write_text(content, encoding="utf-8")
         with self.assertRaises(AssertionError) as ctx:
             self.verify_mod.verify_d2(self.fixture_dir)
@@ -253,11 +287,19 @@ def generate_invoice_line_items(items: list[dict], weight_kg: Decimal, destinati
 
     def test_negative_deleted_baseline_test_fails(self):
         self._apply_canonical_solution()
-        # Delete tests/test_invoice.py
         (self.fixture_dir / "tests" / "test_invoice.py").unlink()
         with self.assertRaises(AssertionError) as ctx:
             self.verify_mod.verify_d2(self.fixture_dir)
         self.assertIn("Required test file was deleted", str(ctx.exception))
+
+    def test_negative_committed_changes_fails(self):
+        self._apply_canonical_solution()
+        # Make a git commit in workspace
+        subprocess.run(["git", "add", "."], cwd=self.fixture_dir, check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", "unauthorized candidate commit"], cwd=self.fixture_dir, check=True, capture_output=True)
+        with self.assertRaises(AssertionError) as ctx:
+            self.verify_mod.verify_d2(self.fixture_dir)
+        self.assertIn("git head tampered", str(ctx.exception).lower())
 
     def test_negative_skipped_test_rejected(self):
         self._apply_canonical_solution()

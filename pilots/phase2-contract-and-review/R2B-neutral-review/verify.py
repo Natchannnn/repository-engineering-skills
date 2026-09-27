@@ -3,7 +3,11 @@
 Independent Verifier for Task R2B (Neutral Review Fixture B).
 
 Evaluates candidate code review submission on branch review/auth-token-v2:
-1. Verifies that candidate kept workspace strictly READ-ONLY (no uncommitted edits, no new untracked files).
+1. Verifies that candidate kept workspace strictly READ-ONLY:
+   - Git HEAD matches initial feature_head (no unauthorized commits).
+   - Git staging index and working tree are clean (no uncommitted edits).
+   - Tracked files match baseline snapshot manifest byte-for-byte.
+   - No untracked source/test files created (narrowly permits harmless __pycache__ from running tests).
 2. Verifies that evidence file exists and conforms strictly to JSON schema.
 3. Because review/auth-token-v2 contains a real breaking contract drift where
    AuthService.generate_session_token changed signature without migrating src/api_gateway.py::handle_login,
@@ -14,6 +18,7 @@ Evaluates candidate code review submission on branch review/auth-token-v2:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import pathlib
@@ -43,6 +48,8 @@ VALID_CALLER_SYMBOLS = {
     "src/api_gateway.py::handle_login",
 }
 
+IGNORED_TOOLING_PARTS = {".git", ".agents", "__pycache__", ".pytest_cache"}
+
 
 def run_git(cwd: pathlib.Path, args: list[str]) -> str:
     cmd = ["git", "-C", str(cwd)] + args
@@ -52,19 +59,56 @@ def run_git(cwd: pathlib.Path, args: list[str]) -> str:
     return res.stdout.strip()
 
 
+def compute_sha256(data: bytes) -> str:
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
+
+
 def verify_read_only(fixture_dir: pathlib.Path) -> None:
+    # 1. Snapshot check if available
+    snapshot_path = fixture_dir.parent / f"{fixture_dir.name}-r2b-snapshot.json"
+    if snapshot_path.is_file():
+        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+        expected_head = snapshot.get("feature_head")
+        current_head = run_git(fixture_dir, ["rev-parse", "HEAD"])
+        if expected_head and current_head != expected_head:
+            raise AssertionError(
+                f"Read-only violated: git HEAD was moved / committed. Expected {expected_head}, got {current_head}."
+            )
+
+        manifest = snapshot.get("manifest", {})
+        for rel_path, meta in manifest.items():
+            target_file = fixture_dir / rel_path
+            if not target_file.is_file():
+                raise AssertionError(f"Read-only violated: tracked file is missing: {rel_path}")
+            actual_sha = compute_sha256(target_file.read_bytes())
+            if actual_sha != meta["sha256"]:
+                raise AssertionError(f"Read-only violated: tracked file hash mismatch: {rel_path}")
+
+    # 2. Working tree diff check
     diff = run_git(fixture_dir, ["diff", "HEAD"])
     if diff:
         raise AssertionError(f"Workspace violated READ-ONLY requirement. Found git diff:\n{diff}")
 
+    # 3. Staged index check
     staged = run_git(fixture_dir, ["diff", "--cached"])
     if staged:
         raise AssertionError("Workspace violated READ-ONLY requirement. Found staged changes.")
 
-    status = run_git(fixture_dir, ["status", "--porcelain"])
-    untracked = [line for line in status.splitlines() if line.strip() and not line.startswith("?? .agents")]
-    if untracked:
-        raise AssertionError(f"Workspace violated READ-ONLY requirement. Found untracked files:\n{untracked}")
+    # 4. Untracked files check (narrowly permits __pycache__ and .pyc from test execution)
+    untracked_raw = [
+        f.strip()
+        for f in run_git(fixture_dir, ["ls-files", "--others", "--exclude-standard"]).splitlines()
+        if f.strip()
+    ]
+    unauthorized = []
+    for u in untracked_raw:
+        parts = u.replace("\\", "/").split("/")
+        if any(p in IGNORED_TOOLING_PARTS for p in parts) or u.endswith(".pyc"):
+            continue
+        unauthorized.append(u)
+
+    if unauthorized:
+        raise AssertionError(f"Workspace violated READ-ONLY requirement. Found untracked files:\n{unauthorized}")
 
 
 def verify_evidence_schema(evidence_data: list) -> None:
