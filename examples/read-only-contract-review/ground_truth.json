@@ -1,0 +1,93 @@
+{
+  "fixture_name": "read-only-contract-review",
+  "version": "1.2.0",
+  "drift_summary": "Public return dictionary contract changed in get_account_tier; breaks downstream billing invoice calculation.",
+  "ground_truth": {
+    "source_file": "src/profile.py",
+    "source_symbol": "get_account_tier",
+    "contract_change": "Replaced 'discount_pct' (float) with 'discount_rate_basis_points' (int) in returned tier dictionary.",
+    "affected_caller_file": "src/billing.py",
+    "affected_caller_symbol": "calculate_invoice",
+    "exception_type": "KeyError",
+    "missing_key": "discount_pct",
+    "failure_mode": "KeyError on 'discount_pct' in calculate_invoice when computing invoice discount total."
+  },
+  "structured_finding_schema": {
+    "description": "Required structured finding fields with exact machine verification against ground truth.",
+    "allowed_verdicts": [
+      "defect",
+      "breaking_change",
+      "contract_drift",
+      "regression"
+    ],
+    "required_fields": [
+      "verdict",
+      "source_file",
+      "source_symbol",
+      "affected_caller_file",
+      "affected_caller_symbol",
+      "exception_type",
+      "missing_key"
+    ],
+    "expected_values": {
+      "source_file": "src/profile.py",
+      "source_symbol": "get_account_tier",
+      "affected_caller_file": "src/billing.py",
+      "affected_caller_symbol": "calculate_invoice",
+      "exception_type": "KeyError",
+      "missing_key": "discount_pct"
+    }
+  },
+  "rubric_schema": {
+    "required_fields": [
+      "evaluator",
+      "verdict",
+      "report_sha256",
+      "justification",
+      "citations"
+    ],
+    "min_citations": 2
+  },
+  "informational_entity_tokens": [
+    {
+      "id": "profile_module",
+      "pattern": "profile\\.py"
+    },
+    {
+      "id": "profile_symbol",
+      "pattern": "get_account_tier"
+    },
+    {
+      "id": "billing_module",
+      "pattern": "billing\\.py"
+    },
+    {
+      "id": "billing_symbol",
+      "pattern": "calculate_invoice"
+    },
+    {
+      "id": "missing_contract_field",
+      "pattern": "discount_pct"
+    },
+    {
+      "id": "failure_exception",
+      "pattern": "KeyError"
+    }
+  ],
+  "rubric": {
+    "criteria": [
+      {
+        "id": "contract_drift_root_cause",
+        "description": "Correctly diagnoses get_account_tier in src/profile.py as introducing an incompatible return dict change (removing discount_pct)."
+      },
+      {
+        "id": "affected_caller_identification",
+        "description": "Identifies calculate_invoice in src/billing.py as the impacted consumer relying on discount_pct."
+      },
+      {
+        "id": "operational_failure_mechanism",
+        "description": "Explains that calling calculate_invoice triggers a KeyError at runtime due to missing discount_pct."
+      }
+    ]
+  }
+}

@@ -1,68 +1,66 @@
-# Repository Engineering Skills
+# Repository Engineering Skills: Code Review and Refactoring for AI Agents
 
-Two specialized skills for AI coding agents working in software repositories.
+Two agent skills for repository development, code review, and scoped refactoring. Includes tested Codex project installation commands using the Skills CLI, an atomic local installer, reproducible evaluation harnesses, and verified demonstration fixtures.
 
-- **`repo-foundation`** guides project setup, feature implementation, contract evolution, and multi-session continuity.
-- **`repo-native-refactor`** reviews diffs and performs scoped cleanup while preserving the behavior the task requires.
+- **`repo-foundation`** guides project setup, feature implementation, public contract evolution, and multi-session continuity.
+- **`repo-native-refactor`** conducts read-only diff audits and performs scoped cleanup while preserving required behavior and repository conventions.
 
-Both skills emphasize repository evidence, contract preservation, and verification proportionate to the change.
+[Install in a Codex project](docs/installation.md) · [Choose a skill](#choosing-a-skill) · [Reproducible demonstrations](#reproducible-demonstrations) · [Evaluation evidence](docs/evaluation.md) · [Verification commands](#verification-commands)
 
-The repository includes evaluation harnesses and archived comparison runs from internal experiments. These results cover a small set of repository tasks; they do not establish consistent improvements across all models, languages, or projects.
+> **Governing Principle:** Respect scope. Preserve contracts. Verify changes.
 
----
-
-## 1. What the Skills Do
-
-AI coding agents often struggle with consistency across multi-turn repository workflows:
-- Substituting declared interface types (e.g., swapping a declared `str` path with `pathlib.Path` wrapper objects).
-- Over-refactoring clean greenfield code or refactoring without establishing operational consequences.
-- Neglecting failure invariants during state-modifying operations.
-- Omitting persistent verification tests or letting repository documentation drift.
-
-These skills provide structured engineering instructions that prompt agents to follow disciplined repository conventions, preserve public contracts, test changes proportionately, and respect explicit boundaries.
+Evaluation harnesses and historical comparison runs are included. The experiments cover a limited set of repository tasks; they do not establish consistent improvements across all models, languages, or projects.
 
 ---
 
-## 2. Choosing Between the Skills
+## What the skills do
 
-You can use each skill independently. Small tasks such as fixing a typo or updating a comment do not require activating either skill.
+AI coding agents often introduce subtle regressions during multi-turn repository workflows:
+- **Contract Drift:** Modifying public interface return types or schemas without updating dependent callers (e.g., swapping a declared `str` dictionary key or path with `Path` objects).
+- **Scope Creep & Over-Refactoring:** Modifying healthy, unrelated modules or renaming files unnecessarily during narrow feature additions.
+- **Unchecked Error Paths:** Neglecting edge-case invariants, leaving partial or dirty states on disk upon failure.
+- **Documentation Drift:** Failing to synchronize living project documentation (`README.md`, CLI help) when capabilities change.
+
+These skills provide structured engineering instructions that prompt agents to follow disciplined repository conventions, preserve public contracts, test changes proportionately, and respect explicit scope boundaries.
+
+---
+
+## Choosing a skill
+
+You can use each skill independently. Routine edits such as fixing a typo, updating a comment, or isolated script modifications do not require activating either skill.
 
 | Scenario | Recommended Skill | Reason |
 | :--- | :--- | :--- |
-| Starting a new repository or module from scratch | `repo-foundation` | Guides initial structure, minimal dependencies, and early verification. |
-| Implementing a new feature or additive capability | `repo-foundation` | Enforces scope boundaries, living documentation sync, and behavior-driven tests. |
+| Starting a new repository or module from scratch | `repo-foundation` | Guides initial architecture, minimal dependencies, and early verification gates. |
+| Implementing a new feature or additive capability | `repo-foundation` | Guides scope boundaries, living documentation sync, and behavior-driven tests. |
 | Evolving an existing public contract or migrating schemas | `repo-foundation` | Manages atomic state migration, caller updates, and failure invariants. |
-| Resuming work across sessions or taking over a codebase | `repo-foundation` | Reconciles discrepancies using an evidence hierarchy without modifying history. |
+| Resuming work across sessions or taking over a codebase | `repo-foundation` | Reconciles discrepancies using an evidence hierarchy without rewriting history. |
 | Reviewing a change set or PR diff without modifying code | `repo-native-refactor` | Conducts a read-only audit across semantic risk bands (R0–R4). |
 | Cleaning up code smells, duplication, or dead weight in a diff | `repo-native-refactor` | Applies semantic DRY based on cost-benefit; leaves healthy code untouched. |
 
 ---
 
-## 3. Installation & Tested Environments
+## Installation & distribution
 
-### Install with npx
+### Option A: Install via Skills CLI (`npx skills`)
 
-Requires Git and Node.js **22.20.0 or newer**, including npm/npx. Run from the project where you want to use the skills. The [Skills CLI](https://github.com/vercel-labs/skills) installs directly from this GitHub repository; there is no separate npm package for these two skills.
+Requires Git and Node.js **22.20.0 or newer**, including npm/npx. Run from the project directory where you want to use the skills. The [Skills CLI](https://github.com/vercel-labs/skills) installs directly from this GitHub repository; there is no separate npm package for these two skills.
 
-Preview the available skills without installing:
-
+Preview available skills:
 ```sh
 npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
 ```
 
-Install both for **Codex in the current project**:
-
+Install both skills for **Codex in the current project**:
 ```sh
 npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
 ```
 
-This writes to `.agents/skills/` and creates or updates `skills-lock.json`. Re-running the command replaces the selected installed skills, including local edits inside them. Use a fresh project folder for a first trial. The version `1.7.0` pins the installer, not the skill source revision.
+This writes to `.agents/skills/` and updates `skills-lock.json`. To select another agent interactively, omit `--agent codex`, `--copy`, and `-y`. Full configuration options are detailed in [the installation guide](docs/installation.md).
 
-To select another agent interactively, omit `--agent codex`, `--copy`, and `-y`. Installation options, single-skill commands, updating and removal are in [the installation guide](docs/installation.md).
+### Option B: Install from Local Clone (PowerShell)
 
-### Alternative: Install from local clone (PowerShell)
-
-If installing from a local clone of this repository into a target project:
+If installing from a local clone into a target project:
 
 ```powershell
 # Fresh install (stops safely if destination skill already exists):
@@ -72,26 +70,48 @@ pwsh -NoProfile -File ./scripts/install-skills.ps1 -TargetProject "C:\path\to\my
 pwsh -NoProfile -File ./scripts/install-skills.ps1 -TargetProject "C:\path\to\my-project" -Update
 ```
 
-### Check the installation and try a skill
+### Option C: Standalone Runtime Package (Offline ZIP)
 
-```sh
-npx skills@1.7.0 list --agent codex
+Publishers building from a clean Git checkout can generate a verified standalone distribution ZIP:
+
+```powershell
+# Packages validated skills into a standalone distribution ZIP with manifest.json (requires clean Git checkout)
+pwsh -NoProfile -File ./scripts/package-runtime.ps1 -OutputDir ./dist
 ```
 
-Open the target project in Codex, start a new session and try the prompts below. Listing files confirms installation; verify that the host reads the intended skill before treating an example as a behavior test.
-
-### Tested scope and installed files
-
-- **Installation:** Windows, Node.js 24.16.0 and Skills CLI 1.7.0; discovery, project-local Codex copy installation, file comparison and reinstall tested. This does not establish automatic routing or behavior across hosts.
-- **Local Installer Script:** Windows PowerShell / PowerShell 7; pre-flight validation of both skills, isolated staging, automatic backup creation, byte-exact post-deploy SHA-256 hash verification, and verified rollback on deployment failure.
-- **Harness:** Windows / Python 3.14.5. Python is needed for the evaluation harness, not merely to load the Markdown skills.
-- **Payload:** The CLI copies the selected skill directories, including their `evals/` harness files and supporting references. It does **not** install the repository-level `evals-suite/` archive. Harness files are copied, not run by this installation command. Each skill directory includes its MIT license for distribution.
-
-See [the recorded installation checks](docs/npx-install-verification.md) for the source revision and limitations.
+Consumers receiving the release ZIP can unpack and use the skills directly without requiring Git or repository access. The archive contains verified skill payloads and MIT licenses, strictly excluding author evaluation files and ignored scratch artifacts.
 
 ---
 
-## 4. Example Prompts
+## Reproducible demonstrations
+
+To evaluate agent performance empirically without relying on marketing claims, this repository provides self-contained demo fixtures with independent verification scripts:
+
+### Demo 1: Read-Only Contract Drift Review
+- **Location:** [`examples/read-only-contract-review/`](examples/read-only-contract-review/)
+- **Scenario:** A simulated pull request alters the return dictionary structure of `get_account_tier()` in `src/profile.py`, breaking an external consumer in `src/billing.py` with `KeyError: 'discount_pct'`.
+- **Task:** Prompt an agent using `repo-native-refactor` to audit the diff in read-only mode and output a structured finding report.
+- **Verification Gate:** `python examples/read-only-contract-review/verify.py` strictly checks:
+  1. Complete finding schema (file, symbol, exception type `KeyError`, and broken caller).
+  2. Affirmative finding verdict (rejecting negated or conditional statements).
+  3. Protected state preservation (verifies that repository files and git tree state match the baseline at verification time; note that this check verifies state at audit time and does not observe intermediate writes that were subsequently undone within the session).
+
+### Demo 2: Scoped Feature Development
+- **Location:** [`examples/foundation-development/`](examples/foundation-development/)
+- **Scenario:** An existing data-processing utility `metric_hub` requires a new `export-json` CLI command.
+- **Task:** Prompt an agent using `repo-foundation` to implement the capability while preserving existing contracts (`summary`), authoring proportionate tests in `tests/`, and updating living documentation in `README.md`.
+- **Verification Gate:** `python examples/foundation-development/verify.py` strictly checks:
+  1. Correct execution of independent feature and regression test suites.
+  2. Valid CLI JSON output contract conforming to schema specifications.
+  3. Scope confinement: verifies that net modifications relative to `INITIAL_HEAD` across the working tree, index, and untracked files are confined strictly to authorized edit scope (does not claim to audit all intermediate commit history).
+
+### Evidence Record Template
+- **Location:** [`examples/template/`](examples/template/)
+- Provides a canonical template and JSON Schema Draft 2020-12 contract ([`evidence-record.schema.json`](examples/template/evidence-record.schema.json)) for recording future empirical runs and demo experiments. The schema enforces structural validation of execution records (including ISO 8601 UTC timestamps, command exit codes, and explicit limitations); it does not independently attest to the factual execution of recorded metrics, nor does it claim that historical archived benchmarks retrospectively conform to this schema.
+
+---
+
+## Example prompts
 
 Here are three concrete prompts demonstrating intended workflows:
 
@@ -118,29 +138,23 @@ Run affected verification checks after your edits.
 
 ---
 
-## 5. Evaluation Evidence & Known Limitations
+## Evaluation evidence & known limitations
 
-To maintain scientific honesty, we separate our evaluation data into three distinct categories:
+To maintain scientific honesty, our evaluation data is categorized into three distinct layers:
 
-### A. Harness Unit Test Suite
-- **Purpose:** Verifies that the evaluation harnesses execute deterministically, preserve state safely, and correctly enforce boundaries.
-- **Coverage:**
-  - `repo-foundation` harness: **26 unit tests** (validates deterministic byte snapshots, atomic staging/rollback on I/O failure, metaschema structural checks, exact rational scoring, and unmanaged directory protection).
-  - `repo-native-refactor` harness: **33 unit tests** (validates blind protocol invariants, runner isolation, patch round-tripping, non-finite score rejection, and Windows 8.3 path canonicalization).
-- **Result:** 59/59 unit tests pass consistently on Windows / Python 3.14.
+### A. Harness & Demo Unit Test Suites
+- **Harness Verification:** 59 unit tests (26 for `repo-foundation`, 33 for `repo-native-refactor`) verifying deterministic byte snapshots, atomic staging/rollback on I/O error, metaschema structural validation, exact rational scoring, and runner isolation.
+- **Demo Acceptance Suite:** 23 tests in `scripts/test_demos.py` covering happy paths, negative control probes (path traversal rejection, schema violations, protected state tampering, prompt copy rejection, and substring tricks).
 
 ### B. Archive Integrity Verification
-- **Purpose:** Verifies that historical experimental evidence recorded in `evals-suite/` remains intact and bit-exact across checkouts.
-- **Coverage:** 31 independent `verify_hashes.py` verification scripts.
-- **Result:** 31/31 pass with exact SHA-256 tree hash parity, including fresh Git clones with CRLF normalization.
+- **Archived Runs:** 31 independent verification packets in `evals-suite/`.
+- **Integrity Guarantee:** All 31 packets pass `verify_hashes.py` with exact SHA-256 tree hash parity across Windows CRLF and Linux LF checkouts.
 
 ### C. Agent Behavioral Experiments (Observed Case Studies)
-- **Scope:** Evaluated on specific multi-turn milestones (CP1 Bootstrap, CP2 Query Slice, CP3 Multi-Tenant Evolution, CP4 Continuity) using a ledger repository domain.
-- **Observations:**
-  - In CP2 tests, raw models spontaneously altered declared `str` module constants to `Path`, whereas agents with skill instructions preserved the declared string contract.
-  - In CP3 tests, agents with skill instructions updated living documentation and consolidated duplicate validation into affirmative predicates, scoring higher in blind maintainer reviews than uninstructed controls.
+- **Scope:** Evaluated on multi-turn milestones (CP1 Bootstrap, CP2 Query Slice, CP3 Multi-Tenant Evolution, CP4 Continuity) using a ledger repository domain.
+- **Observations:** In CP2 tests, raw models spontaneously altered declared `str` module constants to `Path`, whereas agents with skill instructions preserved the declared string contract. In CP3 tests, agents with skill instructions updated living documentation and consolidated duplicate validation into affirmative predicates.
 - **Known Limitations:**
-  - **Small Task Domain:** These observations reflect a specific ledger system workload and do not prove universal superiority across different tech stacks or tasks.
+  - **Task Domain:** These observations reflect a specific ledger system workload and do not prove universal superiority across different tech stacks or tasks.
   - **Environment Scope:** Verified on Windows with Python 3.14; Linux/macOS behaviors rely on POSIX compatibility but have not undergone identical continuous auditing.
   - **Crash Invariants:** Safe replacement mechanisms have been verified against simulated I/O exceptions, but have not been tested against sudden system power loss or process `SIGKILL`.
 
@@ -148,28 +162,40 @@ For complete details, failure analyses, and trajectory notes, see [BENCHMARK_REP
 
 ---
 
-## 6. Verification Commands
+## Verification commands
 
 To run all automated verification checks locally:
 
 ```bash
+# 0. Install test runner dependencies:
+python -m pip install jsonschema
+
 # 1. Run refactor harness unit tests (33 tests):
 python -B -m unittest discover -s repo-native-refactor/evals/tests -v
 
 # 2. Run foundation harness unit tests (26 tests):
 python -B -m unittest discover -s repo-foundation/evals/tests -v
 
-# 3. Validate foundation evaluation assets:
+# 3. Validate foundation evaluation assets (10 schemas, rubric, policy):
 python -B repo-foundation/evals/harness.py validate
 
-# 4. Verify all 31 archive evidence packets (PowerShell):
+# 4. Verify all 31 archived evidence packets (PowerShell):
 pwsh -NoProfile -File ./scripts/verify-archive.ps1
+
+# 5. Verify local installer with atomic rollback (PowerShell):
+pwsh -NoProfile -File ./scripts/test-installer.ps1
+
+# 6. Verify runtime package generator and Git commit parity (PowerShell):
+pwsh -NoProfile -File ./scripts/test-package.ps1
+
+# 7. Verify demo acceptance suite (PowerShell / Python 23 tests):
+pwsh -NoProfile -File ./scripts/test-demos.ps1
 ```
 
 ---
 
-## 7. Reporting Issues, Contributing & License
+## Reporting issues, contributing & license
 
-- **Reporting Issues:** Please open an issue on GitHub. Include your agent host, model name, the skill version, the task prompt, and the unexpected behavior.
+- **Reporting Issues:** Open an issue on GitHub. Include your agent host, model version, skill version, prompt, and unexpected behavior.
 - **Contributing:** See [CONTRIBUTING.md](CONTRIBUTING.md) for testing guidelines and pull request instructions.
 - **License:** Released under the [MIT License](LICENSE).

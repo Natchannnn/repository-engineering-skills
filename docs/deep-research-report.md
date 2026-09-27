@@ -6,7 +6,7 @@ The two Deep Research reports are substantially aligned. **Research A is the str
 
 > **A's implementation system + B's market restraint and competitive positioning.**
 
-Research A's central contribution is the multi-surface acquisition model—GitHub-native discovery, web search, skill-directory discovery, and potentially native AI ecosystem distribution—plus a concrete path from metadata through reproducible examples, GitHub Pages, Search Console, Skills.sh, and measurement. turn0file1 Research B independently reaches the same underlying conclusion but adds more useful competitive context: generic `code review` and `refactor` are crowded categories, while combinations such as **review-only + scoped + contract-aware + repository-native + verification** are more differentiated. turn0file2
+Research A's central contribution is the multi-surface acquisition model—GitHub-native discovery, web search, skill-directory discovery, and potentially native AI ecosystem distribution—plus a concrete path from metadata through reproducible examples, GitHub Pages, Search Console, Skills.sh, and measurement. Research B independently reaches the same underlying conclusion but adds more useful competitive context: generic `code review` and `refactor` are crowded categories, while combinations such as **review-only + scoped + contract-aware + repository-native + verification** are more differentiated.
 
 Fresh research reinforces B's caution. On Skills.sh (observed September 2026), generic categories already contain substantial incumbents: [`safe-refactor`](https://www.skills.sh/juliusbrussee/caveman/safe-refactor) shows approximately 69.5K–70.9K installs, GitHub's `refactor` about 22K, `code-review-excellence` about 28.9K, and CodeRabbit's `code-review` about 12.7K. Skills.sh explicitly states its leaderboard is based on anonymous CLI installation telemetry, so these figures are ecosystem-discovery signals rather than active-user counts.
 
@@ -43,23 +43,23 @@ flowchart LR
     O --> B
 ```
 
-GitHub officially describes Topics as a mechanism for finding projects and solutions by subject, and repositories may have up to 20 topics; starting with eight tightly relevant topics is preferable to filling all 20. turn0search6 Google likewise recommends people-first, original, useful content rather than pages created primarily to capture search traffic, and its spam policies explicitly warn against scaled low-value content. turn1search1
+GitHub officially describes Topics as a mechanism for finding projects and solutions by subject, and repositories may have up to 20 topics; starting with eight tightly relevant topics is preferable to filling all 20. Google likewise recommends people-first, original, useful content rather than pages created primarily to capture search traffic, and its spam policies explicitly warn against scaled low-value content.
 
 The recommended master sequence is:
 
-**P0 — make the product understandable and installable.**  
+**P0 — make the product understandable and installable.**
 Clean-install verification → GitHub metadata → README front door → baseline metrics.
 
-**P1 — prove what is different and create search surfaces.**  
+**P1 — prove what is different and create search surfaces.**
 Two reproducible examples → 6–8 substantive documentation pages → GitHub Pages → sitemap → Search Console.
 
-**P2 — let observed demand drive optimization.**  
+**P2 — let observed demand drive optimization.**
 Skills.sh verification → weekly measurement → query-driven content improvement → only then add another example/page.
 
-**P3 — controlled expansion.**  
+**P3 — controlled expansion.**
 AI-generated-code cleanup only with a real fixture; OpenAI plugin packaging only after the current publishing/discovery path is verified; custom domain only after the site demonstrates sustained search value; repo rename only if data eventually shows the present category name is actively harmful.
 
-The four-week core implementation is approximately **36–42 maintainer hours**, excluding optional P3 work. Four weeks is not a sensible deadline for judging SEO success: Google says recrawling may take days to weeks and does not guarantee indexing. The first month should therefore be treated as **instrumentation + indexing + positioning validation**, not as a traffic-growth deadline. turn4search7
+The four-week core implementation is approximately **36–42 maintainer hours**, excluding optional P3 work. Four weeks is not a sensible deadline for judging SEO success: Google says recrawling may take days to weeks and does not guarantee indexing. The first month should therefore be treated as **instrumentation + indexing + positioning validation**, not as a traffic-growth deadline.
 
 A final important caveat: the live public repository state could not be independently fetched reliably in this research session, so details such as its exact current About text, current Topics, current Pages status, and current Skills.sh listing are treated as **unspecified unless established by the supplied reports**. The master plan therefore emphasizes checks rather than pretending that unknown current state is known.
 
@@ -69,25 +69,25 @@ A final important caveat: the live public repository state could not be independ
 
 | Area | Research A | Research B | Recommended resolution |
 |---|---|---|---|
-| **Primary strength** | Execution architecture: GitHub → Pages → Search Console → Skills.sh → ecosystem expansion. turn0file1 | Market intelligence: competition, registry SERPs, search terminology, category saturation. turn0file2 | **Use A as implementation spine; B as prioritization filter.** |
-| **Core thesis** | Do not "SEO only the README"; build several acquisition surfaces. turn0file1 | Treat discovery as an ecosystem, not a single GitHub page. turn0file2 | Adopt **organic discovery engineering**, not conventional content marketing. |
-| **Positioning** | Evidence-driven review, behavior-preserving refactoring, repository development. turn0file1 | Repository-native, scoped, review-only, contract-aware, verification-focused. turn0file2 | Brand principle: **Respect scope. Preserve contracts. Verify changes.** |
-| **GitHub Topics** | Broader set, around 12 in the earlier proposal. turn0file1 | Eight-topic start. turn0file2 | **Use the user's original eight topics now.** Expand only when capability/content warrants it. |
-| **Docs size** | Roughly 8–12 substantive pages. turn0file1 | Approximately eight tightly scoped URLs. turn0file2 | Start at **eight pages maximum**. Merge semantic variants into one strong page. |
-| **GitHub Pages** | Early and strategically important for Search Console/control. turn0file1 | Also valuable, with particular emphasis on small, useful landing pages. turn0file2 | **P1**, after install UX and first proof assets are credible. |
-| **Skills.sh** | Major high-intent discovery surface; installs are telemetry, not users. turn0file1 | Treat almost like a second search engine; verify CLI/listing independently. turn0file2 | **P2 but monitor from P0.** Never manipulate installs. |
-| **Third-party registries** | Secondary to Skills.sh/native surfaces. turn0file1 | Registry SERPs may create additional organic entry points. turn0file2 | Passive indexing is welcome; one-time official submission is acceptable. **No directory spam.** |
-| **OpenAI/plugin route** | Proposed as a potentially important native discovery surface. turn0file1 | Not central to the report. turn0file2 | **P3 experiment only.** OpenAI now documents packaging skills inside plugins, but a durable public-discovery route for this specific project remains **unspecified here** and must be verified before restructuring the repo. turn5search6 |
-| **AI slop / vibe-code terms** | Attractive possible territory. turn0file1 | Crowded/trendy; use only when capability is genuinely demonstrated. turn0file2 | **Defer to P3.** No buzzword page until a fixture exists. |
-| **Social preview** | Useful repository polish. turn0file1 | Low-value under a zero-social strategy. turn0file2 | Low priority. Do after search/onboarding fundamentals. |
-| **Rename** | Keep existing repository name. turn0file1 | Keep existing repository name. turn0file2 | **Keep `repository-engineering-skills`.** |
-| **Evidence discipline** | Benchmark limitations and reproducibility are differentiators. turn0file1 | Evidence is the strongest way to stand out from generic "safe" claims. turn0file2 | Make evidence a **brand constraint**, not merely a docs section. |
+| **Primary strength** | Execution architecture: GitHub → Pages → Search Console → Skills.sh → ecosystem expansion. | Market intelligence: competition, registry SERPs, search terminology, category saturation. | **Use A as implementation spine; B as prioritization filter.** |
+| **Core thesis** | Do not "SEO only the README"; build several acquisition surfaces. | Treat discovery as an ecosystem, not a single GitHub page. | Adopt **organic discovery engineering**, not conventional content marketing. |
+| **Positioning** | Evidence-driven review, behavior-preserving refactoring, repository development. | Repository-native, scoped, review-only, contract-aware, verification-focused. | Brand principle: **Respect scope. Preserve contracts. Verify changes.** |
+| **GitHub Topics** | Broader set, around 12 in the earlier proposal. | Eight-topic start. | **Use the user's original eight topics now.** Expand only when capability/content warrants it. |
+| **Docs size** | Roughly 8–12 substantive pages. | Approximately eight tightly scoped URLs. | Start at **eight pages maximum**. Merge semantic variants into one strong page. |
+| **GitHub Pages** | Early and strategically important for Search Console/control. | Also valuable, with particular emphasis on small, useful landing pages. | **P1**, after install UX and first proof assets are credible. |
+| **Skills.sh** | Major high-intent discovery surface; installs are telemetry, not users. | Treat almost like a second search engine; verify CLI/listing independently. | **P2 but monitor from P0.** Never manipulate installs. |
+| **Third-party registries** | Secondary to Skills.sh/native surfaces. | Registry SERPs may create additional organic entry points. | Passive indexing is welcome; one-time official submission is acceptable. **No directory spam.** |
+| **OpenAI/plugin route** | Proposed as a potentially important native discovery surface. | Not central to the report. | **P3 experiment only.** OpenAI now documents packaging skills inside plugins, but a durable public-discovery route for this specific project remains **unspecified here** and must be verified before restructuring the repo. |
+| **AI slop / vibe-code terms** | Attractive possible territory. | Crowded/trendy; use only when capability is genuinely demonstrated. | **Defer to P3.** No buzzword page until a fixture exists. |
+| **Social preview** | Useful repository polish. | Low-value under a zero-social strategy. | Low priority. Do after search/onboarding fundamentals. |
+| **Rename** | Keep existing repository name. | Keep existing repository name. | **Keep `repository-engineering-skills`.** |
+| **Evidence discipline** | Benchmark limitations and reproducibility are differentiators. | Evidence is the strongest way to stand out from generic "safe" claims. | Make evidence a **brand constraint**, not merely a docs section. |
 
-The original Astra analysis also correctly emphasized that the most important funnel is **understand → install → try → self-evaluate**, rather than maximizing keyword count. turn0file3 That principle survives the deeper research unchanged.
+The original Astra analysis also correctly emphasized that the most important funnel is **understand → install → try → self-evaluate**, rather than maximizing keyword count. That principle survives the deeper research unchanged.
 
 ### Why narrower positioning matters
 
-The live ecosystem makes a generic positioning increasingly difficult. Skills.sh currently surfaces multiple strong code-review offerings and several behavior-preserving refactoring skills; even very explicit terminology such as “behavior preserving,” “public interfaces,” “small changes,” and “verification” is no longer unusual. turn9search1turn9search5
+The live ecosystem makes a generic positioning increasingly difficult. Skills.sh currently surfaces multiple strong code-review offerings and several behavior-preserving refactoring skills; even very explicit terminology such as “behavior preserving,” “public interfaces,” “small changes,” and “verification” is no longer unusual.
 
 Therefore the differentiator cannot merely be the adjective **safe**.
 
@@ -123,7 +123,7 @@ Success metrics are deliberately split into two types:
 
 **Outcome metrics** are observations: impressions, clicks, visitors, installations. They must not be converted into arbitrary promises.
 
-GitHub Traffic only exposes full clones and visitors for the previous 14 days, and its “referring sites” view explicitly excludes search engines and GitHub itself. Therefore GitHub Traffic cannot answer “how many visitors came from Google”; Search Console must handle the search side of measurement. turn0search0
+GitHub Traffic only exposes full clones and visitors for the previous 14 days, and its “referring sites” view explicitly excludes search engines and GitHub itself. Therefore GitHub Traffic cannot answer “how many visitors came from Google”; Search Console must handle the search side of measurement.
 
 ### Priority zero — correctness and front-door clarity
 
@@ -136,7 +136,7 @@ GitHub Traffic only exposes full clones and visitors for the previous 14 days, a
 
 **P0 total: approximately 7.25 hours.**
 
-GitHub says Topics are explicitly intended to help people discover repositories and solutions in a subject area. turn0search6 Skills.sh documents both `npx skills add` and anonymous installation telemetry; a specific skill can be selected using the CLI's skill-selection mechanism, but the exact command for this repo must still pass P0-A before being advertised as canonical. turn0search1
+GitHub says Topics are explicitly intended to help people discover repositories and solutions in a subject area. Skills.sh documents both `npx skills add` and anonymous installation telemetry; a specific skill can be selected using the CLI's skill-selection mechanism, but the exact command for this repo must still pass P0-A before being advertised as canonical.
 
 ### Priority one — reproducible proof and search infrastructure
 
@@ -150,7 +150,7 @@ GitHub says Topics are explicitly intended to help people discover repositories 
 
 **P1 total: approximately 23 hours.**
 
-GitHub officially supports publishing GitHub Pages from a repository's `/docs` folder, and a project site normally lives at `owner.github.io/repositoryname`. turn1search2 Google notes that a new site with few external links is one situation where a sitemap can improve URL discovery, while also stressing that sitemap submission is only a hint and never an indexing or ranking guarantee. turn0search12
+GitHub officially supports publishing GitHub Pages from a repository's `/docs` folder, and a project site normally lives at `owner.github.io/repositoryname`. Google notes that a new site with few external links is one situation where a sitemap can improve URL discovery, while also stressing that sitemap submission is only a hint and never an indexing or ranking guarantee.
 
 ### Priority two — ecosystem discovery and data loop
 
@@ -161,7 +161,7 @@ GitHub officially supports publishing GitHub Pages from a repository's `/docs` f
 | **P2-C Query-led optimization** | Examine impressions/clicks by page/query; deepen pages with relevant impressions; test titles/opening where impressions exist but clicks lag; ignore irrelevant queries. | Maintainer | 4 h/month initially | At least one optimization decision is based on observed query data rather than a guessed keyword. | P1-E |
 | **P2-D Topic guide expansion** | Only after evidence of specific search query demand, expand core 4 pages with dedicated deep guides (review-without-editing, behavior-preserving-refactoring, repository-development). | Maintainer | 4 h conditional | Distinct demand observed in Search Console; avoid thin or redundant pages. | P1-C, query/user signal |
 
-Skills.sh says skills enter its leaderboard automatically through anonymous CLI install telemetry and that telemetry can be disabled. This makes Skills.sh useful as an installation-discovery signal, but it should **not** be interpreted as active users or real-world success. turn0search1
+Skills.sh says skills enter its leaderboard automatically through anonymous CLI install telemetry and that telemetry can be disabled. This makes Skills.sh useful as an installation-discovery signal, but it should **not** be interpreted as active users or real-world success.
 
 ### Priority three — conditional expansion
 
@@ -172,19 +172,19 @@ Skills.sh says skills enter its leaderboard automatically through anonymous CLI 
 | **P3-C Custom domain** | GitHub Pages gets sustained search use or project branding/analytics require independence. | Maintainer | 2–4 h | Migration completed without broken URLs/indexing regressions. | Stable Pages |
 | **P3-D Rename reassessment** | Only if substantial query/user evidence shows the repository name is actively confusing discovery. | Maintainer | 1 h analysis; migration much larger | Evidence-backed decision, not keyword preference. | Months of data |
 
-OpenAI's current developer documentation confirms that skills can be packaged inside plugins alongside MCP configuration or by themselves as package components. That validates a **packaging experiment**; this report does **not** assume an unspecified public-directory placement mechanism or guaranteed discoverability. turn5search6
+OpenAI's current developer documentation confirms that skills can be packaged inside plugins alongside MCP configuration or by themselves as package components. That validates a **packaging experiment**; this report does **not** assume an unspecified public-directory placement mechanism or guaranteed discoverability.
 
 ## Search strategy and content architecture
 
 ### Candidate query map
 
-These are **search hypotheses, not search-volume claims**. Neither report had Keyword Planner, Ahrefs, Semrush, or Search Console data for the project, so no honest conclusion can currently be made about monthly volume or keyword difficulty. Research A proposed a broad query set, while Research B correctly argued that the set should function as a validation queue rather than a content-generation queue. turn0file1 turn0file2
+These are **search hypotheses, not search-volume claims**. Neither report had Keyword Planner, Ahrefs, Semrush, or Search Console data for the project, so no honest conclusion can currently be made about monthly volume or keyword difficulty. Research A proposed a broad query set, while Research B correctly argued that the set should function as a validation queue rather than a content-generation queue.
 
-Google recommends creating useful pages for people rather than producing many search-first pages, and its spam policy specifically addresses scaled low-value content. One substantial page should therefore cover several semantically related queries. turn1search1
+Google recommends creating useful pages for people rather than producing many search-first pages, and its spam policy specifically addresses scaled low-value content. One substantial page should therefore cover several semantically related queries.
 
 #### Review without unsolicited edits
 
-**Target:** `/guides/review-without-editing/`  
+**Target:** `/guides/review-without-editing/`
 **Proof destination:** `/examples/read-only-contract-review/`
 
 1. `code review without editing code`
@@ -210,11 +210,11 @@ This is the strongest initial cluster because the outcome is deterministic enoug
 14. `agent code review skill`
 15. `code review SKILL.md`
 
-Generic code-review intent is competitive, so these should be supported by the page but not treated as the only positioning. Current Skills.sh results include established review skills with substantial install telemetry, reinforcing the need for a narrower differentiator. turn6search6turn6search11
+Generic code-review intent is competitive, so these should be supported by the page but not treated as the only positioning. Current Skills.sh results include established review skills with substantial install telemetry, reinforcing the need for a narrower differentiator.
 
 #### Behavior-preserving and scoped refactoring
 
-**Target:** `/guides/behavior-preserving-refactoring/`  
+**Target:** `/guides/behavior-preserving-refactoring/`
 **Proof destination:** `/examples/scoped-refactor/`
 
 16. `behavior preserving refactoring agent`
@@ -226,7 +226,7 @@ Generic code-review intent is competitive, so these should be supported by the p
 22. `repository native refactoring`
 23. `AI refactor without behavior changes`
 
-This cluster is also competitive. Existing skills already use “behavior preserving,” “safe,” and “preserve public interfaces” vocabulary. The page therefore needs experimental proof rather than more adjectives. turn9search2turn9search12
+This cluster is also competitive. Existing skills already use “behavior preserving,” “safe,” and “preserve public interfaces” vocabulary. The page therefore needs experimental proof rather than more adjectives.
 
 #### Repository development and Foundation
 
@@ -240,7 +240,7 @@ This cluster is also competitive. Existing skills already use “behavior preser
 29. `make repository agent ready`
 30. `multi session repository development`
 
-The broader ecosystem is increasingly talking about repository harnesses, boundaries, validation, and agent-ready engineering environments, so this terminology should be monitored rather than assumed. Current examples include GitHub's `harness-engineering` skill and newer repository-harness projects. turn6search13
+The broader ecosystem is increasingly talking about repository harnesses, boundaries, validation, and agent-ready engineering environments, so this terminology should be monitored rather than assumed. Current examples include GitHub's `harness-engineering` skill and newer repository-harness projects.
 
 #### Installation and ecosystem intent
 
@@ -253,7 +253,7 @@ The broader ecosystem is increasingly talking about repository harnesses, bounda
 35. `skills.sh code review`
 36. `skills.sh refactoring`
 
-The Skills CLI is already a defined ecosystem entry point, and Skills.sh explicitly presents browsing and CLI installation as its core discovery/install flow. turn0search3
+The Skills CLI is already a defined ecosystem entry point, and Skills.sh explicitly presents browsing and CLI installation as its core discovery/install flow.
 
 #### Evidence and evaluation
 
@@ -276,7 +276,7 @@ These may be lower-volume terms, but they support the project's strongest trust 
 44. `remove AI code smells`
 45. `AI code slop cleanup`
 
-Do not create a separate landing page until the project has a real fixture and Search Console or direct user behavior shows this problem belongs to the product. Google explicitly warns against writing on topics merely because they are trending or expected to attract search traffic. turn1search1
+Do not create a separate landing page until the project has a real fixture and Search Console or direct user behavior shows this problem belongs to the product. Google explicitly warns against writing on topics merely because they are trending or expected to attract search traffic.
 
 ### Recommended GitHub metadata
 
@@ -309,7 +309,7 @@ software-engineering
 testing
 ```
 
-Eight is a deliberate start, not a technical limit; GitHub permits up to 20 topics and recommends topics that represent the repository's actual purpose and subject area. turn0search6
+Eight is a deliberate start, not a technical limit; GitHub permits up to 20 topics and recommends topics that represent the repository's actual purpose and subject area.
 
 **Website**
 
@@ -319,7 +319,7 @@ Leave unspecified until Pages is live. Then use:
 https://natchannnn.github.io/repository-engineering-skills/
 ```
 
-GitHub documents that project Pages sites use the `owner.github.io/repositoryname` pattern by default. turn1search7
+GitHub documents that project Pages sites use the `owner.github.io/repositoryname` pattern by default.
 
 ### Documentation architecture
 
@@ -336,7 +336,7 @@ The documentation cluster should start with **four core pages** (Home, Installat
 | **`/examples/scoped-refactor/`** | `Reproducible Scoped Refactoring Example` → `Fixture` → `Baseline tests` → `Scope contract` → `Prompt` → `Changed files` → `Post-refactor verification` → `Limitations` | Refactor guide, evaluation, install |
 | **`/evidence/evaluation-methodology/`** | `Evaluation Methodology` → `What is measured` → `Task fixtures` → `Environment metadata` → `Acceptance criteria` → `Archived results` → `What the results do not prove` | Both examples, home |
 
-Google says every important page should be linked from at least one other page and recommends descriptive anchor text rather than generic wording such as “click here.” turn4search1
+Google says every important page should be linked from at least one other page and recommends descriptive anchor text rather than generic wording such as “click here.”
 
 For example:
 
@@ -354,7 +354,7 @@ The README and Pages home should be hubs, while each guide links to its matching
 
 ### Technical search configuration
 
-GitHub Pages can publish directly from `main:/docs`, which keeps documentation close to the repository and avoids a second content-management system. turn1search2
+GitHub Pages can publish directly from `main:/docs`, which keeps documentation close to the repository and avoids a second content-management system.
 
 A minimal setup is sufficient:
 
@@ -376,9 +376,9 @@ docs/
 
 Do **not** duplicate the full text of every guide inside the README. README should summarize and route; Pages should answer deeper search intent.
 
-A sitemap is reasonable despite the site's small size because zero-promotion means few initial external links. Google says new sites with few external links are one category that may benefit from sitemaps, while stressing that internal linking alone can be enough for small, comprehensively linked sites. turn0search12
+A sitemap is reasonable despite the site's small size because zero-promotion means few initial external links. Google says new sites with few external links are one category that may benefit from sitemaps, while stressing that internal linking alone can be enough for small, comprehensively linked sites.
 
-No special “AI SEO” infrastructure is needed. Google's current guidance states that AI Overviews and AI Mode do not require extra machine-readable AI files or special schema beyond normal Search fundamentals; pages must simply be indexed and eligible for normal Search snippets. turn1search0
+No special “AI SEO” infrastructure is needed. Google's current guidance states that AI Overviews and AI Mode do not require extra machine-readable AI files or special schema beyond normal Search fundamentals; pages must simply be indexed and eligible for normal Search snippets.
 
 ## Search-first repository UX and reproducible proof
 
@@ -386,9 +386,9 @@ No special “AI SEO” infrastructure is needed. Google's current guidance stat
 
 The first screen should answer four questions:
 
-**What is this?**  
-**Which skill do I need?**  
-**How do I install it?**  
+**What is this?**
+**Which skill do I need?**
+**How do I install it?**
 **Can I verify its behavior quickly?**
 
 A recommended opening:
@@ -447,9 +447,9 @@ The included evaluations cover explicit fixtures and task domains.
 They are evidence about those conditions, not universal performance claims.
 ```
 
-The two installation commands should be published only after P0-A verifies them against the current CLI. Skills.sh's current ecosystem does expose skill-specific installation commands of this form, while its official CLI documentation confirms `npx skills add` as the primary installation mechanism. turn6search1
+The two installation commands should be published only after P0-A verifies them against the current CLI. Skills.sh's current ecosystem does expose skill-specific installation commands of this form, while its official CLI documentation confirms `npx skills add` as the primary installation mechanism.
 
-Google primarily generates snippets from visible page content and only sometimes uses the supplied meta description, so the README/Pages opening itself should be clear rather than treating metadata as a substitute for good copy. turn4search0
+Google primarily generates snippets from visible page content and only sometimes uses the supplied meta description, so the README/Pages opening itself should be clear rather than treating metadata as a substitute for good copy.
 
 ### Reproducible example specification: read-only contract review
 
@@ -615,7 +615,7 @@ Every proof page should publish a small machine-readable run record such as:
 }
 ```
 
-That evidence-first approach directly supports Google's people-first guidance, which asks whether content offers original research/analysis, demonstrates first-hand experience, and explains how results were produced. turn1search1
+That evidence-first approach directly supports Google's people-first guidance, which asks whether content offers original research/analysis, demonstrates first-hand experience, and explains how results were produced.
 
 ## Four-week rollout and measurement
 
@@ -660,7 +660,7 @@ gantt
 
 ### Search Console measurement
 
-Search Console's Performance reporting exposes organic Search performance broken down by queries and pages, including impressions and clicks. turn4search2
+Search Console's Performance reporting exposes organic Search performance broken down by queries and pages, including impressions and clicks.
 
 Record weekly:
 
@@ -675,7 +675,7 @@ query/page pairs
 average_position (diagnostic only)
 ```
 
-Do not obsess over average position. Google's own troubleshooting guidance says impressions and clicks are ultimately more important than focusing excessively on absolute rank. turn4search11
+Do not obsess over average position. Google's own troubleshooting guidance says impressions and clicks are ultimately more important than focusing excessively on absolute rank.
 
 A useful detail for this GitHub Pages setup: Google's branded/non-branded query filter is only available for eligible top-level properties, not URL-path properties, and it also requires sufficient volume. A project Pages property such as:
 
@@ -683,11 +683,11 @@ A useful detail for this GitHub Pages setup: Google's branded/non-branded query 
 https://natchannnn.github.io/repository-engineering-skills/
 ```
 
-should therefore **not be assumed to receive the branded-query filter**. Group branded terms manually at first—for example `repo-native-refactor`, `repo-foundation`, and the repository name—versus non-branded problem queries. turn4search4
+should therefore **not be assumed to receive the branded-query filter**. Group branded terms manually at first—for example `repo-native-refactor`, `repo-foundation`, and the repository name—versus non-branded problem queries.
 
 ### GitHub Traffic measurement
 
-Snapshot every week because GitHub's repository Traffic graph only provides visitor/full-clone data for the previous 14 days. turn0search0
+Snapshot every week because GitHub's repository Traffic graph only provides visitor/full-clone data for the previous 14 days.
 
 Record:
 
@@ -699,7 +699,7 @@ popular_content
 external_referrers
 ```
 
-Do **not** label GitHub's external-referrer count “organic search.” GitHub explicitly excludes search engines and GitHub itself from that referral section. turn0search0
+Do **not** label GitHub's external-referrer count “organic search.” GitHub explicitly excludes search engines and GitHub itself from that referral section.
 
 Therefore:
 
@@ -724,7 +724,7 @@ listing_metadata_correct
 CLI --list result
 ```
 
-Skills.sh says its leaderboard is driven by anonymous install telemetry. The number should therefore be labeled **CLI installs**, never “users,” “active users,” or “market share.” turn0search1
+Skills.sh says its leaderboard is driven by anonymous install telemetry. The number should therefore be labeled **CLI installs**, never “users,” “active users,” or “market share.”
 
 The current ecosystem also demonstrates that listings and install commands deserve direct verification rather than blind trust; the plan should treat CLI discoverability and directory discoverability as separate checks.
 
@@ -753,7 +753,7 @@ The first month should produce decisions, not traffic targets.
 | Skills.sh listing stale but CLI works | Investigate distribution/indexing separately from product SEO |
 | Stars rise without clicks/install/use evidence | Treat as a secondary signal, not proof of adoption |
 
-Google warns that recrawling may take days to weeks and that requesting recrawl repeatedly does not make crawling faster. turn4search7
+Google warns that recrawling may take days to weeks and that requesting recrawl repeatedly does not make crawling faster.
 
 ## Risks, hypotheses, experiments, and immediate actions
 
@@ -772,7 +772,7 @@ Google warns that recrawling may take days to weeks and that requesting recrawl 
 | **OpenAI plugin packaging creates worthwhile discovery** | Packaging supported; discovery value unspecified | P3 branch experiment only | Official publishing/discovery path verified and maintenance cost justified |
 | **No proactive promotion will still compound** | Long-term hypothesis | Run 8–12 weeks with Search/Skills surfaces | Non-branded impressions, unknown-user installs or external issues begin appearing |
 
-Google's guidance is particularly aligned with the project's evidence-first philosophy: helpful pages should provide original information or analysis, demonstrate first-hand knowledge, and leave readers able to accomplish their goal. turn1search1
+Google's guidance is particularly aligned with the project's evidence-first philosophy: helpful pages should provide original information or analysis, demonstrate first-hand knowledge, and leave readers able to accomplish their goal.
 
 ### Explicit non-goals
 
@@ -782,13 +782,13 @@ The merged plan should formally reject the following:
 
 **No paid promotion.**
 
-**No fake Skills.sh installs.** Skills.sh uses install telemetry for leaderboard discovery, so manipulating it would corrupt the very signal being used to evaluate organic adoption. turn0search1
+**No fake Skills.sh installs.** Skills.sh uses install telemetry for leaderboard discovery, so manipulating it would corrupt the very signal being used to evaluate organic adoption.
 
 **No 20-topic keyword dump.**
 
-**No page-per-keyword content farm.** Google's spam policy defines scaled content abuse around large volumes of low-value content created primarily to manipulate search ranking. turn0search4
+**No page-per-keyword content farm.** Google's spam policy defines scaled content abuse around large volumes of low-value content created primarily to manipulate search ranking.
 
-**No `llms.txt` or “AI SEO” work as a priority.** Google says AI Search features require no special AI-specific file or schema beyond normal Search eligibility and fundamentals. turn1search0
+**No `llms.txt` or “AI SEO” work as a priority.** Google says AI Search features require no special AI-specific file or schema beyond normal Search eligibility and fundamentals.
 
 **No repo rename in the initial plan.**
 
@@ -837,6 +837,6 @@ The governing rule for the entire strategy should remain:
 
 > **Do not manufacture attention. Manufacture usefulness, proof, and discoverability.**
 
-GitHub Topics make the project classifiable and discoverable inside GitHub. turn0search6 GitHub Pages gives the project a controllable project site and can publish directly from `/docs`. turn1search2 Search Console turns guessed keywords into observed queries, pages, impressions and clicks. turn4search2 Skills.sh creates a high-intent installation surface driven by real CLI installation telemetry. turn0search1 And Google's own guidance favors exactly the asset the repository is best positioned to create: original, first-hand, useful material whose claims can be understood and independently evaluated. turn1search1
+GitHub Topics make the project classifiable and discoverable inside GitHub. GitHub Pages gives the project a controllable project site and can publish directly from `/docs`. Search Console turns guessed keywords into observed queries, pages, impressions and clicks. Skills.sh creates a high-intent installation surface driven by real CLI installation telemetry. And Google's own guidance favors exactly the asset the repository is best positioned to create: original, first-hand, useful material whose claims can be understood and independently evaluated.
 
 That combination gives `repository-engineering-skills` a realistic organic path without requiring the maintainer to become a social-media promoter: **become the best documented and best evidenced answer to a deliberately narrow set of repository-engineering problems, then let GitHub, Search, and the skill ecosystem do the discovery work.**

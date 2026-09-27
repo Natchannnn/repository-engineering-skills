@@ -1,0 +1,38 @@
+{
+  "$schema": "./evidence-record.schema.json",
+  "schema_version": "1.0.0",
+  "run_id": "RUN_ID_PLACEHOLDER",
+  "recorded_at_utc": "YYYY-MM-DDTHH:MM:SSZ",
+  "skill": {
+    "name": "repo-native-refactor",
+    "source_commit": "0000000000000000000000000000000000000000",
+    "distribution": "runtime-zip"
+  },
+  "fixture": {
+    "name": "FIXTURE_NAME_PLACEHOLDER",
+    "bootstrap_commit": "0000000000000000000000000000000000000000"
+  },
+  "environment": {
+    "host": "RECORD_AT_RUN_TIME_OR_UNKNOWN",
+    "model": "RECORD_AT_RUN_TIME_OR_UNKNOWN",
+    "os": "RECORD_AT_RUN_TIME",
+    "python_version": "RECORD_AT_RUN_TIME"
+  },
+  "execution": {
+    "prompt_file": "prompt.txt",
+    "commands_executed": []
+  },
+  "verification_results": {
+    "independent_checks_passed": "not_run",
+    "findings_or_behavior_verified": "not_run",
+    "protected_state_preserved": "not_run",
+    "check_details": {
+      "note": "Fill with actual output from verify.py - do not prefill with simulated pass"
+    }
+  },
+  "limitations": [
+    "Single fixture task execution; does not represent performance across other languages or architectures.",
+    "Specific to the recorded host and model version under test.",
+    "Does not establish universal claim of superiority or defect-free execution."
+  ]
+}
