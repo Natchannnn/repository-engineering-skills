@@ -231,8 +231,8 @@ def run_checked_unittest(cmd: list[str], cwd: pathlib.Path, env: dict, expected_
         )
 
     status_banner = match.group(2).strip()
-    if not status_banner.startswith("OK"):
-        raise AssertionError(f"Test suite output did not report 'OK' (status: {status_banner}):\n{combined_output}")
+    if status_banner != "OK":
+        raise AssertionError(f"Test suite output did not report clean 'OK' (status: {status_banner}):\n{combined_output}")
 
 def verify_d1(fixture_dir: pathlib.Path) -> dict:
     fixture_dir = fixture_dir.resolve()
