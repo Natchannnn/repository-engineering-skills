@@ -143,6 +143,7 @@ def package():
             "name": r["name"],
             "status": status,
             "exit_code": exit_code,
+            "verifier_run_type": "post_session_independent_reverification",
             "verifier_command": exec_record.get("command"),
             "verifier_duration_sec": exec_record.get("duration_sec"),
             "verifier_timestamp": exec_record.get("timestamp"),
@@ -217,9 +218,8 @@ def package():
             "nominal_timeout_sec": 180,
             "transcript_exceeded_nominal_timeout": exceeded_timeout,
             "timeout_enforcement_note": (
-                "Transcript duration reflects end-to-end wall-clock time from task assignment "
-                "to final agent completion response, including network reporting. Host did not abort "
-                "the subagent; verifier independently certifies solution correctness."
+                "Transcript duration measures wall-clock time from first transcript entry to final response. "
+                "No abort signal was observed from host; verifier independently certifies solution correctness."
             ),
             "requested_model_setting": "inherit",
             "resolved_model_identifier": "unknown / not recorded",
