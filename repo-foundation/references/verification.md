@@ -42,6 +42,10 @@ When building new features or starting a repository from scratch:
 
 ## 4. Testing Integrity and Final State
 
+- **Reproduce before fixing:** For defect fixes, demonstrate the failure first with a minimal
+  reproduction (failing test, repro script, or observed command output). A fix verified
+  only after the fact is a guess with good lighting. For regression tests, prove red-green:
+  revert the fix, watch it fail, restore, watch it pass.
 - **Assert observable outcomes:** Check the external consequence of the action (HTTP status code and body, database row contents, exit code and stdout/stderr, or rendered DOM elements).
 - **Independent expected outcomes:** Expected values must reflect business requirements, not mirror internal implementation logic.
 - **No weakening of tests:** Never weaken assertion thresholds, delete valid assertions, or skip tests merely to achieve a passing run.

@@ -45,6 +45,20 @@ In mature repositories, different modules often reflect different architectural 
   2. Documented architecture and repository instructions.
   3. Preserved public contracts and persisted schemas.
   4. Healthy sibling code within the *same* owning domain and runtime boundary.
-  5. Local module conventions.
+  5. Relevant tests, schemas, callers, and dependencies.
+  6. Local module conventions.
 - **No premature homogenization:** Do not rewrite healthy sibling code in another module merely to match your current change. Preserve legitimate domain-specific differences unless codebase-wide unification is explicitly requested.
 - **Do not adopt defects as precedent:** If existing code contains obvious workarounds or defects, do not replicate them in new code; follow the healthiest precedent within the domain.
+
+---
+
+## 5. Multi-pressure checklist
+
+When migration, risk, docs, and workspace pressures stack (the usual evolution mess),
+work in this order and do not skip steps:
+
+1. Baseline: record revision, failing checks, and uncommitted user work.
+2. Protect user work: distinct-region edits only; stop on real collision.
+3. Reconcile docs against code reality before mutating (code describes behavior, docs get fixed after).
+4. Highest-risk caller first with maximum conservatism; atomic path for the rest.
+5. Rerun affected checks on the final tree; report what remains red and why.

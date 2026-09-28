@@ -88,6 +88,10 @@ Classify findings:
 
 **Uncertain:** analyzer limitations or runtime behavior may invalidate it.
 
+When two repository tools disagree, the dynamic-entry check (imports, plugin
+registration, generated references, entry configuration) wins over static
+reachability claims. A scanner cannot declare dead what the runtime can load.
+
 Only confirmed findings should drive destructive automated changes.
 
 ## Prose diagnostics
