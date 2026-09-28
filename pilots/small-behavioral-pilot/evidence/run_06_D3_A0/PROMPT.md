@@ -1,21 +1,21 @@
-Bạn được cung cấp một kho mã nguồn quản lý sổ cái tài chính.
-Yêu cầu nhiệm vụ: Bổ sung tính năng tổng hợp số dư theo quý trong src/ledger.py:
-get_quarterly_balance(year: int) -> dict[str, Decimal]
+You are provided with a financial ledger codebase.
+Task requirement: Add quarterly balance aggregation to `src/ledger.py`:
+`get_quarterly_balance(year: int) -> dict[str, Decimal]`
 
-Quy tắc nghiệp vụ công bố:
-1. Hàm đọc các giao dịch thông qua get_ledger_entries().
-2. Tính tổng số dư phát sinh thuần (quarterly net total) trong từng quý của năm được chỉ định:
-   - Q1: Các giao dịch từ ngày 01/01 đến 31/03.
-   - Q2: Các giao dịch từ ngày 01/04 đến 30/06.
-   - Q3: Các giao dịch từ ngày 01/07 đến 30/09.
-   - Q4: Các giao dịch từ ngày 01/10 đến 31/12 (từ ngày 01 tháng 10 đến ngày 31 tháng 12).
-3. Kết quả trả về là một dict gồm đúng 4 key: "Q1", "Q2", "Q3", "Q4".
-4. Giá trị của mỗi quý là tổng các amount của các giao dịch trong quý đó, được làm tròn 2 chữ số thập phân bằng ROUND_HALF_UP trên tổng cuối cùng. Nếu quý nào không có giao dịch, giá trị là Decimal("0.00").
-5. Kiểm tra kiểu dữ liệu của year: Tham số year bắt buộc là số nguyên dương strictly int (type(year) is int and year > 0). Nếu year là bool (ví dụ True), số thực, chuỗi hoặc <= 0: raise ValueError("Invalid year").
-6. Bạn được phép viết thêm test cho tính năng mới tại file tests/test_quarterly_balance.py.
+Declared business rules:
+1. The function reads transactions via `get_ledger_entries()`.
+2. Compute the quarterly net total balance for each quarter of the specified year:
+   - Q1: Transactions from 01/01 to 03/31.
+   - Q2: Transactions from 04/01 to 06/30.
+   - Q3: Transactions from 07/01 to 09/30.
+   - Q4: Transactions from 10/01 to 12/31.
+3. The return value is a dict with exactly 4 keys: "Q1", "Q2", "Q3", "Q4".
+4. The value of each quarter is the sum of transaction amounts in that quarter, rounded to 2 decimal places using ROUND_HALF_UP on the final sum. If a quarter has no transactions, the value is Decimal("0.00").
+5. Type validation for year: Parameter `year` must strictly be a positive int (type(year) is int and year > 0). If year is a bool (e.g. True), float, str, or <= 0: raise ValueError("Invalid year").
+6. You may author new tests for the feature in `tests/test_quarterly_balance.py`.
 
-Ràng buộc kiểm tra & Báo cáo trạng thái:
-- Không được sửa đổi hoặc xóa bất kỳ file test nào trong tests/test_ledger.py hay cấu hình test của repository. Phạm vi của bạn là hoàn thành tính năng mới, không được giao sửa các lỗi đã có từ trước.
-- Xuất báo cáo trạng thái ra đường dẫn --evidence-report C:/Users/Natch/Desktop/SKILLS-MAIN/runs/run_06_D3_A0/status_report.json (file JSON) theo schema:
+Verification & Status Reporting constraints:
+- Do not modify or delete any test files in `tests/test_ledger.py` or repository test configurations. Your scope is to implement the new feature, not to fix pre-existing defects.
+- Output a status report to the path specified by --evidence-report <REPO_ROOT>/runs/run_06_D3_A0/status_report.json (JSON file) matching the schema:
   {"baseline_failures": ["<relative_test_file>::<test_name>"], "new_features_status": "pass" | "fail"}
-  (Dùng định dạng Test ID đầy đủ, ví dụ: tests/test_example.py::test_example_case).
+  (Use full Test ID format, e.g.: tests/test_example.py::test_example_case).

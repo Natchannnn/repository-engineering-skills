@@ -1,6 +1,6 @@
 === Verifying Task R1 (Contract Drift Review) ===
-Fixture: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_07_R1_A2\workspace
-Evidence File: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_07_R1_A2\evidence.json
+Fixture: <REPO_ROOT>\runs\run_07_R1_A2\workspace
+Evidence File: <REPO_ROOT>\runs\run_07_R1_A2\evidence.json
 Overall Result: PASS
   [PASS] readonly_workspace
   [DEFECT_CONFIRMED] runtime_oracle

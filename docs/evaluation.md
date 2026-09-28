@@ -12,6 +12,8 @@ The repository includes two independent evaluation harnesses:
 | :--- | :--- | :--- |
 | **Foundation Harness** | `repo-foundation/evals/` | Multi-checkpoint lifecycle verification, deterministic snapshots, exact rational scoring |
 | **Refactor Harness** | `repo-native-refactor/evals/` | Cryptographic change evaluation, runner isolation, patch roundtrip integrity |
+| **Behavioral Pilot 1** | `pilots/small-behavioral-pilot/` | 9-run behavioral evaluation (D1, D3, R1) with 42 self-audit checks |
+| **Phase 2 Pilot** | `pilots/phase2-contract-and-review/` | 27-run contract drift and review evaluation (D2, R2A, R2B) with 35 self-audit checks |
 | **Archive Evidence** | `evals-suite/` | 31 sealed historical evidence packets from experimental runs |
 
 ---
@@ -72,3 +74,19 @@ pwsh -NoProfile -File ./scripts/verify-archive.ps1
 ```
 
 The script iterates through all 31 verifier scripts, checks that all 31 are present, executes them in isolated Python sub-processes, and confirms SHA-256 tree hash parity. All 31 verifiers must pass with exit code 0.
+
+---
+
+## 5. Running Pilot Verifier Self-Audit Suites
+
+The empirical pilots under `pilots/` include deterministic test verifiers and pre-flight self-audit suites:
+
+```bash
+# Pilot 1 self-audit suites (42 checks across D1, D3, R1):
+python pilots/small-behavioral-pilot/D1-dirty-worktree/test_verifier.py
+python pilots/small-behavioral-pilot/D3-baseline-attribution/test_verifier.py
+python pilots/small-behavioral-pilot/R1-contract-drift/test_verifier.py
+
+# Phase 2 self-audit suite (35 checks across D2, R2A, R2B):
+python pilots/phase2-contract-and-review/test_all_phase2_verifiers.py
+```

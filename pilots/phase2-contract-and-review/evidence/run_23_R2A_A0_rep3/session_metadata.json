@@ -3,7 +3,7 @@
   "task": "R2A",
   "arm": "A0",
   "repetition": 3,
-  "arm_name": "Control (Prompt mộc)",
+  "arm_name": "Control (Baseline Prompt) (Rep 3)",
   "conversation_id": "c3594cc1-4d0d-44ff-ace3-39a6e774fd7b",
   "subagent_type": "pilot_candidate",
   "host": "Antigravity",
@@ -22,6 +22,6 @@
   "transcript_distribution_status": "retained_locally_on_operator_host_not_bundled_for_privacy",
   "transcript_step_count": 36,
   "transcript_compact_has_truncated_fields": true,
-  "transcript_compact_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\c3594cc1-4d0d-44ff-ace3-39a6e774fd7b\\.system_generated\\logs\\transcript.jsonl",
-  "transcript_full_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\c3594cc1-4d0d-44ff-ace3-39a6e774fd7b\\.system_generated\\logs\\transcript_full.jsonl"
+  "transcript_compact_path": "<OPERATOR_APPDATA_DIR>/brain/c3594cc1-4d0d-44ff-ace3-39a6e774fd7b/.system_generated/logs/transcript.jsonl",
+  "transcript_full_path": "<OPERATOR_APPDATA_DIR>/brain/c3594cc1-4d0d-44ff-ace3-39a6e774fd7b/.system_generated/logs/transcript_full.jsonl"
 }

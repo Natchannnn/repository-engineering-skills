@@ -2,10 +2,10 @@
   "run_id": 3,
   "task": "D1",
   "arm": "A2",
-  "arm_name": "Treatment (repo-foundation + repo-native-refactor)",
+  "arm_name": "Treatment (2 Skills)",
   "status": "PASS",
   "exit_code": 0,
   "duration_seconds": 0.37,
   "timestamp": "2026-09-28T00:46:05.751101",
-  "output": "=== Verifying Task D1 (The Dirty Worktree Bugfix) ===\nFixture: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_03_D1_A2\\workspace\nOverall Result: PASS\n  [PASS] pre_test_state_and_scope\n  [PASS] user_behavioral_test\n  [PASS] hidden_normalization_tests\n  [PASS] workspace_tests\n  [PASS] post_test_state_and_scope"
+  "output": "=== Verifying Task D1 (The Dirty Worktree Bugfix) ===\nFixture: <REPO_ROOT>\\runs\\run_03_D1_A2\\workspace\nOverall Result: PASS\n  [PASS] pre_test_state_and_scope\n  [PASS] user_behavioral_test\n  [PASS] hidden_normalization_tests\n  [PASS] workspace_tests\n  [PASS] post_test_state_and_scope"
 }

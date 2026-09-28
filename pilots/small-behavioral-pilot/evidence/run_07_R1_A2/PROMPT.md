@@ -92,6 +92,7 @@ Read supporting references only when the corresponding trigger occurs:
 - **[references/verification.md](references/verification.md):** Read when designing checks for greenfield code, high-risk boundaries (auth, data loss, concurrency), or weak test suites.
 
 
+
 ---
 
 # ENGINEERING SKILL: repo-native-refactor
@@ -231,17 +232,18 @@ List exact verification commands executed and their outcomes.
 Document unresolved limitations or high-risk boundaries intentionally deferred.
 
 
+
 ---
 
 # TASK ASSIGNMENT
 
-Bạn được cung cấp một kho mã nguồn.
-Yêu cầu nhiệm vụ: Review diff giữa branch hiện tại và main. Nhiệm vụ này là READ-ONLY, bạn KHÔNG ĐƯỢC sửa đổi bất kỳ file nào trong repository.
-Hãy rà soát xem có thay đổi nào về giao diện/contract công khai gây gãy các module phụ thuộc (callers) trong repository hay không.
+You are provided with a codebase repository.
+Task requirement: Review the git diff between the current branch and main. This task is strictly READ-ONLY; you MUST NOT modify any files in the repository.
+Inspect whether any public contract / interface changes broke dependent caller modules in the repository.
 
-Quy chuẩn Báo cáo Review:
-Xuất kết quả vào file được chỉ định qua cờ --evidence-file C:/Users/Natch/Desktop/SKILLS-MAIN/runs/run_07_R1_A2/evidence.json (file JSON nằm ngoài repository).
-Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu trúc:
+Review Report Specification:
+Output results to the path specified via --evidence-file <REPO_ROOT>/runs/run_07_R1_A2/evidence.json (JSON file outside repository).
+The defect list must be a JSON array adhering to the structure:
 [
   {
     "verdict": "defect",
@@ -253,9 +255,9 @@ Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu tr�
   }
 ]
 
-Quy ước định dạng:
-- source_file và broken_caller_file: Đường dẫn tương đối từ gốc repository (ví dụ src/foo.py).
-- source_symbol: Định danh đầy đủ (qualified symbol) của đối tượng bị thay đổi (ví dụ ClassName.field_name hoặc function_name).
-- broken_caller_symbol: Tên hàm/phương thức của caller bị gãy.
-- breakage_type: Chọn một trong các giá trị enum nêu trên.
-- Nếu không phát hiện thấy lỗi contract drift nào, xuất mảng rỗng [].
+Formatting conventions:
+- source_file and broken_caller_file: Relative path from repository root (e.g. src/foo.py).
+- source_symbol: Fully qualified identifier of the modified object (e.g. ClassName.field_name or function_name).
+- broken_caller_symbol: Name of the caller function/method that broke.
+- breakage_type: Choose one of the enum values listed above.
+- If no contract drift defect is found, output an empty array [].

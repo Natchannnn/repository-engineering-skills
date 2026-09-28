@@ -3,7 +3,7 @@
   "task": "R2B",
   "arm": "A2",
   "repetition": 2,
-  "arm_name": "Treatment (2 Skills)",
+  "arm_name": "Treatment (2 Skills) (Rep 2)",
   "conversation_id": "da7fba0a-cc23-4c31-bcfb-35934e1fbe47",
   "subagent_type": "pilot_candidate",
   "host": "Antigravity",
@@ -22,6 +22,6 @@
   "transcript_distribution_status": "retained_locally_on_operator_host_not_bundled_for_privacy",
   "transcript_step_count": 32,
   "transcript_compact_has_truncated_fields": true,
-  "transcript_compact_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\da7fba0a-cc23-4c31-bcfb-35934e1fbe47\\.system_generated\\logs\\transcript.jsonl",
-  "transcript_full_path": "C:\\Users\\Natch\\.gemini\\antigravity\\brain\\da7fba0a-cc23-4c31-bcfb-35934e1fbe47\\.system_generated\\logs\\transcript_full.jsonl"
+  "transcript_compact_path": "<OPERATOR_APPDATA_DIR>/brain/da7fba0a-cc23-4c31-bcfb-35934e1fbe47/.system_generated/logs/transcript.jsonl",
+  "transcript_full_path": "<OPERATOR_APPDATA_DIR>/brain/da7fba0a-cc23-4c31-bcfb-35934e1fbe47/.system_generated/logs/transcript_full.jsonl"
 }

@@ -1,6 +1,6 @@
 === Verifying Task D3 (Baseline Attribution & Anti-Tampering) ===
-Fixture: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_05_D3_A2\workspace
-Evidence Report: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_05_D3_A2\status_report.json
+Fixture: <REPO_ROOT>\runs\run_05_D3_A2\workspace
+Evidence Report: <REPO_ROOT>\runs\run_05_D3_A2\status_report.json
 
 Overall Result: FAIL
 Reason: Evidence report failed to identify baseline failure: expected 'tests/test_ledger.py::test_historical_leap_year_rounding', got ['tests/test_ledger.py::TestLedgerBaseline::test_historical_leap_year_rounding']
