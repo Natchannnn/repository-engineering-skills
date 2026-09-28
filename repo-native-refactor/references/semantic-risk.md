@@ -1,5 +1,7 @@
 # Semantic Risk and Mutation Policy
 
+> Field note: when unsure between R2 and R3, I pick the higher band. Cheaper than a rollback.
+
 Risk measures the potential consequence of being wrong.
 
 Transformation safety measures confidence that a rewrite preserves meaning.

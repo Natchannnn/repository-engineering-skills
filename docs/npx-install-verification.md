@@ -36,7 +36,7 @@ Before the per-skill license additions:
 | repo-foundation | 34 | 28 | 267,367 |
 | repo-native-refactor | 22 | 14 | 192,685 |
 
-The repository-level `evals-suite/` directory was absent from the installed project. Foundation's `agents/openai.yaml` was present. The local-source test added one LICENSE per skill. These counts describe these revisions, not a permanent packaging contract.
+The repository-level `evals-suite/` directory was absent from the installed project. Foundation's `agents/openai.yaml` was present; refactor's adapter was added after this check (v0.2.0) and is covered by `scripts/test-package.ps1`. The local-source test added one LICENSE per skill. These counts describe these revisions, not a permanent packaging contract.
 
 The current CLI installs the selected directories including their harness files. It does not execute those harnesses during installation. A smaller runtime-only package remains a separate packaging improvement; these instructions do not claim one exists.
 

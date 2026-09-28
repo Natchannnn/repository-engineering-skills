@@ -72,7 +72,7 @@ To rigorously verify if the patches addressed the failure modes, we subjected th
 
 ### Test 1: Smoke Verification (CP2 Greenfield)
 - **Goal:** Verify if the "Test Quality = 0" failure was resolved.
-- **Result:** Claude Sonnet 4.6 loaded the patched skills, autonomously authored **18 comprehensive unit tests** in `tests/test_query.py`, and scored **24 / 24**. Test Quality jumped from 0 to 4.
+- **Result:** Claude Sonnet 4.6 loaded the patched skills, autonomously authored **18 unit tests** in `tests/test_query.py`, and scored **24 / 24**. Test Quality jumped from 0 to 4.
 
 ### Test 2: CP2 Greenfield Slice Ablation (Head-to-Head)
 - **Setup:** Identical CP1 baseline, identical un-coached task prompt (`evals/tasks/CP2_SLICE.md`).

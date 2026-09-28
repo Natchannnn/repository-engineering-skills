@@ -13,7 +13,7 @@ read the repository state (code, not chat history) and implement `export.py`:
     `id`/`kind`/`tenant`, with keys sorted and no spaces.
     Rows ordered by ascending `id`.
   - `--format json`: writes the filtered record list as JSON (file order).
-  - `--summary`: additionally prints one `kind:<k> count:<n>` line per kind
+  - `--summary`: also prints one `kind:<k> count:<n>` line per kind
     present in the FILTERED set, sorted by kind, to stdout.
   - Exit 0 on success (including empty exports).
 - Do not change `ledger.py` / `query.py` behavior; all prior contracts stay green.
