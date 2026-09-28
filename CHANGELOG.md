@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Few-shot guidance: `refactor-examples.md` (R0–R4) and `migration-examples.md` (atomic vs transitional) plus `Reference Routing` table for refactor.
 - Tooling: `scripts/classify-risk.py` triage helper, `scripts/install-skills.sh` POSIX mirror, `requirements-test.txt` pinned `jsonschema==4.23.0`, Linux harness CI job.
 - Runtime payload expanded 17 → 22 files (shared contracts + examples + refactor adapter).
+- Claude plugin marketplace manifests (`.claude-plugin/marketplace.json` + per-skill `plugin.json`), all passing `claude plugin validate`.
 
 ### Changed
 - Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
@@ -27,7 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Docs
 - README hero with badges, 60-second try, honest 34/36 PASS count, and `What I got wrong`.
-- New `docs/demo/` guide (GIF kept out of git to stay lean) and `ADOPTERS.md` + issue templates.
+- New `docs/demo/` guide with GIF rendered from real runs and `ADOPTERS.md` + issue templates.
+- Multi-agent install matrix (`claude-code`, `cursor`, `opencode`, `gemini-cli`) with byte spot-checks, plus `docs/launch-kit.md` paste-ready blurbs.
 - CI Python 3.14 → 3.12 matrix (Windows full + Linux harness) with shared-contracts sync gate.
 
 ## [0.1.0] - 2026-09-26

@@ -40,7 +40,7 @@ To choose a host and installation options interactively:
 npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor
 ```
 
-The tested recipe is the explicit Codex copy command. The CLI offers other agents, but successful file placement does not establish equivalent skill behavior on every host. Global installation is optional via the CLI's `--global` flag and has not been tested here.
+The tested recipe is the explicit Codex copy command, plus equivalent copy commands verified for `claude-code`, `cursor`, `opencode`, and `gemini-cli` (see `npx-install-verification.md`). The CLI offers other agents, but successful file placement does not establish equivalent skill behavior on every host. The Claude plugin marketplace manifests (`.claude-plugin/marketplace.json` + per-skill `plugin.json`) pass `claude plugin validate` locally; end-to-end marketplace install was not run here to avoid mutating user settings. Global installation is optional via the CLI's `--global` flag and has not been tested here.
 
 ## What gets installed
 
