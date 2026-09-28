@@ -1,5 +1,9 @@
 # Demo runs (recorded)
 
+![demo](demo-40s.gif)
+
+Rendered from real outputs via `python scripts/render-demo-gif.py` — includes one deliberate typo + backspace so it does not look machine-typed. Re-run that script to regenerate after verifier changes.
+
 Two self-contained fixtures. Each has an independent `verify.py` — no LLM judge.
 
 ## Demo 1: read-only contract drift
@@ -20,8 +24,5 @@ Adds `export-json` to `metric_hub`, checks feature + regression suites, JSON sch
 
 ## Recording
 
-`demo-40s.gif` is intentionally not committed (keeps the repo lean). To reproduce for a release:
-
-1. Fresh Windows Terminal, 120x30.
-2. Run Demo 1 verify (expect FAIL finding format demo), then Demo 2 verify.
-3. Export under 2MB to `docs/demo/demo-40s.gif` or link an unlisted video here.
+To re-record after verifier changes: `python scripts/render-demo-gif.py` (Pillow only, deterministic seed).
+For a real screen capture instead: fresh Windows Terminal 120x30, run the two verifies above, export under 2MB with ScreenToGif and overwrite `demo-40s.gif`.
