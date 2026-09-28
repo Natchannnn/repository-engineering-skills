@@ -1,1 +1,19 @@
-{"description": "Two agent skills for scoped refactoring and contract-safe repo development, with reproducible eval harnesses.", "name": "repository-engineering-skills", "owner": {"name": "Natchannnn"}, "plugins": [{"description": "Build features on a clean repo foundation without breaking public API.", "name": "repo-foundation", "source": "./repo-foundation"}, {"description": "Audit and clean up code changes to match repo semantics and contracts.", "name": "repo-native-refactor", "source": "./repo-native-refactor"}]}
+{
+  "description": "Two agent skills for scoped refactoring and contract-safe repo development, with reproducible eval harnesses.",
+  "name": "repository-engineering-skills",
+  "owner": {
+    "name": "Natchannnn"
+  },
+  "plugins": [
+    {
+      "description": "Build features on a clean repo foundation without breaking public API.",
+      "name": "repo-foundation",
+      "source": "./repo-foundation"
+    },
+    {
+      "description": "Audit and clean up code changes to match repo semantics and contracts.",
+      "name": "repo-native-refactor",
+      "source": "./repo-native-refactor"
+    }
+  ]
+}
