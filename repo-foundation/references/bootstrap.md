@@ -1,5 +1,7 @@
 # Bootstrap: Establishing Foundation and Initial Slice
 
+> Field note: I used to scaffold full layered dirs on day one. Deleted most of it. Now I ship one slice first.
+
 Use this reference when starting a new repository from scratch or when setting up an area of an existing repository that lacks minimal tooling, conventions, or architecture.
 
 ---

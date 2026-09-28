@@ -23,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
+- Humanized skill wording: shorter router descriptions, field notes with real failure links, author-notes sections, slop sweep (`surgical`/`high-leverage`/`additionally`/`comprehensive`).
+
+### Docs
+- README hero with badges, 60-second try, honest 34/36 PASS count, and `What I got wrong`.
+- New `docs/demo/` guide (GIF kept out of git to stay lean) and `ADOPTERS.md` + issue templates.
 - CI Python 3.14 → 3.12 matrix (Windows full + Linux harness) with shared-contracts sync gate.
 
 ## [0.1.0] - 2026-09-26

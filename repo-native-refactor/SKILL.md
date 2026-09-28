@@ -1,6 +1,6 @@
 ---
 name: repo-native-refactor
-description: Audit and refactor code changes to conform strictly to repository semantics, architecture, domain idioms, and reliability contracts. Use after implementation for surgical cleanup, behavior-preserving refactoring with verification, and review preparation without altering authorized behavior or introducing gratuitous modernization.
+description: Audit and clean up code changes to match repo semantics and contracts. Use after implementation for small cleanup, behavior-preserving refactoring with verification, and review prep without altering authorized behavior.
 metadata:
   version: "0.2.0"
   license: "MIT"
@@ -10,6 +10,8 @@ metadata:
 
 Produce the smallest coherent change that belongs naturally in the target repository.
 
+> Field note: Gate 3 taught me this the hard way — Variants C/D scored lower than baseline because I refactored clean greenfield code without evidence. Now: no evidence, no refactor. See `BENCHMARK_REPORT.md` Phase 1.
+
 Prioritize in order:
 1. **Correctness and security:** Prevent regressions, avoid new security vulnerabilities, and handle boundary conditions.
 2. **Semantic integrity:** Preserve existing invariants, state transitions, validation, and error boundaries.
@@ -17,7 +19,7 @@ Prioritize in order:
 4. **Repository conformity:** Match surrounding naming, domain conventions, and architectural precedents.
 5. **Economy and simplicity:** Minimal intervention. Delete dead weight; avoid premature abstractions.
 
-This is a post-implementation audit and surgical cleanup skill. It is not permission to redesign the repository. A style preference or recognizable pattern is a candidate finding, not sufficient justification for mutation. Establish a concrete consequence such as inconsistent behavior, duplicated policy that must change together, unclear ownership, avoidable resource cost, or a demonstrated maintenance obstacle. Leave healthy code unchanged when the benefit is speculative.
+This is a post-implementation audit and small cleanup skill. It is not permission to redesign the repository. A style preference or recognizable pattern is a candidate finding, not sufficient justification for mutation. Establish a concrete consequence such as inconsistent behavior, duplicated policy that must change together, unclear ownership, avoidable resource cost, or a demonstrated maintenance obstacle. Leave healthy code unchanged when the benefit is speculative.
 
 ---
 
@@ -147,3 +149,11 @@ List exact verification commands executed and their outcomes.
 
 ### Residual uncertainty
 Document unresolved limitations or high-risk boundaries intentionally deferred.
+
+---
+
+## Author notes — when NOT to use
+
+Do not use for greenfield code that is already minimal and passing — I tried that in Gate 3 and it cost points.
+If you cannot name the owner and the concrete consequence in one sentence, leave the code alone.
+TODO(human): R2 vs R3 boundary is still judgment-heavy; I default to the higher band when unsure.

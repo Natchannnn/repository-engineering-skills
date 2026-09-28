@@ -1,6 +1,6 @@
 ---
 name: repo-foundation
-description: Build software products on a clean, minimal foundation, develop new features or bug fixes, and adapt architecture as requirements evolve. Use when initializing a new codebase, adding features to an existing repository, or refactoring architectural boundaries and contracts.
+description: Build features on a clean repo foundation without breaking public API. Use when starting a module, adding a feature, migrating a contract, or resuming work.
 metadata:
   version: "0.2.0"
   license: "MIT"
@@ -11,6 +11,8 @@ metadata:
 Build software products with an explicit, just-enough foundation, develop features on top of that foundation, and adapt architecture as requirements evolve.
 
 Optimize for total effort: deliver changes that are correct, testable, and maintainable with minimal rework, review overhead, and coordination cost.
+
+> Field note: I built this after watching runs swap a declared `str` path for `Path` and break billing callers. See `pilots/small-behavioral-pilot/evidence/run_03_D1_A2` and `examples/read-only-contract-review/`.
 
 ---
 
@@ -93,3 +95,11 @@ Read supporting references only when the corresponding trigger occurs:
 - **[references/verification.md](references/verification.md):** Read when designing checks for greenfield code, high-risk boundaries (auth, data loss, concurrency), or weak test suites.
 - **[references/shared-contracts.md](references/shared-contracts.md):** Canonical contract + evidence hierarchy + final-state rule. Read when touching any public interface, reconciling conflicting requirements, or certifying completion.
 - **[references/migration-examples.md](references/migration-examples.md):** Atomic vs transitional migration patterns. Read in Evolve mode before mutating persisted state.
+
+---
+
+## Author notes — when NOT to use
+
+Skip this skill for typos, single-file script tweaks, or formatting-only edits — overhead is not worth it.
+`healthy precedent` is still fuzzy; when in doubt I keep the local pattern and say so in the report.
+TODO(human): need more non-Python examples. Current guidance leans Python because that is where I got burned.

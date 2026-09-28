@@ -1,6 +1,8 @@
 # Repository Engineering Skills: Code Review and Refactoring for AI Agents
 
-Two agent skills for repository development, code review, and scoped refactoring. Includes tested Codex project installation commands using the Skills CLI, an atomic local installer, reproducible evaluation harnesses, 36 audited empirical pilot runs (Pilot 1 & Phase 2), and verified demonstration fixtures.
+![harness](https://img.shields.io/badge/harness-26%2B33%20OK-green) ![pilot](https://img.shields.io/badge/pilot_1-7%2F9%20honest-yellow) ![phase2](https://img.shields.io/badge/phase2-27%2F27%20ceiling-blue) ![runtime](https://img.shields.io/badge/runtime-22%20files-lightgrey)
+
+Two agent skills for repository development, code review, and scoped refactoring. Includes tested Codex project installation commands using the Skills CLI, an atomic local installer, reproducible evaluation harnesses, 36 audited empirical pilot runs (34/36 PASS: 7/9 Pilot 1 + 27/27 Phase 2 ceiling), and verified demonstration fixtures.
 
 - **`repo-foundation`** guides project setup, feature implementation, public contract evolution, and multi-session continuity.
 - **`repo-native-refactor`** conducts read-only diff audits and performs scoped cleanup while preserving required behavior and repository conventions.
@@ -8,6 +10,16 @@ Two agent skills for repository development, code review, and scoped refactoring
 [Install in a Codex project](docs/installation.md) · [Choose a skill](#choosing-a-skill) · [Reproducible demonstrations](#reproducible-demonstrations) · [Evaluation evidence & pilots](#evaluation-evidence--empirical-pilots) · [Verification commands](#verification-commands)
 
 > **Governing Principle:** Respect scope. Preserve contracts. Verify changes.
+
+## 60-second try
+
+```sh
+mkdir skill-try && cd skill-try
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
+```
+
+Then in a new Codex session: `Use $repo-foundation to create a small Python CSV CLI with a test and README notes. Do not commit.` Then: `Use $repo-native-refactor to review the diff. Report only, do not edit.` See `docs/demo/` for the full recorded run.
 
 Evaluation harnesses and historical comparison runs are included. The experiments cover a limited set of repository tasks; they do not establish consistent improvements across all models, languages, or projects.
 
@@ -138,6 +150,13 @@ Run affected verification checks after your edits.
 
 ---
 
+## What I got wrong
+
+- Gate 3 refactor variants scored below baseline — I refactored clean code without evidence. Fixed with the evidence gate.
+- Pilot 1 Runs 4-5 FAIL on `TestLedgerBaseline::` prefix while code was right. Kept FAIL to stay strict.
+- CP3 treatment docs mentioned a CLI export not yet built. Noted in `BENCHMARK_REPORT.md`.
+- See `pilots/small-behavioral-pilot/PROTOCOL.md` §6 and `BENCHMARK_REPORT.md` for full failure notes.
+
 ## Evaluation evidence & empirical pilots
 
 To maintain scientific honesty, our evaluation data is categorized into five distinct layers:
@@ -148,7 +167,7 @@ To maintain scientific honesty, our evaluation data is categorized into five dis
 - **Outcome:** 7/9 PASS under independent audit (A0 3/3, A1 2/3, A2 2/3 — Runs 4-5 FAIL on strict Test ID schema while code remained functionally correct). Full protocol and scorecards: [small-behavioral-pilot PROTOCOL.md](pilots/small-behavioral-pilot/PROTOCOL.md).
 
 ### B. Phase 2: Contract & Review Evaluation (27-Run Triplet Protocol)
-- **Scope & Protocol:** 3 high-leverage tasks (`D2` shipping contract migration with caller AST verification, `R2A` clean refactor negative control, `R2B` subtle contract drift defect identification) across 3 arms (`A0`, `A1`, `A2`) replicated 3 times with rotated arm sequences to eliminate ordering bias (**27 unique runs**).
+- **Scope & Protocol:** 3 core tasks (`D2` shipping contract migration with caller AST verification, `R2A` clean refactor negative control, `R2B` subtle contract drift defect identification) across 3 arms (`A0`, `A1`, `A2`) replicated 3 times with rotated arm sequences to eliminate ordering bias (**27 unique runs**).
 - **Evaluation Mechanism:** Independent Python verifiers enforcing workspace read-only integrity, snapshot hashes, caller test immutability, and hidden test suites (35 pre-flight self-audit checks). All evidence self-contained under `pilots/phase2-contract-and-review/evidence/` with SHA-256 `MANIFEST.json`.
 - **Outcome:** 27/27 PASS under independent clone re-verification (ceiling effect — all arms pass, no measurable skill advantage on these 6 fixtures per protocol analysis). Full protocol and scorecards: [phase2-contract-and-review PROTOCOL.md](pilots/phase2-contract-and-review/PROTOCOL.md).
 
