@@ -12,8 +12,6 @@ Build software products with an explicit, just-enough foundation, develop featur
 
 Optimize for total effort: deliver changes that are correct, testable, and maintainable with minimal rework, review overhead, and coordination cost.
 
-> Field note: I built this after watching runs swap a declared `str` path for `Path` and break billing callers. See `pilots/small-behavioral-pilot/evidence/run_03_D1_A2` and `examples/read-only-contract-review/`.
-
 ---
 
 ## Core Principles
@@ -98,8 +96,7 @@ Read supporting references only when the corresponding trigger occurs:
 
 ---
 
-## Author notes — when NOT to use
+## When NOT to Use
 
-Skip this skill for typos, single-file script tweaks, or formatting-only edits — overhead is not worth it.
-`healthy precedent` is still fuzzy; when in doubt I keep the local pattern and say so in the report.
-TODO(human): need more non-Python examples. Current guidance leans Python because that is where I got burned.
+- **Trivial edits:** Skip this skill for typos, isolated script adjustments, or formatting-only changes — the coordination overhead is not justified.
+- **Ambiguous precedent:** When repository conventions are ambiguous or conflicting, preserve the dominant local pattern and document the choice in the completion report rather than speculating.

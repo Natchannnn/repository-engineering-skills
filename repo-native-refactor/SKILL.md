@@ -10,8 +10,6 @@ metadata:
 
 Produce the smallest coherent change that belongs naturally in the target repository.
 
-> Field note: Gate 3 taught me this the hard way — Variants C/D scored lower than baseline because I refactored clean greenfield code without evidence. Now: no evidence, no refactor. See `BENCHMARK_REPORT.md` Phase 1.
-
 Prioritize in order:
 1. **Correctness and security:** Prevent regressions, avoid new security vulnerabilities, and handle boundary conditions.
 2. **Semantic integrity:** Preserve existing invariants, state transitions, validation, and error boundaries.
@@ -152,8 +150,8 @@ Document unresolved limitations or high-risk boundaries intentionally deferred.
 
 ---
 
-## Author notes — when NOT to use
+## When NOT to Use
 
-Do not use for greenfield code that is already minimal and passing — I tried that in Gate 3 and it cost points.
-If you cannot name the owner and the concrete consequence in one sentence, leave the code alone.
-TODO(human): R2 vs R3 boundary is still judgment-heavy; I default to the higher band when unsure.
+- **Clean greenfield code:** Do not refactor newly written code that is already minimal, idiomatic, and passing all tests.
+- **Speculative cleanup:** If you cannot state the domain owner and the concrete maintenance consequence in a single sentence, leave the code unmodified.
+- **Risk classification:** When uncertain between risk bands (such as R2 structural vs. R3 semantic), default conservatively to the higher risk band and require explicit justification.
