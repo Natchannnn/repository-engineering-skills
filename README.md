@@ -87,7 +87,7 @@ claude plugin install repo-foundation@repository-engineering-skills
 claude plugin install repo-native-refactor@repository-engineering-skills
 ```
 
-This writes to `.agents/skills/` and updates `skills-lock.json`. To select another agent interactively, omit `--agent codex`, `--copy`, and `-y`. Full configuration options are detailed in [the installation guide](docs/installation.md).
+This writes to `.agents/skills/` for Codex/Cursor/OpenCode (`.claude/skills/` for Claude Code) and updates `skills-lock.json`. To select another agent interactively, omit `--agent codex`, `--copy`, and `-y`. Full configuration options are detailed in [the installation guide](docs/installation.md).
 
 ### Option B: Install from Local Clone (PowerShell)
 

@@ -1,1 +1,16 @@
-{"author": {"name": "Natchannnn"}, "description": "Audit and clean up code changes to match repo semantics and contracts.", "keywords": ["code-review", "refactoring", "contracts", "agent-skills"], "license": "MIT", "name": "repo-native-refactor", "repository": "https://github.com/Natchannnn/repository-engineering-skills", "version": "0.2.0"}
+{
+  "author": {
+    "name": "Natchannnn"
+  },
+  "description": "Audit and clean up code changes to match repo semantics and contracts.",
+  "keywords": [
+    "code-review",
+    "refactoring",
+    "contracts",
+    "agent-skills"
+  ],
+  "license": "MIT",
+  "name": "repo-native-refactor",
+  "repository": "https://github.com/Natchannnn/repository-engineering-skills",
+  "version": "0.2.0"
+}

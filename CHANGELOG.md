@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README hero with badges, 60-second try, honest 34/36 PASS count, and `What I got wrong`.
 - New `docs/demo/` guide with GIF rendered from real runs and `ADOPTERS.md` + issue templates.
 - Multi-agent install matrix (`claude-code`, `cursor`, `opencode`, `gemini-cli`) with byte spot-checks, plus `docs/launch-kit.md` paste-ready blurbs.
+- Batch C evidence: `runs/realworld-self` review with 2 fixes, `runs/realworld-colorama` regression test run, `runs/realworld-six` negative control, plus `Dockerfile` + `docs/reproduce.md` one-command Linux reproduce (found: slim image needs `git` installed for the harness).
 - CI Python 3.14 → 3.12 matrix (Windows full + Linux harness) with shared-contracts sync gate.
 
 ## [0.1.0] - 2026-09-26
