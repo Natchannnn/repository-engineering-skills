@@ -6,6 +6,7 @@
   "name": "Treatment (2 Skills)",
   "status": "PASS",
   "exit_code": 0,
+  "verifier_run_type": "post_session_independent_reverification",
   "verifier_command": [
     "C:\\Python314\\python.exe",
     "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\pilots\\phase2-contract-and-review\\R2B-neutral-review\\verify.py",

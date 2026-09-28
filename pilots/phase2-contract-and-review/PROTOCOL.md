@@ -99,8 +99,8 @@ Mỗi bài toán được thử nghiệm độc lập trên 3 cấu hình:
 - **Thời gian & Cơ chế Timeout:**
   - *Ngưỡng danh định (nominal timeout):* 180 giây.
   - *Ghi nhận thực tế từ transcript:* Đo từ bản ghi đầu tiên đến phản hồi cuối cùng trong transcript của subagent (bao gồm cả pha gửi báo cáo kết thúc về host).
-    - 25/27 lượt hoàn thành dưới 180 giây (thời gian dao động từ 30s đến 164s).
-    - 2 lượt (Run 03: 184s và Run 19: 182s) ghi nhận thời gian transcript vượt nhẹ ngưỡng 180s lý thuyết.
+    - 25/27 lượt hoàn thành dưới 180 giây (thời gian dao động từ 38s đến 164s).
+    - 2 lượt (Run 03: 184s và Run 19: 182s) ghi nhận khoảng thời gian từ bản ghi đầu đến phản hồi cuối trong transcript vượt nhẹ ngưỡng danh định 180s.
     - *Cơ chế cưỡng chế & tính hợp lệ:* Host không gửi tín hiệu hủy (abort) process subagent; verifier độc lập chấm và xác nhận giải pháp trong workspace hoàn toàn hợp lệ. Giữ nguyên kết quả PASS của verifier, đồng thời ghi nhận đầy đủ sai lệch quy trình đo thời gian này trong metadata và báo cáo mà không thay đổi quy tắc sau khi biết kết quả.
 - **Xử lý lỗi môi trường (Retry Policy):**
   - Nếu subagent bị dừng do lỗi hạ tầng (host crash, ngắt kết nối process), được phép chạy lại 1 lần và ghi chú rõ trong metadata.
@@ -229,7 +229,7 @@ Toàn bộ 27 lượt chạy của Phase 2 ($3 \text{ tasks} \times 3 \text{ arm
 | 26 | R2B | A0 | 3 | Control (Prompt mộc) | **PASS** | 40 | 58.0s | 0.159s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
 | 27 | R2B | A1 | 3 | Karpathy Guidelines | **PASS** | 40 | 59.0s | 0.157s | TP = 1, FP = 0 (`api_gateway.py::handle_login`) |
 
-*\*Ghi chú: Run 03 (184s) và Run 19 (182s) ghi nhận thời gian transcript vượt nhẹ ngưỡng danh định 180s do bao gồm độ trễ báo cáo kết thúc về host; host không hủy subagent và verifier độc lập xác nhận lời giải đạt chuẩn.*
+*\*Ghi chú: Run 03 (184s) và Run 19 (182s) ghi nhận khoảng thời gian từ bản ghi đầu đến phản hồi cuối trong transcript vượt nhẹ ngưỡng danh định 180s. Không quan sát thấy tín hiệu ngắt (abort) từ host; verifier độc lập xác nhận lời giải đạt chuẩn và giữ nguyên kết quả PASS.*
 
 ---
 
@@ -253,28 +253,31 @@ Toàn bộ 27 lượt chạy của Phase 2 ($3 \text{ tasks} \times 3 \text{ arm
 
 ---
 
-### 8.4. Phân Tích Khác Biệt Thực Thi & Chi Phí Vận Hành (Behavior, Steps & Latency)
+### 8.4. Quan Sát Mô Tả Về Thực Thi & Dữ Liệu Transcript
 
-Mặc dù kết quả chấm verifier đạt 100% trên cả ba arm, việc phân tích dữ liệu thực thi chi tiết từ transcript và workspace cho thấy các khác biệt cụ thể về hành vi và chi phí:
+Mặc dù kết quả chấm verifier đạt 100% trên cả ba arm, việc thống kê dữ liệu mô tả từ transcript và workspace cho thấy các số liệu cụ thể:
 
-1. **Số bước tương tác (Step Count Overhead):**
-   - **Tác vụ D2:** A0 đạt trung bình 66.3 bước; A1 đạt 69.0 bước; A2 đạt 86.7 bước (+30.8% bước so với A0). A2 thực hiện thêm các thao tác đọc skill, tự kiểm tra quy chuẩn và chuẩn bị completion report.
-   - **Tác vụ Review (R2A & R2B):** A0 trung bình 40.0 bước; A1 trung bình 46.3 bước; A2 trung bình 46.3 bước.
-   - **Toàn bộ 9 runs:** A0 trung bình **48.8 bước/run**; A1 trung bình **53.9 bước/run**; A2 trung bình **59.8 bước/run** (+22.5% bước so với A0).
-2. **Thời gian thực thi (Latency Overhead):**
-   - **Tác vụ D2:** A0 trung bình 150.3s; A1 trung bình 140.3s; A2 trung bình 176.7s (+17.6% thời gian so với A0).
-   - **Toàn bộ 9 runs:** A0 trung bình **88.0s/run**; A1 trung bình **98.8s/run**; A2 trung bình **114.8s/run** (+30.4% thời gian so với A0).
-3. **Độ gọn của Diff (Diff Economy trên D2):**
-   - **A1 (Guidelines):** Trung bình 252.0 dòng diff (gọn gàng nhất, phản ánh nguyên tắc "Minimal & Surgical Diffs" của Karpathy).
-   - **A2 (Skills):** Trung bình 272.7 dòng diff.
-   - **A0 (Control):** Trung bình 302.0 dòng diff (dài nhất, tạo thêm nhiều dòng trống và comment tự phát).
+1. **Số bản ghi transcript (JSONL Records):**
+   - Phép đếm này ghi nhận tổng số dòng JSONL trong transcript (gồm user input, planner response, tool calls, tool outputs, system messages).
+   - **Tác vụ D2:** A0 trung bình 66.3 bản ghi; A1 trung bình 69.0 bản ghi; A2 trung bình 86.7 bản ghi.
+   - **Tác vụ Review (R2A & R2B):** A0 trung bình 40.0 bản ghi; A1 trung bình 46.3 bản ghi; A2 trung bình 46.3 bản ghi.
+   - **Toàn bộ 9 runs:** A0 trung bình **48.8 bản ghi/run**; A1 trung bình **53.9 bản ghi/run**; A2 trung bình **59.8 bản ghi/run** (+22.5% so với A0).
+2. **Khoảng thời gian transcript (Elapsed Seconds):**
+   - Đo từ mốc thời gian của bản ghi đầu tiên đến bản ghi cuối cùng trong transcript.
+   - **Tác vụ D2:** A0 trung bình 150.3s; A1 trung bình 140.3s; A2 trung bình 176.7s.
+   - **Toàn bộ 9 runs:** A0 trung bình **88.0s/run**; A1 trung bình **98.8s/run**; A2 trung bình **114.8s/run** (+30.4% so với A0).
+3. **Độ dài file patch đã lưu (Patch File Line Count trên D2):**
+   - Phép đếm dòng dựa trên tệp `candidate_diff.patch` đã lưu (bao gồm header git diff và các dòng ngữ cảnh xung quanh; các file tạo mới được lưu tách biệt). Thước đo này không tách riêng dòng thêm/xóa và không phản ánh chất lượng hay mức độ tối giản của giải pháp.
+   - **A1 (Guidelines):** Trung bình 252.0 dòng.
+   - **A2 (Skills):** Trung bình 272.7 dòng.
+   - **A0 (Control):** Trung bình 302.0 dòng.
 
 ---
 
 ### 8.5. Đánh Giá Biến Thiên Liên Lượt (Inter-Run Variance)
 
 - **Về kết quả kiểm chứng:** Trên cả 3 lần lặp (Rep 1, Rep 2, Rep 3) cho cả 3 tác vụ, kết quả PASS/FAIL là bất biến tuyệt đối ($27/27$ PASS). Không có hiện tượng flakiness trong việc đạt tiêu chuẩn verifier.
-- **Về hành vi thực thi:** Có sự biến thiên thực tế giữa các lượt chạy về thời gian (từ 30s đến 184s), số bước (từ 30 đến 94 bước) và độ dài diff (từ 247 đến 343 dòng trên D2). Do các arm trong từng nhóm ba chạy đồng thời (concurrent triplets), sự biến động này có thể chịu ảnh hưởng từ chia sẻ tài nguyên hoặc biến động hạ tầng của host.
+- **Về hành vi thực thi:** Có sự biến thiên thực tế giữa các lượt chạy về thời gian (từ 38s đến 184s), số bản ghi transcript (từ 30 đến 94 bản ghi) và độ dài file patch đã lưu (từ 247 đến 343 dòng trên D2). Do các arm trong từng nhóm ba chạy đồng thời (concurrent triplets), sự biến động này có thể chịu ảnh hưởng từ chia sẻ tài nguyên hoặc biến động hạ tầng của host.
 
 ---
 
@@ -285,9 +288,9 @@ Mặc dù kết quả chấm verifier đạt 100% trên cả ba arm, việc phâ
 1. **Hiệu năng của mô hình nền tảng ở quy mô thử nghiệm hiện tại:**
    - Khi mục tiêu và ràng buộc tương thích được mô tả đầy đủ trong prompt, mô hình nền tảng ở nhóm Control (A0) tự thân đã đủ năng lực suy luận để hoàn thành đúng hợp đồng, bảo toàn các caller và phát hiện chính xác lỗi review mà không cần bổ sung guidelines hay skills.
    - Việc so sánh với Pilot 1 cho thấy: lỗi D3 ở đợt trước là do định dạng Test ID đã công bố được đối chiếu chuỗi; khi chuyển sang Phase 2 với verifier kiểm tra ngữ nghĩa AST và bảo vệ SHA-256 caller baseline test hash, cả ba nhóm đều vượt qua kiểm tra.
-2. **Chi phí và Overhead của Skills:**
-   - Dữ liệu thực nghiệm chứng minh rằng với các bài toán đã thử, việc nạp hai skills `repo-foundation` và `repo-native-refactor` chưa mang lại lợi thế về tỷ lệ hoàn thành, đồng thời tạo ra overhead rõ rệt về tài nguyên: tăng +22.5% số bước tương tác và +30.4% thời gian thực thi so với control.
-   - Do đó, không có căn cứ thực nghiệm để khẳng định người dùng cần hai skills này để đạt kết quả đúng trên các bài toán có quy mô tương tự.
-3. **Đóng gói bằng chứng (Evidence Bundle):**
+2. **Quan sát về các chỉ số mô tả:**
+   - Trong 27 lượt chạy này, A2 có số bản ghi transcript trung bình cao hơn A0 khoảng 22,5% và khoảng thời gian từ bản ghi đầu đến bản ghi cuối dài hơn khoảng 30,4%. Đây là các chỉ số mô tả; thí nghiệm chưa đo token, chi phí hoặc tài nguyên tính toán và chưa tách được ảnh hưởng của chạy đồng thời. Cả ba arm đạt 9/9 theo verifier.
+   - Cần giữ cùng một tiêu chuẩn chứng cứ cho cả hai chiều: Pilot này chưa chứng minh lợi ích bổ sung của hai skills so với control hay guidelines; nó cũng chưa chứng minh skills gây lãng phí tài nguyên theo nghĩa tổng quát.
+3. **Đóng gói bằng chứng & Bản ghi chấm lại (Evidence Bundle & Re-verification Records):**
    - Toàn bộ 240 tệp bằng chứng của 27 lượt chạy được đóng gói tại `pilots/phase2-contract-and-review/evidence/` kèm `MANIFEST.json` mã hóa SHA-256 từng file, được khóa bằng cờ `-text -eol` trong `.gitattributes`.
-   - Toàn bộ file `eval_result.json` được tạo trực tiếp từ bản ghi `verifier_execution_record.json` chứa lệnh thực thi, mã thoát `exit_code: 0`, thời gian đo thực tế và output của verifier, bảo đảm tính xác thực và khả năng tái lập độc lập.
+   - Các tệp `verifier_execution_record.json` và `eval_result.json` là **bản ghi chấm lại độc lập sau phiên candidate** (thực hiện qua `manager.py verify`), ghi nhận chính xác lệnh verifier, mã thoát `exit_code: 0`, thời gian đo thực tế và output của verifier. Mốc thời gian (timestamp) trong các tệp này phản ánh thời điểm chấm lại sau phiên, không phải thời điểm chạy của candidate subagent.
