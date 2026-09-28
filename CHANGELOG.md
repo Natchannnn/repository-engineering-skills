@@ -9,12 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Corrected Pilot 1 outcome from 9/9 to 7/9 PASS (A0 3/3, A1 2/3, A2 2/3 — Runs 4-5 FAIL on strict Test ID schema) to match `PROTOCOL.md` §5-6 and evidence JSONs.
+- Clarified Phase 2 27/27 as ceiling effect with no measurable skill advantage, and CP2/CP3 ablations as n=1 single-judge case studies.
+- Fixed Phase 2 self-audit docstring from 17 to 35 tests (15 D2 + 9 R2A + 11 R2B) and clarified package test numbering.
+
 ### Added
-- Tested `npx skills` project-installation instructions, with discovery, single-skill installation, trial prompts and reinstall behavior documented.
-- A copy of the MIT license in each installable skill directory.
+- Unified skill packaging: `metadata.version 0.2.0` + MIT for both skills, added `repo-native-refactor/agents/openai.yaml`.
+- Canonical shared contracts (`docs/contracts-canonical.md` + `scripts/sync-shared.py` with `--check`) to eliminate `str` vs `Path` duplication drift.
+- Few-shot guidance: `refactor-examples.md` (R0–R4) and `migration-examples.md` (atomic vs transitional) plus `Reference Routing` table for refactor.
+- Tooling: `scripts/classify-risk.py` triage helper, `scripts/install-skills.sh` POSIX mirror, `requirements-test.txt` pinned `jsonschema==4.23.0`, Linux harness CI job.
+- Runtime payload expanded 17 → 22 files (shared contracts + examples + refactor adapter).
 
 ### Changed
 - Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
+- CI Python 3.14 → 3.12 matrix (Windows full + Linux harness) with shared-contracts sync gate.
 
 ## [0.1.0] - 2026-09-26
 

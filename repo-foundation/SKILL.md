@@ -1,6 +1,9 @@
 ---
 name: repo-foundation
 description: Build software products on a clean, minimal foundation, develop new features or bug fixes, and adapt architecture as requirements evolve. Use when initializing a new codebase, adding features to an existing repository, or refactoring architectural boundaries and contracts.
+metadata:
+  version: "0.2.0"
+  license: "MIT"
 ---
 
 # Repo Foundation
@@ -25,7 +28,7 @@ Optimize for total effort: deliver changes that are correct, testable, and maint
   - Do not narrate syntax; do not invent tickets, incidents, owners, or production histories.
   - Do not strip valuable comments merely for cosmetic brevity; do not enforce arbitrary comment ratios.
   - Do not add abstractions, wrappers, or factory layers without concrete ownership, contract, or test seam needs.
-- **Preserve consumed public contracts:** Preserve documented or demonstrably consumed public contracts, including declared types, values, errors, and serialization. A requested behavior change may authorize a contract change when that consequence is clear from the task; update affected callers, tests, and documentation within scope. Ask only when compatibility expectations or affected consumers remain materially ambiguous. Internal representations may differ when conversion preserves the public contract (for example, do not replace an exposed string path contract with `Path` objects in public module constants or function signatures merely because `Path` is preferred internally).
+- **Preserve consumed public contracts:** See `references/shared-contracts.md` §1 for the canonical rule. In short: preserve documented or consumed types/values/errors/serialization; only change a contract when the task clearly authorizes it, then update callers/tests/docs in scope.
 - **Verification rigor & proportionate testing:**
   - Record baseline failures and distinguish: (1) pre-existing failures outside scope, (2) in-scope failures to fix, (3) regressions from current changes, and (4) environment errors.
   - Verify the final code state; never use pre-cleanup test results to certify modified code.
@@ -88,3 +91,5 @@ Read supporting references only when the corresponding trigger occurs:
 - **[references/evolution.md](references/evolution.md):** Read in **Evolve mode** to assess blast radius, handle breaking contract changes, or reconcile conflicting conventions.
 - **[references/continuity.md](references/continuity.md):** Read when resuming work across sessions, taking over a repository, or reconciling stale notes with code reality.
 - **[references/verification.md](references/verification.md):** Read when designing checks for greenfield code, high-risk boundaries (auth, data loss, concurrency), or weak test suites.
+- **[references/shared-contracts.md](references/shared-contracts.md):** Canonical contract + evidence hierarchy + final-state rule. Read when touching any public interface, reconciling conflicting requirements, or certifying completion.
+- **[references/migration-examples.md](references/migration-examples.md):** Atomic vs transitional migration patterns. Read in Evolve mode before mutating persisted state.

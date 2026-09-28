@@ -8,7 +8,7 @@ Use the [Skills CLI](https://github.com/vercel-labs/skills) to install directly 
 - Node.js 22.20.0 or newer with npm/npx for Skills CLI 1.7.0.
 - A coding agent host that supports the selected skill location.
 
-Python is only needed to run the included evaluation harness, not to load the Markdown instructions. Examples pin the installer to 1.7.0; this does not pin the repository content to a release.
+Python is only needed to run the included evaluation harness and repo tooling (`pip install -r requirements-test.txt` for `jsonschema`, plus `python scripts/sync-shared.py --check` and `python scripts/classify-risk.py`), not to load the Markdown instructions. Examples pin the installer to 1.7.0; this does not pin the repository content to a release.
 
 ## Preview and install
 
@@ -44,7 +44,7 @@ The tested recipe is the explicit Codex copy command. The CLI offers other agent
 
 ## What gets installed
 
-The CLI copies each selected skill directory. With the current source layout, this includes `SKILL.md`, `references/`, each skill's `evals/` harness directory, the per-skill `LICENSE`, and Foundation's `agents/openai.yaml` metadata.
+The CLI copies each selected skill directory. With the current source layout, this includes `SKILL.md`, `references/`, each skill's `evals/` harness directory, the per-skill `LICENSE`, and each skill's `agents/openai.yaml` metadata.
 
 The repository-level `evals-suite/` archive is not installed. The included harness files are not executed by the install command. This is currently a full skill-directory installation, not a runtime-only bundle.
 
@@ -133,7 +133,7 @@ For offline environments, air-gapped systems, or teams that do not use Node.js o
 
 ### Package structure
 
-The runtime archive excludes evaluation harnesses, tests, and authoring tools, containing strictly the 17 payload files required for agent execution:
+The runtime archive excludes evaluation harnesses, tests, and authoring tools, containing strictly the 22 payload files required for agent execution:
 
 ```text
 repository-engineering-skills-runtime/
@@ -149,17 +149,23 @@ repository-engineering-skills-runtime/
     │       ├── bootstrap.md
     │       ├── continuity.md
     │       ├── evolution.md
+    │       ├── migration-examples.md
+    │       ├── shared-contracts.md
     │       └── verification.md
     └── repo-native-refactor/
         ├── LICENSE
         ├── SKILL.md
+        ├── agents/
+        │   └── openai.yaml
         └── references/
             ├── deterministic-tooling.md
             ├── error-reliability.md
             ├── finding-taxonomy.md
+            ├── refactor-examples.md
             ├── repository-prose.md
             ├── repository-rehabilitation.md
             ├── semantic-risk.md
+            ├── shared-contracts.md
             └── testing-integrity.md
 ```
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Unified self-audit runner for all Phase 2 verifiers:
-- Task D2 (Contract Migration & Multi-Caller Preservation): 7 tests
-- Task R2A (Neutral Review Fixture A - Clean): 4 tests
-- Task R2B (Neutral Review Fixture B - Defect): 6 tests
-Total: 17 self-audit tests.
+- Task D2 (Contract Migration & Multi-Caller Preservation): 15 tests
+- Task R2A (Neutral Review Fixture A - Clean): 9 tests
+- Task R2B (Neutral Review Fixture B - Defect): 11 tests
+Total: 35 self-audit tests.
 """
 
 from __future__ import annotations
