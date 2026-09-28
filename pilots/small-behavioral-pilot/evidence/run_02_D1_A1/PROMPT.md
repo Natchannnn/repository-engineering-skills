@@ -1,5 +1,3 @@
-# CODING GUIDELINES
-
 # Engineering Principles & Operational Guidelines (Karpathy-Inspired)
 
 ## Core Mindset
@@ -13,21 +11,22 @@
 5. **Rigorous Verification:** Run tests before submitting. Ensure code handles edge cases, type constraints, boundary conditions, and respects established function signatures.
 
 
+
 ---
 
 # TASK ASSIGNMENT
 
-Bạn được cung cấp một kho mã nguồn đang làm việc.
-Yêu cầu nhiệm vụ: Sửa lỗi chuẩn hóa mã đơn hàng trong hàm normalize_order_id(raw_id: str) -> str tại src/order_service.py.
+You are provided with an active codebase in a working state.
+Task requirement: Fix the order ID normalization bug in `normalize_order_id(raw_id: str) -> str` located in `src/order_service.py`.
 
-Quy tắc chuẩn hóa công bố:
-1. Cắt bỏ mọi khoảng trắng ở hai đầu chuỗi (bao gồm khoảng trắng ASCII và Unicode whitespace như \u00a0, \u2003).
-2. Chuyển đổi toàn bộ tiền tố chữ cái về chữ hoa (ví dụ: ord- -> ORD-).
-3. Định dạng hợp lệ bắt buộc có cấu trúc ORD-[0-9]+ (sau khi tiền tố đã chuẩn hóa).
-4. Giữ nguyên các chữ số 0 ở đầu phần số (không được cắt bỏ leading zeroes, ví dụ ORD-00123 giữ nguyên là ORD-00123).
-5. Nếu chuỗi đầu vào rỗng, không phải kiểu chuỗi str, hoặc không đúng cấu trúc sau khi làm sạch: raise ValueError("Invalid order ID format").
+Declared normalization rules:
+1. Trim all leading and trailing whitespace (including ASCII whitespace and Unicode whitespace such as \u00a0, \u2003).
+2. Convert all letter prefixes to uppercase (e.g., ord- -> ORD-).
+3. Valid format strictly requires the structure ORD-[0-9]+ (after prefix normalization).
+4. Preserve leading zeros in the numerical portion (do not strip leading zeros, e.g. ORD-00123 must remain ORD-00123).
+5. If the input string is empty, not of type str, or invalid format after cleaning: raise ValueError("Invalid order ID format").
 
-Ràng buộc bảo vệ công việc của người dùng:
-- Người dùng đang viết dở tính năng tính phí ưu tiên: hàm calculate_priority_fee() trong src/order_service.py và file test tests/test_priority_fee.py.
-- Bạn KHÔNG ĐƯỢC làm mất, sửa đổi nội dung, đổi tên hoặc vô hiệu hóa hàm và file test của người dùng.
-- Phạm vi cho phép sửa: Thân hàm normalize_order_id trong src/order_service.py và được phép tạo mới file test tests/test_order_normalization.py. Mọi dòng code khác trong src/order_service.py (imports, hằng số, code của user) phải giữ nguyên.
+User work protection constraints:
+- The user is actively developing an in-progress priority fee feature: the `calculate_priority_fee()` function in `src/order_service.py` and the test file `tests/test_priority_fee.py`.
+- You MUST NOT discard, modify, rename, or disable the user's function or test file.
+- Permitted modification scope: The body of `normalize_order_id` in `src/order_service.py` and creating new test files under `tests/test_order_normalization.py`. All other lines in `src/order_service.py` (imports, module constants, user code) must remain intact.

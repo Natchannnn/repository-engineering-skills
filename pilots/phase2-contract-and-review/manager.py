@@ -57,7 +57,7 @@ for rep in [1, 2, 3]:
     for task in TASK_SEQUENCE:
         for arm in arm_order:
             arm_names = {
-                "A0": "Control (Prompt mộc)",
+                "A0": "Control (Baseline Prompt)",
                 "A1": "Karpathy Guidelines",
                 "A2": "Treatment (2 Skills)",
             }
@@ -71,35 +71,33 @@ for rep in [1, 2, 3]:
             run_idx += 1
 
 TASK_PROMPTS = {
-    "D2": """Bạn được cung cấp một kho mã nguồn dịch vụ vận chuyển và đơn hàng.
-Yêu cầu nhiệm vụ: Nâng cấp hàm tính phí vận chuyển calculate_shipping(weight_kg: Decimal, destination: str, express: bool = False) -> ShippingQuote trong src/shipping.py.
+    "D2": """You are provided with an e-commerce shipping and orders service codebase.
+Task requirement: Upgrade the shipping fee calculation function `calculate_shipping(weight_kg: Decimal, destination: str, express: bool = False) -> ShippingQuote` in `src/shipping.py`.
 
-Quy tắc nghiệp vụ công bố:
-1. Khai báo dataclass ShippingQuote tại src/shipping.py với 3 thuộc tính kiểu Decimal: base_fee, express_fee, total_fee.
-2. Tham số weight_kg bắt buộc là kiểu Decimal và strictly > 0 (không chấp nhận bool, float, str hoặc <= 0). Nếu sai: raise ValueError("Invalid weight").
-3. Tham số destination bắt buộc phải thuộc danh sách được hỗ trợ bởi get_supported_destinations(). Nếu không thuộc danh sách: raise ValueError("Unsupported destination").
-4. Tham số express bắt buộc là kiểu bool (mặc định False). Nếu True: express_fee = Decimal("12.50"). Nếu False: express_fee = Decimal("0.00"). Nếu express không phải bool: raise ValueError hoặc TypeError.
-5. base_fee = (weight_kg * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP).
-   - DOMESTIC: rate = Decimal("5.00")
-   - INTERNATIONAL: rate = Decimal("15.00")
-   - EXPRESS_ZONE: rate = Decimal("25.00")
-6. total_fee = base_fee + express_fee.
-7. Hàm trả về đối tượng ShippingQuote(base_fee=base_fee, express_fee=express_fee, total_fee=total_fee).
+Declared business rules:
+1. Declare dataclass `ShippingQuote` in `src/shipping.py` with 3 attributes of type `Decimal`: `base_fee`, `express_fee`, `total_fee`.
+2. Parameter `weight_kg` must strictly be of type `Decimal` and `> 0` (reject bool, float, str, or <= 0). If invalid: raise `ValueError("Invalid weight")`.
+3. Parameter `destination` must belong to the list returned by `get_supported_destinations()`. If unsupported: raise `ValueError("Unsupported destination")`.
+4. Parameter `express` must be of type `bool` (default `False`). If `True`: `express_fee = Decimal("12.50")`. If `False`: `express_fee = Decimal("0.00")`. If express is not a bool: raise `ValueError` or `TypeError`.
+5. `base_fee = (weight_kg * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)`.
+   - DOMESTIC: `rate = Decimal("5.00")`
+   - INTERNATIONAL: `rate = Decimal("15.00")`
+   - EXPRESS_ZONE: `rate = Decimal("25.00")`
+6. `total_fee = base_fee + express_fee`.
+7. Return `ShippingQuote(base_fee=base_fee, express_fee=express_fee, total_fee=total_fee)`.
 
-Ràng buộc tương thích & di chuyển (Migration):
-- Hàm tiện ích get_supported_destinations() -> list[str] và hằng số DEFAULT_RATE_PER_KG = Decimal("5.00") tại src/shipping.py là API công khai phục vụ hệ thống bên ngoài, BẮT BUỘC giữ nguyên tên, kiểu dữ liệu và chữ ký.
-- Hàm calculate_shipping đã được sử dụng nội bộ bởi nhiều module khác nhau trong toàn bộ repository. Bạn CẦN TỰ RÀ SOÁT và di chuyển (migrate) tất cả các caller nội bộ trong repository sang hợp đồng mới để toàn bộ hệ thống hoạt động đồng bộ và toàn bộ test suite vượt qua.
-- Giữ nguyên tất cả file test hiện có, ngoại trừ tests/test_shipping.py được phép cập nhật theo hợp đồng mới. Được phép thêm file test mới trong tests/.
+Compatibility & Migration constraints:
+- Utility function `get_supported_destinations() -> list[str]` and constant `DEFAULT_RATE_PER_KG = Decimal("5.00")` in `src/shipping.py` are public APIs consumed by external systems; their names, types, and signatures MUST be strictly preserved.
+- Function `calculate_shipping` is used internally across multiple modules in the repository. You MUST inspect and migrate all internal callers across the repository to the new contract so the entire system operates consistently and the entire test suite passes.
+- Preserve all existing test files, except `tests/test_shipping.py` which may be updated for the new contract. Authoring new test files in `tests/` is permitted.
 """,
+    "R2A": """You are provided with a codebase repository.
+Task requirement: Review the git diff between the current branch and main. This task is strictly READ-ONLY; you MUST NOT modify any files in the repository.
+Inspect whether any public contract / interface changes broke dependent caller modules in the repository.
 
-
-    "R2A": """Bạn được cung cấp một kho mã nguồn.
-Yêu cầu nhiệm vụ: Review diff giữa branch hiện tại và main. Nhiệm vụ này là READ-ONLY, bạn KHÔNG ĐƯỢC sửa đổi bất kỳ file nào trong repository.
-Hãy rà soát xem có thay đổi nào về giao diện/contract công khai gây gãy các module phụ thuộc (callers) trong repository hay không.
-
-Quy chuẩn Báo cáo Review:
-Xuất kết quả vào file được chỉ định qua cờ --evidence-file {evidence_path} (file JSON nằm ngoài repository).
-Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu trúc:
+Review Report Specification:
+Output results to the path specified via --evidence-file {evidence_path} (JSON file outside repository).
+The defect list must be a JSON array adhering to the structure:
 [
   {{
     "verdict": "defect",
@@ -111,20 +109,20 @@ Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu tr�
   }}
 ]
 
-Quy ước định dạng:
-- source_file và broken_caller_file: Đường dẫn tương đối từ gốc repository (ví dụ src/foo.py).
-- source_symbol: Định danh đầy đủ của đối tượng bị thay đổi (ví dụ ClassName.method_name hoặc function_name).
-- broken_caller_symbol: Tên hàm/phương thức của caller bị gãy.
-- breakage_type: Chọn một trong các giá trị enum nêu trên.
-- Nếu không phát hiện thấy lỗi contract drift nào, xuất mảng rỗng [].
+Formatting conventions:
+- source_file and broken_caller_file: Relative path from repository root (e.g. src/foo.py).
+- source_symbol: Fully qualified identifier of the modified object (e.g. ClassName.method_name or function_name).
+- broken_caller_symbol: Name of the caller function/method that broke.
+- breakage_type: Choose one of the enum values listed above.
+- If no contract drift defect is found, output an empty array [].
 """,
-    "R2B": """Bạn được cung cấp một kho mã nguồn.
-Yêu cầu nhiệm vụ: Review diff giữa branch hiện tại và main. Nhiệm vụ này là READ-ONLY, bạn KHÔNG ĐƯỢC sửa đổi bất kỳ file nào trong repository.
-Hãy rà soát xem có thay đổi nào về giao diện/contract công khai gây gãy các module phụ thuộc (callers) trong repository hay không.
+    "R2B": """You are provided with a codebase repository.
+Task requirement: Review the git diff between the current branch and main. This task is strictly READ-ONLY; you MUST NOT modify any files in the repository.
+Inspect whether any public contract / interface changes broke dependent caller modules in the repository.
 
-Quy chuẩn Báo cáo Review:
-Xuất kết quả vào file được chỉ định qua cờ --evidence-file {evidence_path} (file JSON nằm ngoài repository).
-Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu trúc:
+Review Report Specification:
+Output results to the path specified via --evidence-file {evidence_path} (JSON file outside repository).
+The defect list must be a JSON array adhering to the structure:
 [
   {{
     "verdict": "defect",
@@ -136,12 +134,12 @@ Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu tr�
   }}
 ]
 
-Quy ước định dạng:
-- source_file và broken_caller_file: Đường dẫn tương đối từ gốc repository (ví dụ src/foo.py).
-- source_symbol: Định danh đầy đủ của đối tượng bị thay đổi (ví dụ ClassName.method_name hoặc function_name).
-- broken_caller_symbol: Tên hàm/phương thức của caller bị gãy.
-- breakage_type: Chọn một trong các giá trị enum nêu trên.
-- Nếu không phát hiện thấy lỗi contract drift nào, xuất mảng rỗng [].
+Formatting conventions:
+- source_file and broken_caller_file: Relative path from repository root (e.g. src/foo.py).
+- source_symbol: Fully qualified identifier of the modified object (e.g. ClassName.method_name or function_name).
+- broken_caller_symbol: Name of the caller function/method that broke.
+- breakage_type: Choose one of the enum values listed above.
+- If no contract drift defect is found, output an empty array [].
 """,
 }
 

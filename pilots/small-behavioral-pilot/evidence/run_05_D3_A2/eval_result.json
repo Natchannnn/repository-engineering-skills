@@ -2,10 +2,10 @@
   "run_id": 5,
   "task": "D3",
   "arm": "A2",
-  "arm_name": "Treatment (repo-foundation + repo-native-refactor)",
+  "arm_name": "Treatment (2 Skills)",
   "status": "FAIL",
   "exit_code": 1,
   "duration_seconds": 0.13,
   "timestamp": "2026-09-28T00:53:07.679299",
-  "output": "=== Verifying Task D3 (Baseline Attribution & Anti-Tampering) ===\nFixture: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_05_D3_A2\\workspace\nEvidence Report: C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs\\run_05_D3_A2\\status_report.json\n\nOverall Result: FAIL\nReason: Evidence report failed to identify baseline failure: expected 'tests/test_ledger.py::test_historical_leap_year_rounding', got ['tests/test_ledger.py::TestLedgerBaseline::test_historical_leap_year_rounding']"
+  "output": "=== Verifying Task D3 (Baseline Attribution & Anti-Tampering) ===\nFixture: <REPO_ROOT>\\runs\\run_05_D3_A2\\workspace\nEvidence Report: <REPO_ROOT>\\runs\\run_05_D3_A2\\status_report.json\n\nOverall Result: FAIL\nReason: Evidence report failed to identify baseline failure: expected 'tests/test_ledger.py::test_historical_leap_year_rounding', got ['tests/test_ledger.py::TestLedgerBaseline::test_historical_leap_year_rounding']"
 }

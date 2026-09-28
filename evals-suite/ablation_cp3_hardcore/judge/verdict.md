@@ -9,7 +9,7 @@
 
 Both candidates were evaluated blindly against the Checkpoint 3 (CP3) specification for the Append-Only Multi-Tenant Event Ledger system. 
 
-While both candidates achieved functional correctness in the execution of runtime contracts (`ledger.append`, `ledger.migrate`, and `query.find`), **Candidate B** demonstrates superior engineering maturity. Candidate B cleanly extracts a single affirmative tenant-validation predicate (`_is_valid_tenant`) shared by both `append` and `migrate`, whereas Candidate A duplicates tenant validation with inverted logic across two functions. Crucially, **Candidate A completely failed the living documentation requirement**, leaving [README.md](file:///C:/Users/Natch/Desktop/SKILLS/ablation_cp3_hardcore/judge/candidate_A/submitted/README.md) in its greenfield CP1/CP2 state. In contrast, **Candidate B synchronized the repository documentation**, providing clear, contract-level specifications for all CP3 additions and behavior guarantees.
+While both candidates achieved functional correctness in the execution of runtime contracts (`ledger.append`, `ledger.migrate`, and `query.find`), **Candidate B** demonstrates superior engineering maturity. Candidate B cleanly extracts a single affirmative tenant-validation predicate (`_is_valid_tenant`) shared by both `append` and `migrate`, whereas Candidate A duplicates tenant validation with inverted logic across two functions. Crucially, **Candidate A completely failed the living documentation requirement**, leaving [README.md](../candidate_A/submitted/README.md) in its greenfield CP1/CP2 state. In contrast, **Candidate B synchronized the repository documentation**, providing clear, contract-level specifications for all CP3 additions and behavior guarantees.
 
 ---
 
@@ -78,7 +78,7 @@ While both candidates achieved functional correctness in the execution of runtim
 
 ## 4. Final Comparative Verdict
 
-### **WINNER: Candidate B (Treatment — Nhóm Có Skills)**
+### **WINNER: Candidate B (Treatment — Skills)**
 
 ### Technical Justification
 1. **Pass Bar Compliance**: Candidate A failed the mandatory `documentation_synchronized` pass bar by letting documentation drift completely. In contrast, Candidate B updated `README.md` with comprehensive contract specifications.

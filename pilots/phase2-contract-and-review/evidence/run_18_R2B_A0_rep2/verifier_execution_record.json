@@ -3,19 +3,19 @@
   "task": "R2B",
   "arm": "A0",
   "repetition": 2,
-  "name": "Control (Prompt mộc) (Rep 2)",
+  "name": "Control (Baseline Prompt) (Rep 2)",
   "command": [
     "C:\\Python314\\python.exe",
-    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\pilots\\phase2-contract-and-review\\R2B-neutral-review\\verify.py",
+    "<REPO_ROOT>\\pilots\\phase2-contract-and-review\\R2B-neutral-review\\verify.py",
     "--fixture-dir",
-    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_18_R2B_A0_rep2\\workspace",
+    "<REPO_ROOT>\\runs_phase2\\run_18_R2B_A0_rep2\\workspace",
     "--evidence-file",
-    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_18_R2B_A0_rep2\\evidence.json"
+    "<REPO_ROOT>\\runs_phase2\\run_18_R2B_A0_rep2\\evidence.json"
   ],
   "exit_code": 0,
   "status": "PASS",
   "duration_sec": 0.151,
   "timestamp": "2026-09-27T23:21:14.810025+00:00",
-  "stdout": "=== Verifying Task R2B at C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_18_R2B_A0_rep2\\workspace ===\n[1/3] Checking workspace READ-ONLY integrity...\n      PASS: Workspace unmodified.\n[2/3] Checking evidence file at C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_18_R2B_A0_rep2\\evidence.json...\n      PASS: Evidence JSON schema valid.\n[3/3] Evaluating defect identification on branch review/auth-token-v2...\n      Metrics: TP=1, FP=0, FN=0, Precision=1.00, Recall=1.00\n      PASS: Accurately detected contract drift with zero false positives.\n\nOverall Result: PASS\n",
+  "stdout": "=== Verifying Task R2B at <REPO_ROOT>\\runs_phase2\\run_18_R2B_A0_rep2\\workspace ===\n[1/3] Checking workspace READ-ONLY integrity...\n      PASS: Workspace unmodified.\n[2/3] Checking evidence file at <REPO_ROOT>\\runs_phase2\\run_18_R2B_A0_rep2\\evidence.json...\n      PASS: Evidence JSON schema valid.\n[3/3] Evaluating defect identification on branch review/auth-token-v2...\n      Metrics: TP=1, FP=0, FN=0, Precision=1.00, Recall=1.00\n      PASS: Accurately detected contract drift with zero false positives.\n\nOverall Result: PASS\n",
   "stderr": ""
 }

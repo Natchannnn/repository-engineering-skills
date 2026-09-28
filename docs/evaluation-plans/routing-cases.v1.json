@@ -13,8 +13,8 @@
   },
   "cases": [
     {
-      "id": "F01", "group": "foundation", "language": "vi",
-      "prompt": "Tạo một CLI Python đọc CSV giao dịch và tính tổng theo loại. Repo đang trống; làm một luồng chạy được cùng kiểm tra cơ bản.",
+      "id": "F01", "group": "foundation", "language": "en",
+      "prompt": "Create a Python CLI that reads a transaction CSV and aggregates totals by category. The repo is empty; build a working flow with basic tests.",
       "context_required": "Empty repository; Python available; small CSV examples.",
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
@@ -25,8 +25,8 @@
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
     {
-      "id": "F03", "group": "foundation", "language": "vi",
-      "prompt": "Hàm tìm kiếm đang bỏ qua giá trị 0 hợp lệ. Sửa lỗi đó và thêm kiểm tra hồi quy, giữ các hành vi còn lại.",
+      "id": "F03", "group": "foundation", "language": "en",
+      "prompt": "The search function is dropping valid 0 values. Fix that bug and add regression tests while preserving all remaining behavior.",
       "context_required": "Repository with a reproducible zero-value bug and existing test framework.",
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
@@ -37,8 +37,8 @@
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
     {
-      "id": "F05", "group": "foundation", "language": "vi",
-      "prompt": "Tiếp tục tính năng nhập giao dịch từ phiên trước. Notes nói chưa làm nhưng code đã có một phần; kiểm tra yêu cầu rồi hoàn thành phần còn thiếu.",
+      "id": "F05", "group": "foundation", "language": "en",
+      "prompt": "Continue the transaction import feature from the previous session. Notes say it's not done, but code is partially implemented; verify requirements and complete the missing parts.",
       "context_required": "Original acceptance requirements, stale notes and partially implemented import feature.",
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
@@ -49,8 +49,8 @@
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
     {
-      "id": "F07", "group": "foundation", "language": "vi",
-      "prompt": "Thêm bộ lọc theo trạng thái vào trang đơn hàng. Mình có thay đổi chưa commit trong component này; giữ chúng và làm tiếp đúng conventions hiện có.",
+      "id": "F07", "group": "foundation", "language": "en",
+      "prompt": "Add a status filter to the orders page. I have uncommitted changes in this component; keep them and continue following existing conventions.",
       "context_required": "Frontend repository with identifiable user edits and a requested filter contract.",
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
@@ -61,8 +61,8 @@
       "expected_initial_skill": "repo-foundation", "required_later_skill": null
     },
     {
-      "id": "R01", "group": "refactor", "language": "vi",
-      "prompt": "Review diff hiện tại giúp mình, chỉ báo lỗi có bằng chứng và vị trí file. Không sửa code.",
+      "id": "R01", "group": "refactor", "language": "en",
+      "prompt": "Review the current diff for me, reporting only defects backed by evidence and file locations. Do not modify any code.",
       "context_required": "Small working-tree diff with an identifiable comparison base.",
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
@@ -73,8 +73,8 @@
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
     {
-      "id": "R03", "group": "refactor", "language": "vi",
-      "prompt": "Hai chỗ validation trong diff có vẻ trùng nhau. Xem có cùng nghiệp vụ và chủ sở hữu không; chỉ hợp nhất nếu có lợi ích cụ thể.",
+      "id": "R03", "group": "refactor", "language": "en",
+      "prompt": "Two validation blocks in the diff look duplicate. Check if they share business logic and ownership; consolidate only if there is a concrete benefit.",
       "context_required": "Diff with two similar validation blocks and enough domain context to distinguish ownership.",
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
@@ -85,8 +85,8 @@
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
     {
-      "id": "R05", "group": "refactor", "language": "vi",
-      "prompt": "Mình muốn phục hồi chất lượng toàn repository này theo từng đợt nhỏ, giữ hành vi đang được dùng. Khảo sát rồi xử lý những vấn đề có bằng chứng.",
+      "id": "R05", "group": "refactor", "language": "en",
+      "prompt": "I want to rehabilitate this repository's quality in small batches while preserving consumed behavior. Survey and address evidenced issues.",
       "context_required": "Bounded sample repository with documented behavior and permission for repository-wide rehabilitation.",
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
@@ -97,8 +97,8 @@
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
     {
-      "id": "R07", "group": "refactor", "language": "vi",
-      "prompt": "Dọn phần code AI vừa thêm trong diff này: bỏ residue có bằng chứng, giữ comments giải thích invariant và không đổi output mà bên khác đang dùng.",
+      "id": "R07", "group": "refactor", "language": "en",
+      "prompt": "Clean up the AI-generated code in this diff: remove evidenced residue, keep invariant comments, and do not change outputs used downstream.",
       "context_required": "Diff with mixed comments, debug residue and consumed observable output.",
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
@@ -109,20 +109,20 @@
       "expected_initial_skill": "repo-native-refactor", "required_later_skill": null
     },
     {
-      "id": "N01", "group": "neither", "language": "vi",
-      "prompt": "Sửa đúng lỗi chính tả 'instalation' thành 'installation' trong README. Không cần review phần còn lại.",
+      "id": "N01", "group": "neither", "language": "en",
+      "prompt": "Fix the exact typo 'instalation' to 'installation' in README. No review needed for the rest.",
       "context_required": "README with one specified typo.",
       "expected_initial_skill": null, "required_later_skill": null
     },
     {
       "id": "N02", "group": "neither", "language": "en",
-      "prompt": "Translate the pasted paragraph explaining refactoring into Vietnamese. Do not inspect or modify the repository.",
+      "prompt": "Translate the pasted paragraph explaining refactoring into English. Do not inspect or modify the repository.",
       "context_required": "A short pasted paragraph about refactoring, requiring translation only.",
       "expected_initial_skill": null, "required_later_skill": null
     },
     {
-      "id": "N03", "group": "neither", "language": "vi",
-      "prompt": "Giải thích ngắn gọn sự khác nhau giữa git diff và git diff --staged, không chạy lệnh hoặc sửa file.",
+      "id": "N03", "group": "neither", "language": "en",
+      "prompt": "Briefly explain the difference between git diff and git diff --staged, without running commands or editing files.",
       "context_required": "No repository fixture needed; conceptual Git question.",
       "expected_initial_skill": null, "required_later_skill": null
     },
@@ -133,8 +133,8 @@
       "expected_initial_skill": null, "required_later_skill": null
     },
     {
-      "id": "M01", "group": "mixed", "language": "vi",
-      "prompt": "Thêm CSV export theo yêu cầu, kiểm tra xong rồi review và cleanup diff một lượt trước khi báo hoàn tất.",
+      "id": "M01", "group": "mixed", "language": "en",
+      "prompt": "Add CSV export as requested, verify it, then review and clean up the diff once before marking complete.",
       "context_required": "Existing export interface, CSV acceptance examples and affected tests.",
       "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
     },
@@ -145,8 +145,8 @@
       "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
     },
     {
-      "id": "M03", "group": "mixed", "language": "vi",
-      "prompt": "Tiếp tục tính năng còn dang dở từ notes này, hoàn thành yêu cầu rồi kiểm tra diff để loại thay đổi thừa và lỗi hợp đồng.",
+      "id": "M03", "group": "mixed", "language": "en",
+      "prompt": "Continue the unfinished feature from these notes, satisfy acceptance criteria, then inspect the diff to eliminate unintended churn and contract breaks.",
       "context_required": "Stale session notes, acceptance requirements and partially implemented feature.",
       "expected_initial_skill": "repo-foundation", "required_later_skill": "repo-native-refactor"
     },

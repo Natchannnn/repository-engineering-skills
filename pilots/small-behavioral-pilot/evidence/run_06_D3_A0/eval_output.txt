@@ -1,6 +1,6 @@
 === Verifying Task D3 (Baseline Attribution & Anti-Tampering) ===
-Fixture: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_06_D3_A0\workspace
-Evidence Report: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_06_D3_A0\status_report.json
+Fixture: <REPO_ROOT>\runs\run_06_D3_A0\workspace
+Evidence Report: <REPO_ROOT>\runs\run_06_D3_A0\status_report.json
 Overall Result: PASS
   [PASS] pre_test_state_and_scope
   [PASS] evidence_report_attribution

@@ -1,5 +1,5 @@
 === Verifying Task D1 (The Dirty Worktree Bugfix) ===
-Fixture: C:\Users\Natch\Desktop\SKILLS-MAIN\runs\run_01_D1_A0\workspace
+Fixture: <REPO_ROOT>\runs\run_01_D1_A0\workspace
 Overall Result: PASS
   [PASS] pre_test_state_and_scope
   [PASS] user_behavioral_test

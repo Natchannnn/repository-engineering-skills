@@ -3,17 +3,17 @@
   "task": "D2",
   "arm": "A1",
   "repetition": 1,
-  "name": "Karpathy Guidelines (Rep 1)",
+  "name": "Karpathy-inspired Guidelines (Rep 1)",
   "command": [
     "C:\\Python314\\python.exe",
-    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\pilots\\phase2-contract-and-review\\D2-contract-migration\\verify.py",
+    "<REPO_ROOT>\\pilots\\phase2-contract-and-review\\D2-contract-migration\\verify.py",
     "--fixture-dir",
-    "C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_02_D2_A1_rep1\\workspace"
+    "<REPO_ROOT>\\runs_phase2\\run_02_D2_A1_rep1\\workspace"
   ],
   "exit_code": 0,
   "status": "PASS",
   "duration_sec": 0.55,
   "timestamp": "2026-09-27T23:21:10.729388+00:00",
-  "stdout": "=== Verifying Task D2 at C:\\Users\\Natch\\Desktop\\SKILLS-MAIN\\runs_phase2\\run_02_D2_A1_rep1\\workspace ===\n[1/4] Checking public compatibility surface...\n      PASS: Compatibility surface intact.\n[2/4] Running hidden acceptance tests for ShippingQuote contract...\n      PASS: Hidden acceptance tests passed.\n[3/4] Running workspace test suite for all callers...\n      PASS: Workspace test suite passed.\n[4/4] Checking git repository state...\n      PASS: Git state verified.\n\nOverall Result: PASS\n",
+  "stdout": "=== Verifying Task D2 at <REPO_ROOT>\\runs_phase2\\run_02_D2_A1_rep1\\workspace ===\n[1/4] Checking public compatibility surface...\n      PASS: Compatibility surface intact.\n[2/4] Running hidden acceptance tests for ShippingQuote contract...\n      PASS: Hidden acceptance tests passed.\n[3/4] Running workspace test suite for all callers...\n      PASS: Workspace test suite passed.\n[4/4] Checking git repository state...\n      PASS: Git state verified.\n\nOverall Result: PASS\n",
   "stderr": ""
 }

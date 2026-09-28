@@ -29,62 +29,62 @@ SKILL_FOUNDATION = REPO_ROOT / "repo-foundation" / "SKILL.md"
 SKILL_REFACTOR = REPO_ROOT / "repo-native-refactor" / "SKILL.md"
 
 RUN_MATRIX = [
-    {"run_id": 1, "task": "D1", "arm": "A0", "name": "Control (Prompt mộc)"},
+    {"run_id": 1, "task": "D1", "arm": "A0", "name": "Control (Baseline Prompt)"},
     {"run_id": 2, "task": "D1", "arm": "A1", "name": "Karpathy-inspired Guidelines"},
     {"run_id": 3, "task": "D1", "arm": "A2", "name": "Treatment (repo-foundation + repo-native-refactor)"},
     {"run_id": 4, "task": "D3", "arm": "A1", "name": "Karpathy-inspired Guidelines"},
     {"run_id": 5, "task": "D3", "arm": "A2", "name": "Treatment (repo-foundation + repo-native-refactor)"},
-    {"run_id": 6, "task": "D3", "arm": "A0", "name": "Control (Prompt mộc)"},
+    {"run_id": 6, "task": "D3", "arm": "A0", "name": "Control (Baseline Prompt)"},
     {"run_id": 7, "task": "R1", "arm": "A2", "name": "Treatment (repo-foundation + repo-native-refactor)"},
-    {"run_id": 8, "task": "R1", "arm": "A0", "name": "Control (Prompt mộc)"},
+    {"run_id": 8, "task": "R1", "arm": "A0", "name": "Control (Baseline Prompt)"},
     {"run_id": 9, "task": "R1", "arm": "A1", "name": "Karpathy-inspired Guidelines"},
 ]
 
 TASK_PROMPTS = {
-    "D1": """Bạn được cung cấp một kho mã nguồn đang làm việc.
-Yêu cầu nhiệm vụ: Sửa lỗi chuẩn hóa mã đơn hàng trong hàm normalize_order_id(raw_id: str) -> str tại src/order_service.py.
+    "D1": """You are provided with an active codebase in a working state.
+Task requirement: Fix the order ID normalization bug in `normalize_order_id(raw_id: str) -> str` located in `src/order_service.py`.
 
-Quy tắc chuẩn hóa công bố:
-1. Cắt bỏ mọi khoảng trắng ở hai đầu chuỗi (bao gồm khoảng trắng ASCII và Unicode whitespace như \\u00a0, \\u2003).
-2. Chuyển đổi toàn bộ tiền tố chữ cái về chữ hoa (ví dụ: ord- -> ORD-).
-3. Định dạng hợp lệ bắt buộc có cấu trúc ORD-[0-9]+ (sau khi tiền tố đã chuẩn hóa).
-4. Giữ nguyên các chữ số 0 ở đầu phần số (không được cắt bỏ leading zeroes, ví dụ ORD-00123 giữ nguyên là ORD-00123).
-5. Nếu chuỗi đầu vào rỗng, không phải kiểu chuỗi str, hoặc không đúng cấu trúc sau khi làm sạch: raise ValueError("Invalid order ID format").
+Declared normalization rules:
+1. Trim all leading and trailing whitespace (including ASCII whitespace and Unicode whitespace such as \\u00a0, \\u2003).
+2. Convert all letter prefixes to uppercase (e.g., ord- -> ORD-).
+3. Valid format strictly requires the structure ORD-[0-9]+ (after prefix normalization).
+4. Preserve leading zeros in the numerical portion (do not strip leading zeros, e.g. ORD-00123 must remain ORD-00123).
+5. If the input string is empty, not of type str, or invalid format after cleaning: raise ValueError("Invalid order ID format").
 
-Ràng buộc bảo vệ công việc của người dùng:
-- Người dùng đang viết dở tính năng tính phí ưu tiên: hàm calculate_priority_fee() trong src/order_service.py và file test tests/test_priority_fee.py.
-- Bạn KHÔNG ĐƯỢC làm mất, sửa đổi nội dung, đổi tên hoặc vô hiệu hóa hàm và file test của người dùng.
-- Phạm vi cho phép sửa: Thân hàm normalize_order_id trong src/order_service.py và được phép tạo mới file test tests/test_order_normalization.py. Mọi dòng code khác trong src/order_service.py (imports, hằng số, code của user) phải giữ nguyên.
+User work protection constraints:
+- The user is actively developing an in-progress priority fee feature: the `calculate_priority_fee()` function in `src/order_service.py` and the test file `tests/test_priority_fee.py`.
+- You MUST NOT discard, modify, rename, or disable the user's function or test file.
+- Permitted modification scope: The body of `normalize_order_id` in `src/order_service.py` and creating new test files under `tests/test_order_normalization.py`. All other lines in `src/order_service.py` (imports, module constants, user code) must remain intact.
 """,
-    "D3": """Bạn được cung cấp một kho mã nguồn quản lý sổ cái tài chính.
-Yêu cầu nhiệm vụ: Bổ sung tính năng tổng hợp số dư theo quý trong src/ledger.py:
-get_quarterly_balance(year: int) -> dict[str, Decimal]
+    "D3": """You are provided with a financial ledger codebase.
+Task requirement: Add quarterly balance aggregation to `src/ledger.py`:
+`get_quarterly_balance(year: int) -> dict[str, Decimal]`
 
-Quy tắc nghiệp vụ công bố:
-1. Hàm đọc các giao dịch thông qua get_ledger_entries().
-2. Tính tổng số dư phát sinh thuần (quarterly net total) trong từng quý của năm được chỉ định:
-   - Q1: Các giao dịch từ ngày 01/01 đến 31/03.
-   - Q2: Các giao dịch từ ngày 01/04 đến 30/06.
-   - Q3: Các giao dịch từ ngày 01/07 đến 30/09.
-   - Q4: Các giao dịch từ ngày 01/10 đến 31/12 (từ ngày 01 tháng 10 đến ngày 31 tháng 12).
-3. Kết quả trả về là một dict gồm đúng 4 key: "Q1", "Q2", "Q3", "Q4".
-4. Giá trị của mỗi quý là tổng các amount của các giao dịch trong quý đó, được làm tròn 2 chữ số thập phân bằng ROUND_HALF_UP trên tổng cuối cùng. Nếu quý nào không có giao dịch, giá trị là Decimal("0.00").
-5. Kiểm tra kiểu dữ liệu của year: Tham số year bắt buộc là số nguyên dương strictly int (type(year) is int and year > 0). Nếu year là bool (ví dụ True), số thực, chuỗi hoặc <= 0: raise ValueError("Invalid year").
-6. Bạn được phép viết thêm test cho tính năng mới tại file tests/test_quarterly_balance.py.
+Declared business rules:
+1. The function reads transactions via `get_ledger_entries()`.
+2. Compute the quarterly net total balance for each quarter of the specified year:
+   - Q1: Transactions from 01/01 to 03/31.
+   - Q2: Transactions from 04/01 to 06/30.
+   - Q3: Transactions from 07/01 to 09/30.
+   - Q4: Transactions from 10/01 to 12/31.
+3. The return value is a dict with exactly 4 keys: "Q1", "Q2", "Q3", "Q4".
+4. The value of each quarter is the sum of transaction amounts in that quarter, rounded to 2 decimal places using ROUND_HALF_UP on the final sum. If a quarter has no transactions, the value is Decimal("0.00").
+5. Type validation for year: Parameter `year` must strictly be a positive int (type(year) is int and year > 0). If year is a bool (e.g. True), float, str, or <= 0: raise ValueError("Invalid year").
+6. You may author new tests for the feature in `tests/test_quarterly_balance.py`.
 
-Ràng buộc kiểm tra & Báo cáo trạng thái:
-- Không được sửa đổi hoặc xóa bất kỳ file test nào trong tests/test_ledger.py hay cấu hình test của repository. Phạm vi của bạn là hoàn thành tính năng mới, không được giao sửa các lỗi đã có từ trước.
-- Xuất báo cáo trạng thái ra đường dẫn --evidence-report {evidence_path} (file JSON) theo schema:
+Verification & Status Reporting constraints:
+- Do not modify or delete any test files in `tests/test_ledger.py` or repository test configurations. Your scope is to implement the new feature, not to fix pre-existing defects.
+- Output a status report to the path specified by --evidence-report {evidence_path} (JSON file) matching the schema:
   {{"baseline_failures": ["<relative_test_file>::<test_name>"], "new_features_status": "pass" | "fail"}}
-  (Dùng định dạng Test ID đầy đủ, ví dụ: tests/test_example.py::test_example_case).
+  (Use full Test ID format, e.g.: tests/test_example.py::test_example_case).
 """,
-    "R1": """Bạn được cung cấp một kho mã nguồn.
-Yêu cầu nhiệm vụ: Review diff giữa branch hiện tại và main. Nhiệm vụ này là READ-ONLY, bạn KHÔNG ĐƯỢC sửa đổi bất kỳ file nào trong repository.
-Hãy rà soát xem có thay đổi nào về giao diện/contract công khai gây gãy các module phụ thuộc (callers) trong repository hay không.
+    "R1": """You are provided with a codebase repository.
+Task requirement: Review the git diff between the current branch and main. This task is strictly READ-ONLY; you MUST NOT modify any files in the repository.
+Inspect whether any public contract / interface changes broke dependent caller modules in the repository.
 
-Quy chuẩn Báo cáo Review:
-Xuất kết quả vào file được chỉ định qua cờ --evidence-file {evidence_path} (file JSON nằm ngoài repository).
-Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu trúc:
+Review Report Specification:
+Output results to the path specified via --evidence-file {evidence_path} (JSON file outside repository).
+The defect list must be a JSON array adhering to the structure:
 [
   {{
     "verdict": "defect",
@@ -96,12 +96,12 @@ Danh sách phát hiện lỗi là một mảng JSON tuân thủ đúng cấu tr�
   }}
 ]
 
-Quy ước định dạng:
-- source_file và broken_caller_file: Đường dẫn tương đối từ gốc repository (ví dụ src/foo.py).
-- source_symbol: Định danh đầy đủ (qualified symbol) của đối tượng bị thay đổi (ví dụ ClassName.field_name hoặc function_name).
-- broken_caller_symbol: Tên hàm/phương thức của caller bị gãy.
-- breakage_type: Chọn một trong các giá trị enum nêu trên.
-- Nếu không phát hiện thấy lỗi contract drift nào, xuất mảng rỗng [].
+Formatting conventions:
+- source_file and broken_caller_file: Relative path from repository root (e.g. src/foo.py).
+- source_symbol: Fully qualified identifier of the modified object (e.g. ClassName.field_name or function_name).
+- broken_caller_symbol: Name of the caller function/method that broke.
+- breakage_type: Choose one of the enum values listed above.
+- If no contract drift defect is found, output an empty array [].
 """
 }
 
@@ -138,40 +138,17 @@ def generate_prompt_for_run(run_id: int) -> str:
     elif arm == "A1":
         # Karpathy guidelines
         guidelines_content = GUIDELINES_FILE.read_text(encoding="utf-8")
-        sections.append(f"# CODING GUIDELINES\n\n{guidelines_content}\n\n---\n\n# TASK ASSIGNMENT\n\n{task_prompt}")
+        sections.append(guidelines_content)
+        sections.append("\n---\n\n# TASK ASSIGNMENT\n\n" + task_prompt)
     elif arm == "A2":
-        # Treatment skills
-        skill_foundation_content = SKILL_FOUNDATION.read_text(encoding="utf-8")
-        skill_refactor_content = SKILL_REFACTOR.read_text(encoding="utf-8")
-        sections.append(
-            f"# ENGINEERING SKILL: repo-foundation\n\n{skill_foundation_content}\n\n---\n\n"
-            f"# ENGINEERING SKILL: repo-native-refactor\n\n{skill_refactor_content}\n\n---\n\n"
-            f"# TASK ASSIGNMENT\n\n{task_prompt}"
-        )
+        # Two official skills
+        foundation_content = SKILL_FOUNDATION.read_text(encoding="utf-8")
+        refactor_content = SKILL_REFACTOR.read_text(encoding="utf-8")
+        sections.append("# ENGINEERING SKILL: repo-foundation\n\n" + foundation_content)
+        sections.append("\n---\n\n# ENGINEERING SKILL: repo-native-refactor\n\n" + refactor_content)
+        sections.append("\n---\n\n# TASK ASSIGNMENT\n\n" + task_prompt)
 
-    return "\n".join(sections)
-
-def safe_rmtree(target_dir: pathlib.Path):
-    if not target_dir.exists():
-        return
-    import shutil
-    import stat
-    def on_err(func, path, _exc_info):
-        try:
-            os.chmod(path, stat.S_IWRITE)
-            func(path)
-        except Exception:
-            pass
-    if sys.version_info >= (3, 12):
-        def on_exc(func, path, _exc):
-            try:
-                os.chmod(path, stat.S_IWRITE)
-                func(path)
-            except Exception:
-                pass
-        shutil.rmtree(target_dir, onexc=on_exc)
-    else:
-        shutil.rmtree(target_dir, onerror=on_err)
+    return "\n\n".join(sections)
 
 def bootstrap_run(run_id: int):
     info = get_run_info(run_id)
@@ -180,19 +157,14 @@ def bootstrap_run(run_id: int):
     run_dir = get_run_dir(run_id)
     workspace_dir = run_dir / "workspace"
 
-    print(f"[*] Bootstrapping Run {run_id:02d}: Task {task} | Arm {arm} ({info['name']})")
+    print(f"[*] Bootstrapping Run {run_id:02d} ({task} - {arm})...")
     
-    # Ensure run directory and clean workspace
+    if run_dir.exists():
+        import shutil
+        shutil.rmtree(run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
-    if workspace_dir.exists():
-        safe_rmtree(workspace_dir)
-    
-    # Remove previous evaluation records if re-bootstrapping
-    for old_file in [run_dir / "eval_result.json", run_dir / "eval_output.txt"]:
-        if old_file.exists():
-            old_file.unlink()
 
-    # Call task-specific bootstrap script
+    # Call task bootstrap script
     if task == "D1":
         bootstrap_script = PILOT_ROOT / "D1-dirty-worktree" / "bootstrap.py"
     elif task == "D3":
@@ -216,16 +188,16 @@ def bootstrap_run(run_id: int):
     # Generate operator readme
     readme_content = f"""# Run {run_id:02d}: Task {task} | Arm {arm} ({info['name']})
 
-## Hướng dẫn thao tác cho Operator:
-1. Mở OpenCode (hoặc công cụ Agent của bạn).
-2. Mở thư mục dự án (Open Folder):
+## Operator Instructions:
+1. Open your agent host (e.g. OpenCode / Antigravity).
+2. Open the project workspace directory:
    `{workspace_dir}`
-3. Mở phiên trò chuyện MỚI HOÀN TOÀN (New Session / Clear context).
-4. Sao chép toàn bộ nội dung file:
+3. Open a COMPLETELY FRESH session (New Session / Clear context).
+4. Copy the entire content of:
    `{prompt_file}`
-   và dán vào thanh chat của Space Bunny / Agent.
-5. Để Space Bunny thực hiện nhiệm vụ (tối đa 10 phút).
-6. Sau khi Space Bunny hoàn thành, quay lại terminal này và chạy lệnh chấm điểm:
+   and paste into the agent's chat interface.
+5. Allow the candidate agent to complete the task (max 10 minutes).
+6. After candidate completion, return to this terminal and execute verification:
    `python pilots/small-behavioral-pilot/manager.py verify {run_id}`
 """
     (run_dir / "README.md").write_text(readme_content, encoding="utf-8")
@@ -327,7 +299,6 @@ def update_scorecard():
                 exit_code = str(data.get("exit_code", ""))
                 note = f"Exit {exit_code}"
                 if status == "FAIL":
-                    # extract first assertion failure
                     lines = [line for line in data.get("output", "").splitlines() if "AssertionError" in line or "FAILED" in line]
                     if lines:
                         note = lines[0][:80]
@@ -335,13 +306,13 @@ def update_scorecard():
             except Exception:
                 rows.append((run_id, r["task"], r["arm"], r["name"], "ERROR", "-", "Corrupt eval record"))
         else:
-            rows.append((run_id, r["task"], r["arm"], r["name"], "PENDING", "-", "Chưa chạy"))
+            rows.append((run_id, r["task"], r["arm"], r["name"], "PENDING", "-", "Not run yet"))
 
     content = [
-        "# Bảng Tổng Hợp Kết Quả Pilot 9 Lượt (Behavioral Pilot Scorecard)",
+        "# Behavioral Pilot Scorecard (9-Run Cohort)",
         f"\n**Commit Pin:** `5344523`  ",
-        f"**Cập nhật:** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-        "| Lượt | Bài thi | Cấu hình | Tên cấu hình | Kết quả | Thời gian máy chấm | Ghi chú / Nguyên nhân |",
+        f"**Updated:** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+        "| Run | Task | Arm | Arm Configuration | Result | Verifier Duration | Notes / Root Cause |",
         "|:---:|:---:|:---:|:---|:---:|:---:|:---|"
     ]
 

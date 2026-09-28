@@ -1,11 +1,11 @@
 # Repository Engineering Skills: Code Review and Refactoring for AI Agents
 
-Two agent skills for repository development, code review, and scoped refactoring. Includes tested Codex project installation commands using the Skills CLI, an atomic local installer, reproducible evaluation harnesses, and verified demonstration fixtures.
+Two agent skills for repository development, code review, and scoped refactoring. Includes tested Codex project installation commands using the Skills CLI, an atomic local installer, reproducible evaluation harnesses, 36 audited empirical pilot runs (Pilot 1 & Phase 2), and verified demonstration fixtures.
 
 - **`repo-foundation`** guides project setup, feature implementation, public contract evolution, and multi-session continuity.
 - **`repo-native-refactor`** conducts read-only diff audits and performs scoped cleanup while preserving required behavior and repository conventions.
 
-[Install in a Codex project](docs/installation.md) · [Choose a skill](#choosing-a-skill) · [Reproducible demonstrations](#reproducible-demonstrations) · [Evaluation evidence](docs/evaluation.md) · [Verification commands](#verification-commands)
+[Install in a Codex project](docs/installation.md) · [Choose a skill](#choosing-a-skill) · [Reproducible demonstrations](#reproducible-demonstrations) · [Evaluation evidence & pilots](#evaluation-evidence--empirical-pilots) · [Verification commands](#verification-commands)
 
 > **Governing Principle:** Respect scope. Preserve contracts. Verify changes.
 
@@ -138,23 +138,33 @@ Run affected verification checks after your edits.
 
 ---
 
-## Evaluation evidence & known limitations
+## Evaluation evidence & empirical pilots
 
-To maintain scientific honesty, our evaluation data is categorized into three distinct layers:
+To maintain scientific honesty, our evaluation data is categorized into five distinct layers:
 
-### A. Harness & Demo Unit Test Suites
+### A. Behavioral Pilot 1 (9-Run Cohort)
+- **Scope & Protocol:** 3 repository tasks (`D1` dirty worktree preservation, `D3` baseline failure attribution, `R1` read-only contract drift audit) across 3 experimental arms (`A0` Baseline Control, `A1` Karpathy Guidelines, `A2` Skills).
+- **Evaluation Mechanism:** 100% deterministic verifiers with 42 pre-flight self-audit checks. No LLM judge in primary scoring. All evidence self-contained under `pilots/small-behavioral-pilot/evidence/` with SHA-256 `MANIFEST.json`.
+- **Outcome:** 9/9 PASS under independent audit. Full protocol and scorecards: [small-behavioral-pilot PROTOCOL.md](pilots/small-behavioral-pilot/PROTOCOL.md).
+
+### B. Phase 2: Contract & Review Evaluation (27-Run Triplet Protocol)
+- **Scope & Protocol:** 3 high-leverage tasks (`D2` shipping contract migration with caller AST verification, `R2A` clean refactor negative control, `R2B` subtle contract drift defect identification) across 3 arms (`A0`, `A1`, `A2`) replicated 3 times with rotated arm sequences to eliminate ordering bias (**27 unique runs**).
+- **Evaluation Mechanism:** Independent Python verifiers enforcing workspace read-only integrity, snapshot hashes, caller test immutability, and hidden test suites (35 pre-flight self-audit checks). All evidence self-contained under `pilots/phase2-contract-and-review/evidence/` with SHA-256 `MANIFEST.json`.
+- **Outcome:** 27/27 PASS under independent clone re-verification. Full protocol and scorecards: [phase2-contract-and-review PROTOCOL.md](pilots/phase2-contract-and-review/PROTOCOL.md).
+
+### C. Harness & Demo Unit Test Suites
 - **Harness Verification:** 59 unit tests (26 for `repo-foundation`, 33 for `repo-native-refactor`) verifying deterministic byte snapshots, atomic staging/rollback on I/O error, metaschema structural validation, exact rational scoring, and runner isolation.
 - **Demo Acceptance Suite:** 41 tests in `scripts/test_demos.py` covering happy paths, negative control probes (path traversal rejection, schema violations, protected state tampering, prompt copy rejection, lockfile mutation, concurrent setup rejection, and substring tricks).
 
-### B. Archive Integrity Verification
+### D. Archive Integrity Verification
 - **Archived Runs:** 31 independent verification packets in `evals-suite/`.
 - **Integrity Guarantee:** All 31 packets pass `verify_hashes.py` with exact SHA-256 tree hash parity across Windows CRLF and Linux LF checkouts.
 
-### C. Agent Behavioral Experiments (Observed Case Studies)
+### E. Historical Case Studies (Observed Milestones)
 - **Scope:** Evaluated on multi-turn milestones (CP1 Bootstrap, CP2 Query Slice, CP3 Multi-Tenant Evolution, CP4 Continuity) using a ledger repository domain.
 - **Observations:** In CP2 tests, raw models spontaneously altered declared `str` module constants to `Path`, whereas agents with skill instructions preserved the declared string contract. In CP3 tests, agents with skill instructions updated living documentation and consolidated duplicate validation into affirmative predicates.
 - **Known Limitations:**
-  - **Task Domain:** These observations reflect a specific ledger system workload and do not prove universal superiority across different tech stacks or tasks.
+  - **Task Domain:** These observations reflect specific repository workloads and do not prove universal superiority across different tech stacks or unconstrained tasks.
   - **Environment Scope:** Verified on Windows with Python 3.14; Linux/macOS behaviors rely on POSIX compatibility but have not undergone identical continuous auditing.
   - **Crash Invariants:** Safe replacement mechanisms have been verified against simulated I/O exceptions, but have not been tested against sudden system power loss or process `SIGKILL`.
 
@@ -190,6 +200,14 @@ pwsh -NoProfile -File ./scripts/test-package.ps1
 
 # 7. Verify demo acceptance suite (PowerShell / Python 41 tests):
 pwsh -NoProfile -File ./scripts/test-demos.ps1
+
+# 8. Run Pilot 1 verifier self-audit suites (42 checks across D1, D3, R1):
+python pilots/small-behavioral-pilot/D1-dirty-worktree/test_verifier.py
+python pilots/small-behavioral-pilot/D3-baseline-attribution/test_verifier.py
+python pilots/small-behavioral-pilot/R1-contract-drift/test_verifier.py
+
+# 9. Run Phase 2 verifier self-audit suite (35 checks across D2, R2A, R2B):
+python pilots/phase2-contract-and-review/test_all_phase2_verifiers.py
 ```
 
 ---
