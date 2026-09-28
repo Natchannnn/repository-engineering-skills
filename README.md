@@ -145,12 +145,12 @@ To maintain scientific honesty, our evaluation data is categorized into five dis
 ### A. Behavioral Pilot 1 (9-Run Cohort)
 - **Scope & Protocol:** 3 repository tasks (`D1` dirty worktree preservation, `D3` baseline failure attribution, `R1` read-only contract drift audit) across 3 experimental arms (`A0` Baseline Control, `A1` Karpathy Guidelines, `A2` Skills).
 - **Evaluation Mechanism:** 100% deterministic verifiers with 42 pre-flight self-audit checks. No LLM judge in primary scoring. All evidence self-contained under `pilots/small-behavioral-pilot/evidence/` with SHA-256 `MANIFEST.json`.
-- **Outcome:** 9/9 PASS under independent audit. Full protocol and scorecards: [small-behavioral-pilot PROTOCOL.md](pilots/small-behavioral-pilot/PROTOCOL.md).
+- **Outcome:** 7/9 PASS under independent audit (A0 3/3, A1 2/3, A2 2/3 — Runs 4-5 FAIL on strict Test ID schema while code remained functionally correct). Full protocol and scorecards: [small-behavioral-pilot PROTOCOL.md](pilots/small-behavioral-pilot/PROTOCOL.md).
 
 ### B. Phase 2: Contract & Review Evaluation (27-Run Triplet Protocol)
 - **Scope & Protocol:** 3 high-leverage tasks (`D2` shipping contract migration with caller AST verification, `R2A` clean refactor negative control, `R2B` subtle contract drift defect identification) across 3 arms (`A0`, `A1`, `A2`) replicated 3 times with rotated arm sequences to eliminate ordering bias (**27 unique runs**).
 - **Evaluation Mechanism:** Independent Python verifiers enforcing workspace read-only integrity, snapshot hashes, caller test immutability, and hidden test suites (35 pre-flight self-audit checks). All evidence self-contained under `pilots/phase2-contract-and-review/evidence/` with SHA-256 `MANIFEST.json`.
-- **Outcome:** 27/27 PASS under independent clone re-verification. Full protocol and scorecards: [phase2-contract-and-review PROTOCOL.md](pilots/phase2-contract-and-review/PROTOCOL.md).
+- **Outcome:** 27/27 PASS under independent clone re-verification (ceiling effect — all arms pass, no measurable skill advantage on these 6 fixtures per protocol analysis). Full protocol and scorecards: [phase2-contract-and-review PROTOCOL.md](pilots/phase2-contract-and-review/PROTOCOL.md).
 
 ### C. Harness & Demo Unit Test Suites
 - **Harness Verification:** 59 unit tests (26 for `repo-foundation`, 33 for `repo-native-refactor`) verifying deterministic byte snapshots, atomic staging/rollback on I/O error, metaschema structural validation, exact rational scoring, and runner isolation.
@@ -165,6 +165,7 @@ To maintain scientific honesty, our evaluation data is categorized into five dis
 - **Observations:** In CP2 tests, raw models spontaneously altered declared `str` module constants to `Path`, whereas agents with skill instructions preserved the declared string contract. In CP3 tests, agents with skill instructions updated living documentation and consolidated duplicate validation into affirmative predicates.
 - **Known Limitations:**
   - **Task Domain:** These observations reflect specific repository workloads and do not prove universal superiority across different tech stacks or unconstrained tasks.
+  - **Sample Size & Judge:** CP2/CP3 head-to-head ablations are n=1 per arm with a single blind judge and no inter-rater measurement; treat +29pp / 24-vs-19 as case-study signals, not general efficacy claims. Gate 3 patches were validated on the same milestones they were tuned for (train-on-test risk).
   - **Environment Scope:** Verified on Windows with Python 3.14; Linux/macOS behaviors rely on POSIX compatibility but have not undergone identical continuous auditing.
   - **Crash Invariants:** Safe replacement mechanisms have been verified against simulated I/O exceptions, but have not been tested against sudden system power loss or process `SIGKILL`.
 

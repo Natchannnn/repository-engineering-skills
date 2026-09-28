@@ -2,7 +2,8 @@
 name: repo-native-refactor
 description: Audit and refactor code changes to conform strictly to repository semantics, architecture, domain idioms, and reliability contracts. Use after implementation for surgical cleanup, behavior-preserving refactoring with verification, and review preparation without altering authorized behavior or introducing gratuitous modernization.
 metadata:
-  version: "1.2.1"
+  version: "0.2.0"
+  license: "MIT"
 ---
 
 # Repo-Native Refactor
@@ -12,7 +13,7 @@ Produce the smallest coherent change that belongs naturally in the target reposi
 Prioritize in order:
 1. **Correctness and security:** Prevent regressions, avoid new security vulnerabilities, and handle boundary conditions.
 2. **Semantic integrity:** Preserve existing invariants, state transitions, validation, and error boundaries.
-3. **Strict contract adherence:** Preserve documented or demonstrably consumed public contracts across public interfaces, exported parameters, and module constants, preserving the target contracts authorized by the task. A requested behavior change may authorize a contract change when that consequence is clear from the task or authorized evolution; in all other cases, preserve exact declared types (for example, never substitute or wrap an exposed primitive `str` contract with `pathlib.Path` or custom wrapper objects merely for internal convenience). Internal intermediate representations may use appropriate helpers, provided exposed public contracts and types remain exact.
+3. **Strict contract adherence:** See `references/shared-contracts.md` §1 for the canonical rule. Preserve the target contracts authorized by the task; otherwise preserve exact declared types. Internal helpers are allowed only when exposed contracts stay exact.
 4. **Repository conformity:** Match surrounding naming, domain conventions, and architectural precedents.
 5. **Economy and simplicity:** Minimal intervention. Delete dead weight; avoid premature abstractions.
 
@@ -104,6 +105,21 @@ Read [semantic risk](references/semantic-risk.md) for R2+ changes. Never mass-re
   - Zero unauthorized contract alterations.
   - Zero weakened test assertions.
   - Zero unneeded dependency churn or cosmetic formatting noise.
+
+---
+
+## Reference Routing
+
+Read supporting references only when the corresponding trigger occurs:
+
+- **[references/shared-contracts.md](references/shared-contracts.md):** Canonical contract + evidence hierarchy. Read when touching any public interface or reconciling conflicts.
+- **[references/refactor-examples.md](references/refactor-examples.md):** R0–R4 good/bad diffs. Read before rewriting a candidate finding.
+- **[references/finding-taxonomy.md](references/finding-taxonomy.md):** Read for complex multi-smell diffs to name owner + consequence.
+- **[references/semantic-risk.md](references/semantic-risk.md):** Read for R2+ changes, justification gate, and stop conditions.
+- **[references/repository-prose.md](references/repository-prose.md):** Read when editing comments, docstrings, CLI output, or error messages.
+- **[references/error-reliability.md](references/error-reliability.md) + [references/testing-integrity.md](references/testing-integrity.md):** Read for R3/R4 or weak test suites.
+- **[references/deterministic-tooling.md](references/deterministic-tooling.md):** Read before introducing new scanners or bulk-codemod tools.
+- **[references/repository-rehabilitation.md](references/repository-rehabilitation.md):** Read only for explicitly requested multi-domain rehabilitation, in verifiable batches.
 
 ---
 
