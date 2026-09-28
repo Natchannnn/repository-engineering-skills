@@ -19,7 +19,11 @@ npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
 npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
 ```
 
-Then in a new Codex session: `Use $repo-foundation to create a small Python CSV CLI with a test and README notes. Do not commit.` Then: `Use $repo-native-refactor to review the diff. Report only, do not edit.` See `docs/demo/` for the full recorded run.
+Then in a new Codex session: `Use $repo-foundation to create a small Python CSV CLI with a test and README notes. Do not commit.` Then: `Use $repo-native-refactor to review the diff. Report only, do not edit.`
+
+![demo run](docs/demo/demo-40s.gif)
+
+What you are looking at: contract sync check, demo fixture bootstrap, and a passing read-only review — rendered from real runs (`python scripts/render-demo-gif.py`). Full steps in `docs/demo/`.
 
 Evaluation harnesses and historical comparison runs are included. The experiments cover a limited set of repository tasks; they do not establish consistent improvements across all models, languages, or projects.
 
