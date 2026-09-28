@@ -47,3 +47,25 @@ No model task was launched to claim automatic routing, behavioral improvement, o
 Reinstallation replaced the tested skill directories; it is not a promise of transactional recovery on I/O failure. Version `1.7.0` identifies the installer, while the source revision identifies the skill content.
 
 See [installation instructions](installation.md) for the commands and [the upstream CLI](https://github.com/vercel-labs/skills) for its supported options.
+
+## Multi-agent matrix (local source, Batch B)
+
+Date: 2026-09-28. Windows, Node.js `24.16.0`, Skills CLI `1.7.0`, local source at `a905103`.
+Each check ran in a fresh temp project: `--list` on the local checkout, then
+`add ... --skill repo-foundation repo-native-refactor --agent <name> --copy -y`,
+then `list --agent <name>`. Telemetry disabled.
+
+| Agent | `--list` sees 2 skills | `add` exit | Files at expected path | `list` exit |
+|---|:---:|:---:|:---:|:---:|
+| `claude-code` (`.claude/skills/`) | yes | 0 | both `SKILL.md` present | 0 |
+| `cursor` (`.agents/skills/`) | yes | 0 | both `SKILL.md` present | 0 |
+| `opencode` (`.agents/skills/`) | yes | 0 | both `SKILL.md` present | 0 |
+| `gemini-cli` (`.agents/skills/`) | yes | 0 | both `SKILL.md` present | 0 |
+
+Byte spot-check on `claude-code`: 8 installed files (both `SKILL.md`, both
+`shared-contracts.md`, `migration-examples.md`, `refactor-examples.md`, both
+`agents/openai.yaml`) match the source bytes exactly via SHA-256.
+
+What this does not claim: no model task was launched on these agents, so routing
+quality and behavior parity across hosts remain unverified. Installation success
+is file placement, not a behavioral test.

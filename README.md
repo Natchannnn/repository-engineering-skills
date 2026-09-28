@@ -72,6 +72,21 @@ Install both skills for **Codex in the current project**:
 npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
 ```
 
+Same command for other agents — swap `--agent` (verified on this repo, see `docs/npx-install-verification.md`):
+```sh
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent claude-code --copy -y
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent cursor --copy -y
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent opencode --copy -y
+npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent gemini-cli --copy -y
+```
+
+Claude Code users can also register this repo as a plugin marketplace (see `.claude-plugin/marketplace.json`):
+```sh
+claude plugin marketplace add Natchannnn/repository-engineering-skills
+claude plugin install repo-foundation@repository-engineering-skills
+claude plugin install repo-native-refactor@repository-engineering-skills
+```
+
 This writes to `.agents/skills/` and updates `skills-lock.json`. To select another agent interactively, omit `--agent codex`, `--copy`, and `-y`. Full configuration options are detailed in [the installation guide](docs/installation.md).
 
 ### Option B: Install from Local Clone (PowerShell)
