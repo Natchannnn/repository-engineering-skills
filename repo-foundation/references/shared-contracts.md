@@ -47,3 +47,15 @@ the affected contract.
 - Verify the final code state. Never use pre-cleanup results to certify modified code.
 - Never claim a check ran when it did not. Distinguish verified behavior,
   inspection-only conclusions, and unverified assumptions.
+
+## 4. Shared judgment tests (canonical)
+
+Two questions that both skills use when the text alone under-determines the answer.
+
+- **Healthy-precedent test (outcome-based, never popularity-based):** a pattern counts as
+  healthy precedent only if: (1) code outside its original author consumes it,
+  (2) it does not contradict docs or contracts, and (3) you would copy it into a new
+  domain without apology. A workaround with tests and docs still fails this test.
+- **Ownership test:** when two domains overlap, the owner is whoever owns the failure —
+  who gets paged, who fixes the bug, whose reason to change fires first. Consolidate
+  toward that owner, or leave both alone.

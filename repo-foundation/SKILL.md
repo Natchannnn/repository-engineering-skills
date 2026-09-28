@@ -26,6 +26,8 @@ Optimize for total effort: deliver changes that are correct, testable, and maint
   - Names reflect business domain concepts and ownership.
   - Add comments only for information code cannot express: grounded rationale, non-obvious invariants, units, rounding, ordering, protocol quirks, or compatibility.
   - Do not narrate syntax; do not invent tickets, incidents, owners, or production histories.
+  - Treat error and CLI text as contract surface: check callers and parsers before rewording.
+  - A ticket, PR, or incident reference you cannot click through to is fiction — delete it.
   - Do not strip valuable comments merely for cosmetic brevity; do not enforce arbitrary comment ratios.
   - Do not add abstractions, wrappers, or factory layers without concrete ownership, contract, or test seam needs.
 - **Preserve consumed public contracts:** See `references/shared-contracts.md` §1 for the canonical rule. In short: preserve documented or consumed types/values/errors/serialization; only change a contract when the task clearly authorizes it, then update callers/tests/docs in scope.

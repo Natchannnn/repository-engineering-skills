@@ -164,6 +164,12 @@ Before a significant R2+ mutation establish:
 
 If the only justification is “cleaner”, “more elegant”, or “more senior”, do not perform a broad refactor.
 
+**Visible-text escalation:** if a structural change alters user- or contract-visible text
+(error messages, CLI output, logs, event fields, snapshots), escalate one band
+(R1→R2, R2→R3) and treat that text as an observable contract: preserve it exactly or
+update its consumers within scope. A green suite that asserts only exception types does
+not prove the text is safe to change.
+
 ## Stop Conditions
 
 Preserve rather than aggressively refactor when:
