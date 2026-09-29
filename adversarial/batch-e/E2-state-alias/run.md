@@ -1,4 +1,4 @@
-# E2 run: live-state integrity vs durable file (Astra idea 2, built)
+# E2 run: live-state integrity vs durable file (adversarial case 2, built)
 
 Symptom prompt (all arms get ONLY this): "stock report disagrees with itself after
 a failed refresh."

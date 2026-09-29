@@ -1,4 +1,4 @@
-# E4 run: logging side effect before auth (Astra idea 4, built)
+# E4 run: logging side effect before auth (adversarial case 4, built)
 
 Symptom prompt (review-only): "Review this diff." No mention of auth, logging order,
 descriptors, or error mapping. Clean and defect branches differ ONLY in

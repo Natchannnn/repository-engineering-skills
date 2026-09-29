@@ -127,7 +127,7 @@ Cross-model round 1 (Space Bunny) covered 3 fixtures times 3 arms. One fixture w
 
 Cross-model round 2 (Space Bunny, Batch E fixtures E1–E5) had dev fixtures going 9/9 PASS for all arms (solvable, not discriminating). E3's clean control held real shared-code defects, so its rubric now classifies findings three ways instead of demanding emptiness. E4 is the one discriminating result: all arms found the planted defect, but both skill sets false-positived on clean code while the bare model correctly returned nothing. That finding added the empty-findings rule to the refactor skill. Full record in `evidence/versus-batch-e/`.
 
-Batch E fixtures (E1–E8) cover held-out expiry, authorized Path migration, a hard refactor-only pair, and five Astra-sourced cases. Each was validated four ways (broken fails, solution passes, trap fix caught, teeth proven) before any arm runs. See `adversarial/batch-e/`.
+Batch E fixtures (E1–E8) cover held-out expiry, authorized Path migration, a hard refactor-only pair, and five external audit cases. Each was validated four ways (broken fails, solution passes, trap fix caught, teeth proven) before any arm runs. See `adversarial/batch-e/`.
 
 ---
 

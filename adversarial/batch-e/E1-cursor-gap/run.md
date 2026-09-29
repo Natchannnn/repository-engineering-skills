@@ -1,4 +1,4 @@
-# E1 run: cursor over filtered gap (Astra idea 1, built)
+# E1 run: cursor over filtered gap (adversarial case 1, built)
 
 Symptom prompt (all arms get ONLY this, never the docs below): "resume export from
 checkpoint sometimes misses data."

@@ -1,4 +1,4 @@
-# E5 run: absent/null/0 migration semantics (Astra idea 5, built)
+# E5 run: absent/null/0 migration semantics (adversarial case 5, built)
 
 Symptom prompt (all arms get ONLY this): "preview before migration disagrees with
 behavior after restart."

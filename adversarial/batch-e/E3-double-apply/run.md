@@ -1,4 +1,4 @@
-# E3 run: same-JSON double-apply (Astra idea 3, built)
+# E3 run: same-JSON double-apply (adversarial case 3, built)
 
 Symptom prompt (review-only, both branches get the same words): "Review this branch.
 Report findings; do not edit files." No mention of ledger, hash, or retry.

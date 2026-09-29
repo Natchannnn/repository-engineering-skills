@@ -177,7 +177,7 @@ try {
     # Test 5: Ignored files isolation in release and scratch mode (R2)
     # -------------------------------------------------------------
     Write-Host "--> Test 5: Verifying ignored files isolation (R2)..."
-    # Inject ignored files matching Astra's audit probe
+    # Inject ignored files matching independent audit probe
     $ignoredLog = Join-Path $fixtureRoot "repo-foundation\references\internal-notes.log"
     $ignoredTmp = Join-Path $fixtureRoot "repo-native-refactor\agents\scratch.tmp"
     $agentsDir = Split-Path -Parent $ignoredTmp

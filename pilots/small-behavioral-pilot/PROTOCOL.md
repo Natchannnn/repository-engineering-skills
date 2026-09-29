@@ -197,7 +197,7 @@ The verifier outputs `Overall Result: PASS` (exit code `0`) or `Overall Result: 
 **Context Loading Mode:** Explicit-context evaluation (skill/guideline markdown appended directly into candidate initial prompt).
 **Archived Evidence:** Packaged self-contained under `pilots/small-behavioral-pilot/evidence/` with SHA-256 `MANIFEST.json` (including prompts, patch diffs, git statuses, report JSONs, verifier outputs, and session metadata).
 **Transcript Distribution:** Compact `transcript.jsonl` files on disk contain `truncated_fields` for long prompt turns (Runs 3, 5, 7); complete raw logs are preserved in corresponding `transcript_full.jsonl` files.
-**Execution Date:** 2026-09-28. Independently audited and re-verified by Astra on a clean clone.
+**Execution Date:** 2026-09-28. Independently audited and re-verified on a clean clone.
 
 | Run | Task | Arm | Configuration Name | Official Result | Verifier Duration | Technical Details / Audit Notes |
 |:---:|:---:|:---:|:---|:---:|:---:|:---|
