@@ -1,20 +1,20 @@
-# Contributing to Repository Engineering Skills
+# Contributing
 
-Thank you for your interest in improving these skills and evaluation harnesses.
-
----
-
-## 1. Ground Rules
-
-- **Preserve the Evaluation Archive:** Never modify, reformat, or re-encode files inside `evals-suite/`. Those directories represent sealed historical benchmarks with cryptographic SHA-256 tree hashes.
-- **Maintain Invariants:** Any modification to evaluation harness behavior or state machines must include corresponding regression unit tests.
-- **Minimal Intervention:** Follow the same engineering principles that the skills prescribe: produce bounded, coherent changes with concrete justification.
+Thanks for helping with the skills and harnesses.
 
 ---
 
-## 2. Local Verification
+## 1. Ground rules
 
-Before submitting a pull request, ensure all verification suites pass locally on Windows with Python 3.14:
+- Never modify, reformat, or re-encode files inside `evals-suite/`. Those are sealed historical benchmarks with SHA-256 tree hashes.
+- Any change to harness behavior or state machines needs matching regression unit tests.
+- Keep changes bounded with a concrete reason, the way the skills themselves demand.
+
+---
+
+## 2. Local verification
+
+Before opening a pull request, run the suites locally (Windows; Python per CI):
 
 ```bash
 # 1. Run refactor harness unit tests:
@@ -37,13 +37,13 @@ git diff --check
 
 ---
 
-## 3. Reporting Issues
+## 3. Reporting issues
 
-When reporting an issue with a skill, please provide:
-1. **Skill Name & Version:** (e.g., `repo-foundation` v0.1.0)
-2. **Agent Host & Model:** (e.g., Claude Code with Claude 3.7 Sonnet, Codex, Cursor, etc.)
-3. **The Task Prompt:** The exact prompt given to the agent.
-4. **Expected Behavior:** What the agent should have done according to the skill instructions.
-5. **Observed Behavior:** What the agent actually did (transcripts or code snippets).
+When reporting a skill issue, include:
+1. Skill name and version (e.g., `repo-foundation` v0.2.0).
+2. Agent host and model.
+3. The exact task prompt.
+4. What the agent should have done per the skill.
+5. What it actually did (transcripts or snippets).
 
-Feel free to redact private paths or sensitive project data.
+Redact private paths and sensitive data.

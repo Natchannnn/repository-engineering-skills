@@ -6,15 +6,12 @@ Use this reference when starting a new repository from scratch or when setting u
 
 ---
 
-## 1. Minimal Inputs and Scoping
+## 1. Minimal inputs and scoping
 
-Before generating code or directory structures, establish the critical constraints:
-
-- **Observable outcome:** What should the software actually do from an external observer's perspective (CLI command, HTTP endpoint, UI component, library export, or worker process)?
-- **Hard constraints:** Specific language, runtime environment, frameworks, persistence engines, external services, or operational requirements requested by the user.
-- **Reversible vs. product decisions:**
-  - *Reversible assumptions:* Conventional directory structure, utility naming, choice of standard library functions, and internal helper layout. Make reasonable, conventional choices autonomously; do not ask permission for every folder or variable name.
-  - *Product decisions:* Choice of persistence store, authentication architecture, third-party vendor integrations, and breaking domain rules. Bundle missing essential product decisions into a single concise question before beginning implementation.
+Before generating code or directory structures, establish the critical constraints.
+First: what should the software actually do for an outside observer (CLI command, HTTP endpoint, UI component, library export, worker process)? Second: hard constraints (language, runtime, frameworks, persistence, external services, anything operational the user asked for). Third, sort decisions into two piles:
+  - *Reversible assumptions:* directory structure, utility naming, standard library picks, helper layout. Choose conventionally on your own; don't ask permission for every folder or variable name.
+  - *Product decisions:* persistence store, auth architecture, vendors, breaking domain rules. Bundle missing product decisions into one short question before implementing.
 
 ---
 
@@ -59,7 +56,7 @@ Code created during bootstrap serves as precedent for future development only wh
 
 1. **Traceable:** Directly satisfies a concrete user requirement or contract.
 2. **Observable verification:** Accompanied by automated checks whose expected values reflect business outcomes rather than copying internal implementation details.
-3. **Appropriate ownership and dependencies:** Modules have clear responsibilities and dependency directions suited to the chosen architecture and actual project requirements, without forcing unnecessary layers (e.g., strict transport/domain/persistence separation is not required for a small CLI, library, or script).
+3. **Appropriate ownership and dependencies:** Modules have clear responsibilities and dependency directions suited to the chosen architecture and actual project requirements, without forcing unnecessary layers (e.g., transport/domain/persistence separation is not required for a small CLI, library, or script).
 4. **No unexplained debt:** Contains no unexplained workarounds, commented-out dead code, or temporary hacks.
 5. **Bounded scope:** If a convention applies only to a specific module, document it as module-local rather than an overarching repository standard.
 
