@@ -82,11 +82,11 @@ Read [finding taxonomy](references/finding-taxonomy.md) for complex cases. Estab
 
 ### 4. Classify Risk and Refactor
 Risk bands:
-- **R0 — Mechanical:** Established formatter or locally provable cleanup.
-- **R1 — Low Structural:** Local residue with straightforward test verification.
-- **R2 — Contextual Structural:** Renames, control-flow changes, extraction of shared predicates.
-- **R3 — Semantic:** Errors, fallbacks, retries, serialization, transactions, async, or lifecycles.
-- **R4 — Critical Boundary:** Auth, permissions, crypto, data migrations, persistence durability.
+- **R0 - Mechanical:** Established formatter or locally provable cleanup.
+- **R1 - Low Structural:** Local residue with straightforward test verification.
+- **R2 - Contextual Structural:** Renames, control-flow changes, extraction of shared predicates.
+- **R3 - Semantic:** Errors, fallbacks, retries, serialization, transactions, async, or lifecycles.
+- **R4 - Critical Boundary:** Auth, permissions, crypto, data migrations, persistence durability.
 
 Read [semantic risk](references/semantic-risk.md) for R2+ changes. Never mass-rewrite R3 or R4 behavior without explicit instructions and verified tests.
 
