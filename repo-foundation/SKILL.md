@@ -8,15 +8,13 @@ metadata:
 
 # Repo Foundation
 
-Build software products with an explicit, just-enough foundation, develop features on top of that foundation, and adapt architecture as requirements evolve.
-
-Optimize for total effort: deliver changes that are correct, testable, and maintainable with minimal rework, review overhead, and coordination cost.
+Build on a foundation that's just big enough, add features on top of it, and change the architecture only when requirements force it. Aim for the least total rework.
 
 ---
 
 ## Core Principles
 
-- **No universal dogma:** Match complexity to current requirements and system boundaries, not to an enterprise ideal. Do not enforce an arbitrary directory layout, error pattern, or framework where plain standard library suffices.
+- **No universal dogma:** Don't impose a layout, error pattern, or framework the project doesn't need. Plain standard library is fine.
 - **Scope, baseline, and user work:**
   - Establish a clean baseline before mutating code: use the pre-existing revision/commit when Git exists; use a file inventory or snapshot when uninitialized or greenfield.
   - In a dirty workspace, protect pre-existing uncommitted user modifications. You may edit distinct parts of the same file as long as user work is preserved. Stop and ask only if there is an actual collision or ambiguous intent.
@@ -35,9 +33,9 @@ Optimize for total effort: deliver changes that are correct, testable, and maint
   - Record baseline failures and distinguish: (1) pre-existing failures outside scope, (2) in-scope failures to fix, (3) regressions from current changes, and (4) environment errors.
   - Verify the final code state; never use pre-cleanup test results to certify modified code.
   - Add or update persistent tests when a change introduces behavior, fixes a defect, alters a contract, or exposes a meaningful coverage gap. Prefer the repository's existing test framework and structure. Do not add tests solely for file-count or coverage optics. For documentation-only or mechanically verified changes, use the relevant lightweight checks and explain any material verification gap.
-- **Failure invariants & state preservation:** For operations that overwrite, delete, migrate, or publish state, define what must remain unchanged if the operation fails. Validate inputs and destination ownership before mutation, prepare replacement data separately where appropriate, and retain the last valid state until replacement succeeds. Test relevant failure boundaries proportionately to the risk.
-- **Requirement-bounded completion:** Before completion, check each material acceptance requirement against the final implementation and available evidence. Distinguish verified behavior, inspection-only conclusions, and unverified assumptions. A successful command is insufficient when its intended artifact or observable effect is missing.
-- **No speculative authority:** Do not assume permission to push, publish, deploy, modify branch protection, install system-wide hooks, or purchase external services.
+- **Failure invariants & state preservation:** If an operation can fail halfway, decide what must stay untouched. Validate inputs and ownership first, build the replacement on the side, keep the old state until the new one is ready. Test the failure boundary.
+- **Requirement-bounded completion:** Check every requirement before you say you're done. Say what you verified, what you only read, and what you assumed. A command that exits 0 doesn't count if the file it should make isn't there.
+- **No speculative authority:** Don't push, publish, deploy, change branch protection, install system hooks, or buy anything unless the user asks.
 
 ---
 

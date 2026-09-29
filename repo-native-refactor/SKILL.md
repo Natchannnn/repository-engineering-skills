@@ -13,18 +13,18 @@ Produce the smallest coherent change that belongs naturally in the target reposi
 Prioritize in order:
 1. **Correctness and security:** Prevent regressions, avoid new security vulnerabilities, and handle boundary conditions.
 2. **Semantic integrity:** Preserve existing invariants, state transitions, validation, and error boundaries.
-3. **Strict contract adherence:** See `references/shared-contracts.md` §1 for the canonical rule. Preserve the target contracts authorized by the task; otherwise preserve exact declared types. Internal helpers are allowed only when exposed contracts stay exact.
+3. **Contracts stay as declared.** Rule lives in `references/shared-contracts.md` §1. Preserve the target contracts authorized by the task; otherwise preserve exact declared types. Internal helpers are allowed only when exposed contracts stay exact.
 4. **Repository conformity:** Match surrounding naming, domain conventions, and architectural precedents.
 5. **Economy and simplicity:** Minimal intervention. Delete dead weight; avoid premature abstractions.
 
-This is a post-implementation audit and small cleanup skill. It is not permission to redesign the repository. A style preference or recognizable pattern is a candidate finding, not sufficient justification for mutation. Establish a concrete consequence such as inconsistent behavior, duplicated policy that must change together, unclear ownership, avoidable resource cost, or a demonstrated maintenance obstacle. Leave healthy code unchanged when the benefit is speculative.
+This is a post-implementation audit and small cleanup skill. It is not permission to redesign the repository. Establish a concrete consequence such as inconsistent behavior, duplicated policy that must change together, unclear ownership, avoidable resource cost, or a demonstrated maintenance obstacle. Leave healthy code unchanged when the benefit is speculative.
 
 ---
 
 ## Minimal Intervention & Evidence Gate
 
 - **Evidence-based intervention:** Refactor only when there is concrete evidence of divergence, defect, or operational risk. If greenfield code or an additive feature diff is already minimal, idiom-compliant, and passes tests, do not invent work or restructure working code. A recognizable pattern or style preference is a candidate finding, not justification for mutation.
-- **Semantic DRY (Cost-benefit consolidation):** Consolidate shared validation or transformation logic into clean, reusable helpers or predicates only when implementations share ownership, invariants, semantic purpose, and reasons to change. Shared semantics make consolidation eligible, not mandatory. Consolidate only when reducing duplicated policy outweighs the added indirection, coupling, and navigation cost. Keep small local duplication when an abstraction would make ownership or behavior harder to understand. Do not prematurely consolidate incidental syntactic similarity across separate domain boundaries.
+- **Semantic DRY (Cost-benefit consolidation):** Merge duplicated logic only when the copies share an owner, an invariant, and a reason to change, and only if merging saves more than the extra indirection costs. Two similar-looking checks in different domains stay separate. Small local duplication stays when merging would obscure ownership.
 - **Contract boundary protection:** Preserve public interfaces, parameter names, and return types except where their change is clearly authorized by the task. During cleanup, preserve the authorized target contract rather than reverting to the previous contract.
 
 ---
@@ -100,11 +100,7 @@ Read [semantic risk](references/semantic-risk.md) for R2+ changes. Never mass-re
 - Run the smallest repository-native checks that meaningfully exercise the change. Read [error and reliability boundaries](references/error-reliability.md) and [testing integrity](references/testing-integrity.md).
 - Prioritize diff reviewability and coherence over raw line minimization; do not compress code into unreadable one-liners.
 - Distinguish intentional behavioral corrections from mechanical cleanup.
-- Review the final diff as a skeptical maintainer:
-  - Every modified line must have a concrete, defensible justification.
-  - Zero unauthorized contract alterations.
-  - Zero weakened test assertions.
-  - Zero unneeded dependency churn or cosmetic formatting noise.
+- Review the final diff like a skeptical maintainer. Every line needs a reason. No contract changed without permission, no test got weaker, no dependency moved for nothing.
 
 ---
 
