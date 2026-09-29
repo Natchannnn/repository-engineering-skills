@@ -1,13 +1,13 @@
 # Repository Engineering Skills: Code Review and Refactoring for AI Agents
 
-![harness](https://img.shields.io/badge/harness-26%2B33%20OK-green) ![pilot](https://img.shields.io/badge/pilot_1-7%2F9-yellow) ![phase2](https://img.shields.io/badge/phase_2-27%2F27_%28too_easy%29-blue) ![runtime](https://img.shields.io/badge/runtime-22%20files-lightgrey)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![version](https://img.shields.io/badge/version-0.3.0-green)](CHANGELOG.md) [![payload](https://img.shields.io/badge/payload-23%20files-lightgrey)](docs/installation.md)
 
-I kept watching coding agents "improve" my code by swapping a declared `str` path for `pathlib.Path` (tests green, billing broken). So I wrote two skills to stop exactly that, plus the eval harness to check they do anything at all.
+Coding agents like to "improve" code in ways that quietly break things. In one of our test cases, an agent changed a declared `str` path to `pathlib.Path`: tests passed, but downstream callers broke. These two skills keep agents in scope and keep public contracts as declared.
 
 - **`repo-foundation`**: start modules, add features, migrate contracts, resume work without breaking public APIs.
 - **`repo-native-refactor`**: read-only diff audits and small cleanups. No redesign, no scope creep.
 
-The rule I keep coming back to: stay in scope, keep contracts intact, check your work.
+---
 
 ## 60-second try
 
@@ -17,20 +17,16 @@ npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
 npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
 ```
 
-Then in a new session: `Use $repo-foundation to create a small Python CSV CLI with a test and README notes. Do not commit.` Then: `Use $repo-native-refactor to review the diff. Report only, do not edit.`
-
-![demo run](docs/demo/demo-40s.gif)
-
-Rendered from real runs (`python scripts/render-demo-gif.py`). Full steps in `docs/demo/`.
-
-These experiments cover a small set of tasks. They don't prove the skills win everywhere. See [What I got wrong](#what-i-got-wrong).
+Then in a new session:
+- `Use $repo-foundation to create a small Python CSV CLI with a test and README notes. Do not commit.`
+- `Use $repo-native-refactor to review the diff. Report only, do not edit.`
 
 ---
 
 ## What goes wrong without them
 
-Contract drift is the classic one: a return type changes and callers break (str to Path is my favorite offender).
-Then there is scope creep (a narrow fix rewrites healthy unrelated modules), unchecked error paths (partial states left on disk when operations fail), and documentation drift (`README.md` still describes last month's behavior).
+Contract drift is common: a return type changes and callers break (`str` to `Path` is a frequent offender).
+Other common failure modes include scope creep (a narrow fix rewrites healthy unrelated modules), unchecked error paths (partial state left on disk when operations fail), and documentation drift (`README.md` still describes older behavior).
 
 ---
 
@@ -46,29 +42,6 @@ No skill needed for typos, comments, or single-script tweaks.
 | Resuming work across sessions | `repo-foundation` |
 | Reviewing a diff without touching code | `repo-native-refactor` |
 | Cleaning up duplication or dead code in a diff | `repo-native-refactor` |
-
----
-
-## Installation
-
-Requires Git + Node.js 22.20.0 or newer. Details in [docs/installation.md](docs/installation.md).
-
-```sh
-# preview, then install both for your agent (codex shown; swap --agent for yours)
-npx skills@1.7.0 add Natchannnn/repository-engineering-skills --list
-npx skills@1.7.0 add Natchannnn/repository-engineering-skills --skill repo-foundation repo-native-refactor --agent codex --copy -y
-```
-
-Verified installs: `codex`, `claude-code`, `cursor`, `opencode`, `gemini-cli` (see [docs/npx-install-verification.md](docs/npx-install-verification.md)). Claude Code can also use this repo as a plugin marketplace via `.claude-plugin/marketplace.json`. Offline or no-Node setups: `scripts/install-skills.ps1` / `install-skills.sh`, or the runtime ZIP from `scripts/package-runtime.ps1`.
-
----
-
-## Demos with independent verifiers
-
-No LLM judges. A script decides pass/fail:
-
-- **Contract-drift review** ([`examples/read-only-contract-review/`](examples/read-only-contract-review/)): agent audits a breaking diff read-only and files a structured finding. Verifier rejects negations, wrong symbols, and any worktree mutation.
-- **Scoped feature dev** ([`examples/foundation-development/`](examples/foundation-development/)): agent adds an `export-json` command with tests + docs. Verifier checks both suites, JSON schema, and that nothing outside scope changed.
 
 ---
 
@@ -92,28 +65,49 @@ correctness problem exists. Keep authorized behavior. Re-run affected checks.
 
 ---
 
-## What I got wrong
+## Installation options
 
-- Gate 3 refactor variants scored *below* baseline. I had refactored clean code without evidence. Fixed with the evidence gate.
-- Pilot 1 README once claimed 9/9; evidence says 7/9 (2 fails on test-ID format, code was fine). Kept the fails.
-- CP3 docs mentioned a CLI export that didn't exist yet. Noted, not hidden.
-- My own red-team found the two skills disagreeing on tests-vs-convention. Fixed by adding the missing rank.
-- Duel with `superpowers` taught me my verification lacked reproduce-first + red-green. Stole it.
+Requires Git + Node.js 22.20.0 or newer. Verified for `codex`, `claude-code`, `cursor`, `opencode`, and `gemini-cli` (see [docs/installation.md](docs/installation.md)).
+
+- **Skills CLI (recommended):** see the [60-second try](#60-second-try) above.
+- **Claude Code Marketplace:** use this repository directly via `.claude-plugin/marketplace.json`.
+- **Offline / No-Node setups:** use `scripts/install-skills.ps1` (or `install-skills.sh`), or download the pre-packaged runtime ZIP from releases.
 
 ---
 
-## Evidence (all of it, pass and fail)
+## Demos with independent verifiers
 
-| What | Result | Where |
+No LLM judges are used for demo verifiers; deterministic scripts evaluate outcomes against ground truth:
+
+- **Contract-drift review** ([`examples/read-only-contract-review/`](examples/read-only-contract-review/)): agent audits a breaking diff read-only and files a structured finding. Verifier rejects negations, wrong symbols, and any worktree mutation.
+- **Scoped feature dev** ([`examples/foundation-development/`](examples/foundation-development/)): agent adds an `export-json` command with tests + docs. Verifier checks both suites, JSON schema, and that nothing outside scope changed.
+
+![harness verification demo](docs/demo/demo-40s.gif)
+
+*(Recorded directly from the test harness via `python scripts/render-demo-gif.py`. Full details in [docs/demo/](docs/demo/).)*
+
+---
+
+## Test results
+
+| Test Suite | Result | Details |
 |---|---|---|
-| Pilot 1: 9 runs, 3 arms, deterministic verifiers | **7/9** (2 schema fails kept) | [PROTOCOL](pilots/small-behavioral-pilot/PROTOCOL.md) |
-| Phase 2: 27 runs, triplets, rotated order | **27/27 = ceiling**, too easy to separate anyone; says so in the protocol | [PROTOCOL](pilots/phase2-contract-and-review/PROTOCOL.md) |
-| Harness + demo suites | 59 + 41 tests green | `repo-*/evals/tests`, `scripts/test_demos.py` |
-| Archive | 31 packets, SHA-256 parity (Windows; Linux path order differs, see `docs/reproduce.md`) | `evals-suite/` |
-| Real-world runs | colorama regression test (has teeth), six correctly untouched, self-review with 2 fixes | [docs/realworld.md](docs/realworld.md) |
-| Red-team + versus | 1 real divergence + 7 ambiguities, which became 9 patches; vs superpowers 1/2/3 with home advantage disclosed | [ATTACK_REPORT](adversarial/ATTACK_REPORT.md) |
+| Pilot 1 (3 arms, deterministic verifiers) | **7/9 passed** (2 runs failed schema validation on test ID formatting) | [PROTOCOL.md](pilots/small-behavioral-pilot/PROTOCOL.md) |
+| Phase 2 (27 runs, rotated triplets) | **27/27 passed** (tasks were too simple to differentiate arms statistically) | [PROTOCOL.md](pilots/phase2-contract-and-review/PROTOCOL.md) |
+| Harness & demo suites | 100 tests passed (59 unit + 41 demo acceptance) | `repo-*/evals/tests`, `scripts/test_demos.py` |
+| Runtime package verification | 23 payload files verified byte-for-byte against Git commit tree | `scripts/test-package.ps1` |
+| Real-world test runs | Colorama regression suite passes; 6 repositories correctly untouched; self-review verified | [docs/realworld.md](docs/realworld.md) |
+| Adversarial probes | 8 held-out fixtures (Batch E) and cross-model boundary analysis | [ATTACK_REPORT.md](adversarial/ATTACK_REPORT.md) |
 
-Limits: toy fixtures + n=1 + single operator (me) almost everywhere; CP2/CP3 ablations n=1 with one judge; Windows-first (Linux via Docker); crash-durability against real power loss untested. Full analysis: [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md).
+<details>
+<summary><strong>Known limitations and design notes</strong></summary>
+
+- **Task complexity:** Most experiments ran on bounded toy fixtures with single-operator evaluations; CP2/CP3 ablations were single-run case studies.
+- **Gate 3 over-refactoring:** Initial refactor skill variants scored below baseline by modifying clean code unnecessarily; this led to introducing the evidence gate.
+- **Platform focus:** Test suites run primarily on Windows (Linux verified via Docker; path ordering differences noted in `docs/reproduce.md`).
+- **Durability boundaries:** Crash safety against unexpected power loss has not been tested against real hardware interruption.
+- Full analysis: [BENCHMARK_REPORT.md](BENCHMARK_REPORT.md) and [docs/evaluation.md](docs/evaluation.md).
+</details>
 
 ---
 
@@ -125,6 +119,7 @@ python -B -m unittest discover -s repo-foundation/evals/tests      # 26 tests
 python -B -m unittest discover -s repo-native-refactor/evals/tests  # 33 tests
 python -B repo-foundation/evals/harness.py validate
 python -B scripts/test_demos.py                                     # 41 tests
+powershell -ExecutionPolicy Bypass -File scripts/test-package.ps1   # 8 acceptance tests
 docker build -t reskills . && docker run --rm reskills              # linux reproduce
 ```
 

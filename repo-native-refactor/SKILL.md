@@ -32,8 +32,8 @@ This is a post-implementation audit and small cleanup skill. It is not permissio
 ## Operating modes
 
 - **Review vs. Refactor Authority:** first establish the outcome: findings, edits, or both. Review-only means inspection and verification, no source edits. Authorized cleanup allows bounded corrections; don't ask approval again for routine choices.
-- **Change-Set Cleanup** applies to a working tree, branch, commit range, feature, or bounded implementation checkpoint, where you work diff-first and inspect surrounding code only to understand ownership, contracts, and relevant precedent.
-- **Repository Rehabilitation** applies only when explicitly requested across multiple domains, so read [repository rehabilitation](references/repository-rehabilitation.md), build a concise profile, and work in independently verifiable batches.
+- **Change-set cleanup:** for a working tree, branch, commit range, feature, or bounded checkpoint. Work diff-first; read surrounding code only to understand ownership, contracts, and precedent.
+- **Repository rehabilitation:** only when explicitly requested across multiple domains. Read [repository rehabilitation](references/repository-rehabilitation.md), build a short profile, and work in batches you can verify independently.
 
 ---
 

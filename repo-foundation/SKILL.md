@@ -63,8 +63,8 @@ Confirm the user's objective, observable consequences, affected boundaries, base
 - **Intentional contract changes** occur when a task explicitly requires changing a contract, so verify that callers and tests reflect the new contract rather than forcing deprecated behavior.
 
 ### 3. Verify proportionately
-- The **lightweight path (Low risk)** applies to routine bug fixes, typos, formatting, or localized edits within established boundaries, where you keep scope tight, run relevant mechanical checks (syntax, linter, affected unit tests), and skip secondary review passes.
-- **High-risk vigilance** applies because single-line changes to authorization, permissions, data migrations, cryptography, persistence lifecycles, or concurrency carry critical risk, so read [verification](references/verification.md) when designing checks for critical boundaries.
+- **Lightweight path (low risk):** routine bug fixes, typos, formatting, and localized edits inside established boundaries. Keep scope tight, run relevant mechanical checks (syntax, linter, affected unit tests), and skip secondary review passes.
+- **High-risk changes:** a single line touching authorization, permissions, data migrations, cryptography, persistence lifecycles, or concurrency can do serious damage. Read [verification](references/verification.md) before designing checks.
 
 ### 4. Continuity and state
 - **Implementation vs. requirements:** existing code shows current behavior. That is not proof of meeting requirements, and passing tests don't guarantee completeness if acceptance was never tested.

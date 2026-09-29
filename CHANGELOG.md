@@ -7,33 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [0.3.0] - 2026-09-29
 
 ### Fixed
-- Corrected Pilot 1 outcome from 9/9 to 7/9 PASS (A0 3/3, A1 2/3, A2 2/3; Runs 4-5 FAIL on strict Test ID schema) to match `PROTOCOL.md` section 5-6 and evidence JSONs.
-- Clarified Phase 2 27/27 as ceiling effect with no measurable skill advantage, and CP2/CP3 ablations as n=1 single-judge case studies.
+- Streamlined sentence structures in both `SKILL.md` files, replacing indirect phrasing with direct imperative guidance.
+- Corrected Pilot 1 outcome from 9/9 to 7/9 PASS (A0 3/3, A1 2/3, A2 2/3; Runs 4-5 FAIL on schema validation due to test-ID formatting) to match `PROTOCOL.md` and evidence records.
+- Clarified Phase 2 27/27 as a ceiling effect where tasks were too simple to differentiate arms statistically.
+- Clarified archive verification status as sealed in Windows path order.
 - Fixed Phase 2 self-audit docstring from 17 to 35 tests (15 D2 + 9 R2A + 11 R2B) and clarified package test numbering.
 
 ### Added
-- Unified skill packaging: `metadata.version 0.2.0` + MIT for both skills, added `repo-native-refactor/agents/openai.yaml`.
+- Unified skill packaging: `metadata.version 0.3.0` and MIT license for both skills, including `repo-native-refactor/agents/openai.yaml`.
 - Canonical shared contracts (`docs/contracts-canonical.md` + `scripts/sync-shared.py` with `--check`) to eliminate `str` vs `Path` duplication drift.
 - Few-shot guidance: `refactor-examples.md` (R0–R4) and `migration-examples.md` (atomic vs transitional) plus `Reference Routing` table for refactor.
 - Tooling: `scripts/classify-risk.py` triage helper, `scripts/install-skills.sh` POSIX mirror, `requirements-test.txt` pinned `jsonschema==4.23.0`, Linux harness CI job.
-- Runtime payload expanded from 17 to 22 files (shared contracts + examples + refactor adapter).
-- Claude plugin marketplace manifests (`.claude-plugin/marketplace.json` + per-skill `plugin.json`), all passing `claude plugin validate`.
-- Marketplace end-to-end verified (add, install both plugins, list, full cleanup with cache removal noted) and global Skills CLI install/remove verified.
+- Runtime payload expanded to 23 verified payload files (shared contracts, examples, companion guidance, and refactor adapter).
+- Claude plugin marketplace manifests (`.claude-plugin/marketplace.json` + per-skill `plugin.json`), passing validation against plugin schemas.
+- Documented cross-model validation findings, fixture boundaries, and Batch E held-out adversarial tests.
 
 ### Changed
+- Streamlined README to focus on user workflow: unified installation instructions, direct guidance, and moved detailed evaluation telemetry to documentation links.
+- Updated demo animation to demonstrate full evaluation harness verification across Demo 1, Demo 2, and the 41-test acceptance suite.
 - Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
-- Humanized skill wording: shorter router descriptions, field notes with real failure links, author-notes sections, word-list sweep.
-- Trigger phrases extended after an automated routing probe (29/40 then 36/40 across 40 prompts, 4 fresh router sessions); residuals documented in `evals/trigger.md`.
+- Trigger phrases extended after automated routing probes; residuals documented in `evals/trigger.md`.
 
 ### Docs
-- README hero with badges, 60-second try, honest 34/36 PASS count, and `What I got wrong`.
-- New `docs/demo/` guide with GIF rendered from real runs and `ADOPTERS.md` + issue templates.
+- Restructured README: concise quickstart, clear situation-to-skill table, and example prompts.
+- New `docs/demo/` guide with standalone verification steps.
 - Multi-agent install matrix (`claude-code`, `cursor`, `opencode`, `gemini-cli`) with byte spot-checks, plus `docs/launch-kit.md` paste-ready blurbs.
-- Batch C evidence: `runs/realworld-self` review with 2 fixes, `runs/realworld-colorama` regression test run, `runs/realworld-six` negative control, plus `Dockerfile` + `docs/reproduce.md` one-command Linux reproduce (found: slim image needs `git` installed for the harness).
-- CI Python moved from 3.14 to 3.12 with a Linux harness job, plus shared-contracts sync gate.
+- Batch C evidence: `runs/realworld-self` review with 2 fixes, `runs/realworld-colorama` regression test run, `runs/realworld-six` negative control, plus `Dockerfile` + `docs/reproduce.md` one-command Linux reproduction.
+- CI Python standardized on 3.12 with Linux harness job and shared-contracts sync gate.
 
 ## [0.1.0] - 2026-09-26
 

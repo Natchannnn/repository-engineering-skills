@@ -133,7 +133,7 @@ For offline environments, air-gapped systems, or teams that do not use Node.js o
 
 ### Package structure
 
-The runtime archive excludes evaluation harnesses, tests, and authoring tools, containing strictly the 23 payload files required for agent execution:
+The runtime archive excludes evaluation harnesses, tests, and authoring tools, containing only the 23 payload files required for agent execution:
 
 ```text
 repository-engineering-skills-runtime/
