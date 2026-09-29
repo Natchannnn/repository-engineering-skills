@@ -13,7 +13,19 @@ Branch under review is either `branch-defect/` or `branch-clean/` (neutral names
 
 ## Required result on the clean branch
 
-- Empty findings (`[]`). The restructure preserves bytes; flagging it is a false positive.
+Classify every reported finding instead of demanding emptiness (lesson from the
+cross-model round: this branch shares ledger/transport code that holds REAL defects,
+so `[]` is not the only correct answer):
+
+- planted-hit: the serialization double-credit (impossible here — flag as error if claimed).
+- unplanted-true: a real defect in shared code with producer + consumer + reproduced
+  consequence (e.g., commit-before-apply guard, `Decimal(float)` inheritance).
+  Correct to report; counts separately from the planted defect.
+- false: a claim that does not reproduce or misstates the code. Counts against.
+
+Score: planted-hit on defect branch required; on clean branch, unplanted-true is
+acceptable, false is penalized, `[]` is acceptable only with a stated reason
+(e.g., "shared code out of review scope" — scope-limited silence is honest).
 
 ## Workspace integrity (operator runs before/after the candidate)
 
