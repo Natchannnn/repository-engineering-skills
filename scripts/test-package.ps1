@@ -71,7 +71,7 @@ try {
 
     if ($manifest.working_tree_clean -ne $true) { throw "Test 1 FAILED: expected working_tree_clean to be true" }
     if ($manifest.source_commit -ne $fixtureCommit) { throw "Test 1 FAILED: source_commit mismatch" }
-    if ($manifest.file_count -ne 22) { throw "Test 1 FAILED: expected exactly 23 payload files, got $($manifest.file_count)" }
+    if ($manifest.file_count -ne 23) { throw "Test 1 FAILED: expected exactly 23 payload files, got $($manifest.file_count)" }
     Write-Host "    [PASS] Clean repo build succeeded with 23 verified payload files."
 
     # -------------------------------------------------------------
@@ -210,7 +210,7 @@ try {
         (Test-Path -LiteralPath (Join-Path $unpackedIgnoredRelease "skills\repo-native-refactor\agents\scratch.tmp"))) {
         throw "Test 5 FAILED: Ignored files leaked into release package!"
     }
-    if ($manifestRelease.file_count -ne 22) {
+    if ($manifestRelease.file_count -ne 23) {
         throw "Test 5 FAILED: Expected 23 files in release manifest, found $($manifestRelease.file_count)"
     }
     Write-Host "    [PASS] Release mode extracted directly from Git commit tree, completely excluding ignored files."
@@ -230,7 +230,7 @@ try {
         (Test-Path -LiteralPath (Join-Path $unpackedIgnoredScratch "skills\repo-native-refactor\agents\scratch.tmp"))) {
         throw "Test 5 FAILED: Ignored files leaked into scratch package!"
     }
-    if ($manifestScratch.file_count -ne 22) {
+    if ($manifestScratch.file_count -ne 23) {
         throw "Test 5 FAILED: Expected 23 files in scratch manifest, found $($manifestScratch.file_count)"
     }
     Write-Host "    [PASS] Scratch mode strictly bounded payload to whitelisted files, completely excluding ignored files."
