@@ -1,13 +1,13 @@
 # Repository Engineering Skills: Code Review and Refactoring for AI Agents
 
-![harness](https://img.shields.io/badge/harness-26%2B33%20OK-green) ![pilot](https://img.shields.io/badge/pilot_1-7%2F9%20honest-yellow) ![phase2](https://img.shields.io/badge/phase2-27%2F27%20ceiling-blue) ![runtime](https://img.shields.io/badge/runtime-22%20files-lightgrey)
+![harness](https://img.shields.io/badge/harness-26%2B33%20OK-green) ![pilot](https://img.shields.io/badge/pilot_1-7%2F9-yellow) ![phase2](https://img.shields.io/badge/phase_2-27%2F27_%28too_easy%29-blue) ![runtime](https://img.shields.io/badge/runtime-22%20files-lightgrey)
 
 I kept watching coding agents "improve" my code by swapping a declared `str` path for `pathlib.Path` — tests green, billing broken. So I wrote two skills to stop exactly that, plus the eval harness to check they do anything at all.
 
 - **`repo-foundation`** — start modules, add features, migrate contracts, resume work without breaking public APIs.
 - **`repo-native-refactor`** — read-only diff audits and small cleanups. No redesign, no scope creep.
 
-> **Governing Principle:** Respect scope. Preserve contracts. Verify changes.
+The rule I keep coming back to: stay in scope, keep contracts intact, check your work.
 
 ## 60-second try
 
@@ -29,7 +29,7 @@ These experiments cover a small set of tasks. They don't prove the skills win ev
 
 ## What goes wrong without them
 
-- **Contract drift:** return types or schemas change, callers break (`str` → `Path` is the classic).
+Contract drift is the classic one: a return type changes and callers break (str to Path is my favorite offender).
 - **Scope creep:** a narrow fix rewrites healthy unrelated modules.
 - **Unchecked error paths:** partial states left on disk when operations fail.
 - **Documentation drift:** `README.md` still describes last month's behavior.
