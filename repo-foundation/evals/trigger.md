@@ -4,6 +4,12 @@ Not an automated eval (no host auto-routes here). Manual review aid: read each
 prompt, ask which skill a router should pick. Reviewed 2026-09-28: description
 matches all 20 intents below. Re-check when the description changes.
 
+Automated routing probe (4 fresh router sessions, 40 prompts, same-model):
+first run 29/40, added "migrate the database" / "fix this bug" / "split this
+module" triggers, re-run 36/40. Known residuals: "write the feature, then clean
+it" is genuinely ambiguous (two skills); prose-audit phrasing ("is this comment
+accurate?") has no trigger yet by design, to keep the description short.
+
 ## SHOULD trigger repo-foundation (10)
 
 1. "add X to this project": new feature on a working codebase.

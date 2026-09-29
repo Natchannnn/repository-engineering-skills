@@ -21,10 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tooling: `scripts/classify-risk.py` triage helper, `scripts/install-skills.sh` POSIX mirror, `requirements-test.txt` pinned `jsonschema==4.23.0`, Linux harness CI job.
 - Runtime payload expanded from 17 to 22 files (shared contracts + examples + refactor adapter).
 - Claude plugin marketplace manifests (`.claude-plugin/marketplace.json` + per-skill `plugin.json`), all passing `claude plugin validate`.
+- Marketplace end-to-end verified (add, install both plugins, list, full cleanup with cache removal noted) and global Skills CLI install/remove verified.
 
 ### Changed
 - Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
 - Humanized skill wording: shorter router descriptions, field notes with real failure links, author-notes sections, word-list sweep.
+- Trigger phrases extended after an automated routing probe (29/40 then 36/40 across 40 prompts, 4 fresh router sessions); residuals documented in `evals/trigger.md`.
 
 ### Docs
 - README hero with badges, 60-second try, honest 34/36 PASS count, and `What I got wrong`.

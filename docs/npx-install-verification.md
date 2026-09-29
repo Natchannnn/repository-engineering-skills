@@ -27,6 +27,26 @@ Date: 2026-09-26. These are installation checks, not agent-performance benchmark
 
 The documented removal recipe uses the variant without an agent filter. The failed filtered-removal observation is retained here rather than treating exit 0 as proof of success.
 
+## Claude marketplace end-to-end (Batch B follow-up)
+
+Date: 2026-09-28. `claude` CLI on Windows, repo at Batch E commit. All three manifests
+pass `claude plugin validate`; this time the full loop ran for real:
+
+- `claude plugin marketplace add Natchannnn/repository-engineering-skills` → exit 0.
+- `claude plugin install repo-foundation@repository-engineering-skills` → exit 0, listed.
+- `claude plugin install repo-native-refactor@repository-engineering-skills` → exit 0, listed.
+- Cleanup: both plugins uninstalled, marketplace removed, `plugin list` shows no trace.
+  Note: `~/.claude/plugins/cache/repository-engineering-skills/` lingered on disk after
+  removal and was deleted by hand — dormant cache, not a registration.
+
+## Global install (same date, Skills CLI 1.7.0)
+
+- `add <local> --skill repo-foundation -g -a codex --copy -y` → exit 0.
+- `remove --global repo-foundation -y` → exit 0, no leftovers found.
+- Note: `list -g` hung in this environment (no output within 3 minutes); install and
+  removal themselves returned cleanly, so this looks like a CLI display quirk, not a
+  repo issue.
+
 ## Payload observed from the published source
 
 Before the per-skill license additions:

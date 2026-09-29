@@ -1,6 +1,6 @@
 ---
 name: repo-native-refactor
-description: Review a diff or PR without editing it, or tidy a change set without changing behavior. Use for "review my changes", "check this diff for contract breaks", "clean this up before I open a PR".
+description: Review a diff or PR without editing it, or tidy a change set without changing behavior. Use for "review my changes", "check this diff for contract breaks", "clean this up before I open a PR", "is this safe", "merge the duplicates".
 metadata:
   version: "0.2.0"
   license: "MIT"

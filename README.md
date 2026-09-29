@@ -109,7 +109,7 @@ correctness problem exists. Keep authorized behavior. Re-run affected checks.
 | Pilot 1: 9 runs, 3 arms, deterministic verifiers | **7/9** (2 schema fails kept) | [PROTOCOL](pilots/small-behavioral-pilot/PROTOCOL.md) |
 | Phase 2: 27 runs, triplets, rotated order | **27/27 = ceiling**, too easy to separate anyone; says so in the protocol | [PROTOCOL](pilots/phase2-contract-and-review/PROTOCOL.md) |
 | Harness + demo suites | 59 + 41 tests green | `repo-*/evals/tests`, `scripts/test_demos.py` |
-| Archive | 31 packets, SHA-256 parity | `evals-suite/` |
+| Archive | 31 packets, SHA-256 parity (Windows; Linux path order differs, see `docs/reproduce.md`) | `evals-suite/` |
 | Real-world runs | colorama regression test (has teeth), six correctly untouched, self-review with 2 fixes | [docs/realworld.md](docs/realworld.md) |
 | Red-team + versus | 1 real divergence + 7 ambiguities, which became 9 patches; vs superpowers 1/2/3 with home advantage disclosed | [ATTACK_REPORT](adversarial/ATTACK_REPORT.md) |
 

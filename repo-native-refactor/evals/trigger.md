@@ -4,6 +4,11 @@ Not an automated eval (no host auto-routes here). Manual review aid: read each
 prompt, ask which skill a router should pick. Reviewed 2026-09-28: description
 matches all 20 intents below. Re-check when the description changes.
 
+Automated routing probe (4 fresh router sessions, 40 prompts, same-model):
+first run 29/40, added "is this safe" / "merge the duplicates" triggers, re-run
+36/40. Known residuals: "is this comment accurate?" and "does this error message
+leak internals?" have no trigger yet by design, to keep the description short.
+
 ## SHOULD trigger repo-native-refactor (10)
 
 1. "review my changes": read-only audit of a diff.

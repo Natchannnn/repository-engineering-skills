@@ -1,6 +1,6 @@
 ---
 name: repo-foundation
-description: Add features, start modules, migrate contracts, or pick up half-finished work without breaking the public API. Use for "add X to this project", "set up a new module", "change this schema", "continue where we left off".
+description: Add features, start modules, migrate contracts, or pick up half-finished work without breaking the public API. Use for "add X to this project", "set up a new module", "change this schema", "migrate the database", "continue where we left off", "fix this bug", "split this module".
 metadata:
   version: "0.2.0"
   license: "MIT"
