@@ -6,15 +6,15 @@ metadata:
   license: "MIT"
 ---
 
-# Repo Foundation
+# Repo foundation
 
 Build on a foundation that's just big enough, add features on top of it, and change the architecture only when requirements force it. Aim for the least total rework.
 
 ---
 
-## Core Principles
+## Core principles
 
-- **No universal dogma:** Don't impose a layout, error pattern, or framework the project doesn't need. Plain standard library is fine.
+- **No universal dogma** means don't impose a layout, error pattern, or framework the project doesn't need, and plain standard library is fine.
 - **Scope, baseline, and user work:**
   - Establish a clean baseline before mutating code: use the pre-existing revision/commit when Git exists; use a file inventory or snapshot when uninitialized or greenfield.
   - In a dirty workspace, protect pre-existing uncommitted user modifications. You may edit distinct parts of the same file as long as user work is preserved. Stop and ask only if there is an actual collision or ambiguous intent.
@@ -29,17 +29,17 @@ Build on a foundation that's just big enough, add features on top of it, and cha
   - A ticket, PR, or incident reference you cannot click through to is fiction: delete it.
   - Do not strip valuable comments merely for cosmetic brevity; do not enforce arbitrary comment ratios.
   - Do not add abstractions, wrappers, or factory layers without concrete ownership, contract, or test seam needs.
-- **Preserve consumed public contracts:** See `references/shared-contracts.md` §1 for the canonical rule. In short: preserve documented or consumed types/values/errors/serialization; only change a contract when the task clearly authorizes it, then update callers/tests/docs in scope.
+- **Preserve consumed public contracts** as defined in `references/shared-contracts.md` §1, which means preserve documented or consumed types/values/errors/serialization and change a contract only when the task clearly authorizes it, then update callers/tests/docs in scope.
 - **Verification rigor & proportionate testing:**
   - Record baseline failures and distinguish: (1) pre-existing failures outside scope, (2) in-scope failures to fix, (3) regressions from current changes, and (4) environment errors.
   - Verify the final code state; never use pre-cleanup test results to certify modified code.
   - Add or update persistent tests when a change introduces behavior, fixes a defect, alters a contract, or exposes a meaningful coverage gap. Prefer the repository's existing test framework and structure. Do not add tests solely for file-count or coverage optics. For documentation-only or mechanically verified changes, use the relevant lightweight checks and explain any material verification gap.
   - Check every requirement before you say you're done. Say what you verified, what you only read, and what you assumed. A command that exits 0 doesn't count if the file it should make isn't there.
-- **Failure invariants & state preservation:** If an operation can fail halfway, decide what must stay untouched. Validate inputs and ownership first, build the replacement on the side, keep the old state until the new one is ready. Test the failure boundary.
+- **Failure invariants & state preservation** requires that if an operation can fail halfway, you decide what must stay untouched, then validate inputs and ownership first, build the replacement on the side, keep the old state until the new one is ready, and test the failure boundary.
 
 ---
 
-## Mode Selection
+## Mode selection
 
 | Mode | Trigger | Core Actions | Exit Criteria |
 |---|---|---|---|
@@ -51,25 +51,25 @@ Adopting an existing repository begins with mode selection; do not default to re
 
 ---
 
-## Continue Workflow (Core)
+## Continue workflow (Core)
 
 Routine feature work runs straight from the mode above plus core principles, no extra reference needed:
 
-### 1. Scope and Baseline
+### 1. Scope and baseline
 Confirm the user's objective, observable consequences, affected boundaries, baseline revision/inventory, and any uncommitted user changes to preserve.
 
-### 2. Implement Just Enough
-- **Assumptions vs. product decisions:** Choose conventional, reversible defaults (directory layout, helper naming, standard library choices) autonomously. Bundle and ask product/architectural decisions (external dependencies, data schema changes, new auth schemes) before making breaking changes.
-- **Intentional contract changes:** When a task explicitly requires changing a contract, verify that callers and tests reflect the new contract rather than forcing deprecated behavior.
+### 2. Implement just enough
+- **Assumptions vs. product decisions** means choose conventional, reversible defaults (directory layout, helper naming, standard library choices) autonomously, and bundle and ask product/architectural decisions (external dependencies, data schema changes, new auth schemes) before making breaking changes.
+- **Intentional contract changes** occur when a task explicitly requires changing a contract, so verify that callers and tests reflect the new contract rather than forcing deprecated behavior.
 
-### 3. Verify Proportionately
-- **Lightweight path (Low risk):** For routine bug fixes, typos, formatting, or localized edits within established boundaries, keep scope tight, run relevant mechanical checks (syntax, linter, affected unit tests), and skip secondary review passes.
-- **High-risk vigilance:** Single-line changes to authorization, permissions, data migrations, cryptography, persistence lifecycles, or concurrency carry critical risk. Read [verification](references/verification.md) when designing checks for critical boundaries.
+### 3. Verify proportionately
+- The **lightweight path (Low risk)** applies to routine bug fixes, typos, formatting, or localized edits within established boundaries, where you keep scope tight, run relevant mechanical checks (syntax, linter, affected unit tests), and skip secondary review passes.
+- **High-risk vigilance** applies because single-line changes to authorization, permissions, data migrations, cryptography, persistence lifecycles, or concurrency carry critical risk, so read [verification](references/verification.md) when designing checks for critical boundaries.
 
-### 4. Continuity and State
-- **Implementation vs. requirements:** Existing code shows current behavior, not proof of meeting requirements. Passing tests do not guarantee completeness if acceptance requirements were omitted.
-- **Reconciliation:** Use the evidence hierarchy to guide investigation, not to resolve material contradictions automatically. Reconcile conflicting requirements, documentation, callers, and tests before changing the affected contract. When task notes and code conflict, cross-check requirements and tests; do not default to editing notes to rubber-stamp code. If resuming across sessions or taking over a repo, read [continuity](references/continuity.md).
-- **Tracking:** Reuse existing repository mechanisms (issue trackers, project notes). Do not create dedicated handoff files for routine features.
+### 4. Continuity and state
+- **Implementation vs. requirements** means existing code shows current behavior but is not proof of meeting requirements, and passing tests do not guarantee completeness if acceptance requirements were omitted.
+- **Reconciliation** means use the evidence hierarchy to guide investigation and not to resolve material contradictions automatically, reconcile conflicting requirements, documentation, callers, and tests before changing the affected contract, and when task notes and code conflict, cross-check requirements and tests and do not default to editing notes to rubber-stamp code, and if resuming across sessions or taking over a repo, read [continuity](references/continuity.md).
+- **Tracking** means reuse existing repository mechanisms (issue trackers, project notes) and do not create dedicated handoff files for routine features.
 
 ---
 
@@ -79,7 +79,7 @@ Foundation builds; refactor audits and cleans up. After a finished feature, ask 
 
 ---
 
-## Reference Routing
+## Reference routing
 
 Read supporting references only when the corresponding trigger occurs:
 

@@ -8,10 +8,10 @@ Use this reference when designing checks for greenfield projects, high-risk boun
 
 Before or during initial execution, record baseline test failures and sort them:
 
-1. **Pre-existing failures:** outside the current task's scope. You don't need them green before starting, and don't fix unrelated ones just to green the baseline.
-2. **In-scope failures:** inside the task's scope (a bugfix that starts with a failing test or repro script). These are yours to resolve.
-3. **Regressions:** previously passing checks your changes broke. Catch and fix before declaring completion.
-4. **Environment and tooling failures:** checks that can't run (missing tools, dependencies, setup). Report as environment limits, not code defects.
+1. Failures outside the current task's scope count as pre-existing. You don't need them green before starting, and don't fix unrelated ones just to green the baseline.
+2. Failures inside the task's scope are in scope, such as a bugfix that starts with a failing test or repro script, and these are yours to resolve.
+3. Regressions are previously passing checks your changes broke. Catch and fix them before declaring completion.
+4. When checks can't run because of missing tools, dependencies, or setup, treat them as environment and tooling failures. Report them as environment limits, not code defects.
 
 ---
 
@@ -19,9 +19,9 @@ Before or during initial execution, record baseline test failures and sort them:
 
 Match checks to the contract, boundary, and failure consequences. Don't mandate unit plus integration tests for every small helper, or unrelated checks (rollback tests for an auth change):
 
-- **Mechanical / Local changes:** For typos, formatting, localized helper refactoring, or non-semantic edits within established boundaries, run stack linters, formatters, and localized unit tests.
-- **Contract and boundary changes:** When modifying public APIs, data formats, state machines, or subsystem contracts, run tests that directly verify the updated contract and its callers.
-- **Critical boundary vigilance:** Changes touching authorization, permission checks, data migrations, cryptographic routines, concurrency locks, transaction boundaries, or destructive persistence carry high risk even if they touch only a single line. Verify the specific critical behavior (e.g., testing both authorized and unauthorized paths for auth changes; testing schema validity and rollback for migration scripts).
+- Mechanical or local changes include typos, formatting, localized helper refactoring, and other non-semantic edits within established boundaries. For those, run stack linters, formatters, and localized unit tests.
+- Contract and boundary changes modify public APIs, data formats, state machines, or subsystem contracts, so run tests that directly verify the updated contract and its callers.
+- Changes touching authorization, permission checks, data migrations, cryptographic routines, concurrency locks, transaction boundaries, or destructive persistence carry high risk even when they touch only a single line, which calls for critical boundary vigilance. Verify the specific critical behavior (e.g., testing both authorized and unauthorized paths for auth changes; testing schema validity and rollback for migration scripts).
 
 ---
 
@@ -42,12 +42,9 @@ When building new features or starting a repository from scratch:
 
 ## 4. Testing integrity and final state
 
-- **Reproduce before fixing:** For defect fixes, demonstrate the failure first with a minimal
-  reproduction (failing test, repro script, or observed command output). A fix verified
-  only after the fact is a guess with good lighting. For regression tests, prove red-green:
-  revert the fix, watch it fail, restore, watch it pass.
-- **Assert observable outcomes:** Check the external consequence of the action (HTTP status code and body, database row contents, exit code and stdout/stderr, or rendered DOM elements).
-- **Independent expected outcomes:** Expected values must reflect business requirements, not mirror internal implementation logic.
-- **No weakening of tests:** Never weaken assertion thresholds, delete valid assertions, or skip tests merely to achieve a passing run.
-- **Always verify the final tree:** Execute verification commands on the actual code state intended for delivery. If a subsequent refactoring pass or companion skill modifies code, rerun all affected checks on the updated code.
-- **Report actual results:** State exactly which commands were run, their outcomes, and any unverified areas.
+- For defect fixes, reproduce the failure first with a minimal reproduction such as a failing test, repro script, or observed command output, because a fix verified only after the fact is a guess with good lighting. For regression tests, prove red-green by reverting the fix, watching it fail, restoring it, and watching it pass.
+- Check the external consequence of the action to assert observable outcomes, such as HTTP status code and body, database row contents, exit code and stdout/stderr, or rendered DOM elements.
+- Expected values must reflect business requirements to keep outcomes independent, not mirror internal implementation logic.
+- Never weaken tests to achieve a passing run by weakening assertion thresholds, deleting valid assertions, or skipping tests.
+- Always verify the final tree by executing verification commands on the actual code state intended for delivery. If a subsequent refactoring pass or companion skill modifies code, rerun all affected checks on the updated code.
+- Report actual results by stating exactly which commands were run, their outcomes, and any unverified areas.

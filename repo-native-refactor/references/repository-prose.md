@@ -1,4 +1,4 @@
-# Repository-Native Prose
+# Repository-native prose
 
 Source prose should carry information that code cannot express clearly and should sound normal for its repository. The objective is not to imitate a person or evade detection. It is to remove narration, inflation, and generic language while preserving contracts and rationale.
 
@@ -137,7 +137,7 @@ When the repository provides little reliable prose evidence:
 - do not add comments merely to signal craftsmanship;
 - do not invent tickets, incidents, owners, dates, or production history.
 - a ticket, PR, or incident reference you cannot click through to (tracker search or
-  author confirmation) is fiction — delete it rather than preserving it politely.
+  author confirmation) is fiction. Delete it rather than preserving it politely.
 
 This fallback is deliberately modest. It must not become a universal style imposed over repository evidence.
 

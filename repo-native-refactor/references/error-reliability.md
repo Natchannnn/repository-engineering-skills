@@ -1,4 +1,4 @@
-# Error and Reliability Boundaries
+# Error and reliability boundaries
 
 Error handling is about ownership, not visual cleanliness.
 
@@ -11,7 +11,7 @@ Before changing an error path establish:
 5. which layer should log;
 6. which layer decides whether the operation continues.
 
-## Swallowed Errors
+## Swallowed errors
 
 An empty or minimal catch is suspicious when it destroys meaningful failure information.
 
@@ -87,7 +87,7 @@ Before modifying retry logic determine:
 
 Retries without idempotency analysis are high risk.
 
-## Timeout and Cancellation
+## Timeout and cancellation
 
 Do not add or remove timeout/cancellation behavior without understanding:
 
@@ -104,13 +104,13 @@ Moving calls inside or outside a transaction can change consistency and locking 
 
 Treat transaction refactors as R3 or R4.
 
-## Partial Failure
+## Partial failure
 
 Distributed or multi-step work may intentionally succeed partially.
 
 Do not force all-or-nothing behavior unless the domain contract requires it.
 
-## Reliability Rule
+## Reliability rule
 
 A cleaner-looking error path is not automatically a more correct one.
 

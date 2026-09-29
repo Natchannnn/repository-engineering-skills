@@ -1,4 +1,4 @@
-# Installation & Maintenance
+# Installation and maintenance
 
 Use the [Skills CLI](https://github.com/vercel-labs/skills) to install directly from GitHub. These skills do not need their own npm package.
 

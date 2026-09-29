@@ -1,4 +1,4 @@
-# Bootstrap: Establishing Foundation and Initial Slice
+# Bootstrap: establishing foundation and initial slice
 
 > Field note: I used to scaffold full layered dirs on day one. Deleted most of it. Now I ship one slice first.
 
@@ -9,13 +9,13 @@ Use this reference when starting a new repository from scratch or when setting u
 ## 1. Minimal inputs and scoping
 
 Before generating code or directory structures, establish the critical constraints.
-First: what should the software actually do for an outside observer (CLI command, HTTP endpoint, UI component, library export, worker process)? Second: hard constraints (language, runtime, frameworks, persistence, external services, anything operational the user asked for). Third, sort decisions into two piles:
-  - *Reversible assumptions:* directory structure, utility naming, standard library picks, helper layout. Choose conventionally on your own; don't ask permission for every folder or variable name.
-  - *Product decisions:* persistence store, auth architecture, vendors, breaking domain rules. Bundle missing product decisions into one short question before implementing.
+First: what should the software actually do for an outside observer (CLI command, HTTP endpoint, UI component, library export, worker process)? Second: hard constraints (language, runtime, frameworks, persistence, external services, anything operational the user asked for). Third, sort decisions into two piles.
+Reversible assumptions cover directory structure, utility naming, standard library picks, and helper layout. Choose conventionally on your own. Don't ask permission for every folder or variable name.
+Product decisions cover persistence store, auth architecture, vendors, and breaking domain rules. Bundle missing product decisions into one short question before implementing.
 
 ---
 
-## 2. The First Representative Slice
+## 2. The first representative slice
 
 Avoid horizontal layering without working behavior. Do not generate empty directories, unused interfaces, speculative repositories, or generic wrappers that serve no active flow.
 
@@ -35,7 +35,7 @@ If external integrations cannot be run locally, simulated stubs are permitted on
 
 ---
 
-## 3. Tooling and Instructions Setup
+## 3. Tooling and instructions setup
 
 Establish the minimal commands necessary for an agent or developer to run and verify the project using stack-native configuration:
 
@@ -50,7 +50,7 @@ Establish the minimal commands necessary for an agent or developer to run and ve
 
 ---
 
-## 4. Establishing Reference Code
+## 4. Establishing reference code
 
 Code created during bootstrap serves as precedent for future development only when it satisfies all of the following:
 

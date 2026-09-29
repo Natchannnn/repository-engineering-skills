@@ -1,4 +1,4 @@
-# Testing Integrity
+# Testing integrity
 
 Tests are evidence.
 
@@ -12,9 +12,9 @@ and
 
 **test quality**.
 
-## Evidence Confidence
+## Evidence confidence
 
-### High Confidence
+### High confidence
 
 Examples:
 
@@ -24,14 +24,14 @@ Examples:
 - observable end-to-end behavior;
 - regression tests tied to an externally visible failure.
 
-### Medium Confidence
+### Medium confidence
 
 Examples:
 
 - meaningful unit tests around public behavior;
 - isolated business-rule tests with independent fixtures.
 
-### Low Confidence
+### Low confidence
 
 Examples:
 
@@ -45,9 +45,9 @@ Higher semantic risk requires stronger evidence.
 
 If R3/R4 code has weak test evidence, reduce refactor aggressiveness.
 
-## Test-Slop Patterns
+## Test-slop patterns
 
-### Tautological Expectations
+### Tautological expectations
 
 Bad pattern:
 
@@ -57,7 +57,7 @@ The test may repeat the same mistake.
 
 Prefer independent business examples or externally defined expected outcomes.
 
-### Mock Theatre
+### Mock theatre
 
 Mocking is not inherently bad.
 
@@ -67,7 +67,7 @@ Mock external or expensive boundaries when appropriate.
 
 Do not mock away the behavior being audited.
 
-### Test Weakening
+### Test weakening
 
 Never make a refactor pass by:
 
@@ -76,9 +76,9 @@ Never make a refactor pass by:
 - disabling a test;
 - expanding tolerances without domain justification.
 
-If behavior intentionally changes, update tests because the contract changed — and report that behavioral change explicitly.
+If behavior intentionally changes, update tests because the contract changed, and report that behavioral change explicitly.
 
-### Implementation Coupling
+### Implementation coupling
 
 Refactoring internals should not require widespread test rewrites when public behavior is unchanged unless repository conventions intentionally test internal units.
 
@@ -90,7 +90,7 @@ Test names should describe meaningful behavior using the repository's vocabulary
 
 Assertion messages, expected errors, snapshots, and golden output may constrain observable wording. Do not update them solely to accommodate stylistic rewording. If the contract intentionally changes, report it and retain independent behavioral evidence.
 
-## Verification Strategy
+## Verification strategy
 
 Prefer the smallest validation set that meaningfully constrains the change, then expand when risk requires it.
 

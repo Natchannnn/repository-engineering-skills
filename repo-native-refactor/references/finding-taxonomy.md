@@ -1,14 +1,14 @@
-# Finding Taxonomy
+# Finding taxonomy
 
 A finding is evidence that deserves investigation. It is not automatically a defect.
 
 Before mutating code, establish:
 
-**Observed pattern → actual consequence → owning layer → repository evidence → appropriate correction.**
+**Observed pattern, then actual consequence, then owning layer, then repository evidence, then appropriate correction.**
 
 A scanner match, generic style preference, complexity number, or resemblance to common AI-generated code is insufficient by itself.
 
-## 1. Repository Conformity
+## 1. Repository conformity
 
 Look for changes that introduce a second way to solve a problem the repository already solves coherently.
 
@@ -26,7 +26,7 @@ Diagnosis requires comparing semantics and ownership, not just names.
 
 A different implementation is acceptable when its domain, lifecycle, boundary, or invariants genuinely differ.
 
-## 2. Domain Semantic Erosion
+## 2. Domain semantic erosion
 
 Look for lost or weakened domain meaning.
 
@@ -38,7 +38,7 @@ Do not invent more sophisticated-sounding vocabulary.
 
 Short generic locals in tiny scopes are not automatically problematic.
 
-## 3. Architectural Fragmentation
+## 3. Architectural fragmentation
 
 Look for:
 
@@ -53,7 +53,7 @@ Do not judge architecture from file count alone.
 
 A thin abstraction may legitimately encode dependency direction, ownership, compatibility, policy, or test boundaries.
 
-## 4. Reinvention and Duplication
+## 4. Reinvention and duplication
 
 Distinguish:
 
@@ -72,7 +72,7 @@ Code should normally be consolidated only when implementations share:
 
 Two similar blocks in different domains may intentionally remain separate.
 
-## 5. Error Semantics
+## 5. Error semantics
 
 Look for:
 
@@ -88,7 +88,7 @@ Determine the error owner before changing propagation.
 
 “Fail loudly” is not a universal rule.
 
-## 6. Type and Schema Integrity
+## 6. Type and schema integrity
 
 Investigate:
 
@@ -103,7 +103,7 @@ Escape hatches are findings, not automatic defects.
 
 A local assertion at a known third-party boundary may be intentional.
 
-## 7. Testing Integrity
+## 7. Testing integrity
 
 Look for:
 
@@ -116,7 +116,7 @@ Look for:
 
 A passing test is useful evidence only to the extent that the test independently constrains behavior.
 
-## 8. Security and Reliability
+## 8. Security and reliability
 
 Inspect relevant changes for:
 
@@ -134,7 +134,7 @@ Inspect relevant changes for:
 
 Treat these areas as high semantic risk.
 
-## 9. Repository Prose and Communication Integrity
+## 9. Repository prose and communication integrity
 
 Inspect comments, docstrings, test descriptions, errors, logs, command output, and user-facing strings according to their distinct roles.
 
@@ -152,7 +152,7 @@ Prose that resembles common AI output is a finding, not proof that it is wrong. 
 
 Do not use phrase blacklists, comment quotas, or AI-detector scores as mutation authority. Read [repository-native prose](repository-prose.md) when prose is material to the cleanup.
 
-## 10. Operational Quality
+## 10. Operational quality
 
 Look for:
 
@@ -166,7 +166,7 @@ Look for:
 
 Remember that output can be a contract.
 
-## 11. Change Discipline
+## 11. Change discipline
 
 Look for:
 

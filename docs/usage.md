@@ -1,4 +1,4 @@
-# Usage Guide & Workflows
+# Usage guide and workflows
 
 This guide provides concrete usage patterns, prompt templates, and decision criteria for `repo-foundation` and `repo-native-refactor`.
 

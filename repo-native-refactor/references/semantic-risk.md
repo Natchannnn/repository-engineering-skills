@@ -1,4 +1,4 @@
-# Semantic Risk and Mutation Policy
+# Semantic risk and mutation policy
 
 > Field note: when unsure between R2 and R3, I pick the higher band. Cheaper than a rollback.
 
@@ -8,7 +8,7 @@ Transformation safety measures confidence that a rewrite preserves meaning.
 
 They are related but separate.
 
-## R0 - Mechanical
+## R0 - mechanical
 
 Typical examples:
 
@@ -23,7 +23,7 @@ Policy:
 
 Automatic mutation is acceptable when repository tooling establishes the transformation.
 
-## R1 - Low Structural Risk
+## R1 - low structural risk
 
 Typical examples:
 
@@ -36,7 +36,7 @@ Policy:
 
 Mutation is acceptable when scope is local and verification is straightforward.
 
-## R2 - Contextual Structural Risk
+## R2 - contextual structural risk
 
 Typical examples:
 
@@ -56,7 +56,7 @@ Require a concrete maintainability or semantic benefit.
 
 Do not refactor merely because another form is prettier.
 
-## R3 - Semantic Risk
+## R3 - semantic risk
 
 Typical examples:
 
@@ -77,7 +77,7 @@ Never bulk-rewrite.
 
 Establish the preservation contract and meaningful behavioral verification.
 
-## R4 - Critical Boundary
+## R4 - critical boundary
 
 Typical examples:
 
@@ -97,15 +97,15 @@ Maximum conservatism.
 
 When evidence is incomplete, preserve behavior and report the finding.
 
-## Transformation Classes
+## Transformation classes
 
-### Class A - Proven Mechanical
+### Class A - proven mechanical
 
 May be applied unattended.
 
 The rewrite must have clear local equivalence or be an established project-tool transformation.
 
-### Class B - Context Sensitive
+### Class B - context sensitive
 
 Generate or consider a candidate change, then inspect and verify.
 
@@ -117,7 +117,7 @@ Examples:
 - abstraction removal;
 - context-sensitive comment or documentation changes.
 
-### Class C - Semantic
+### Class C - semantic
 
 Requires reasoning about behavioral ownership.
 
@@ -170,7 +170,7 @@ If the only justification is “cleaner”, “more elegant”, or “more senio
 update its consumers within scope. A green suite that asserts only exception types does
 not prove the text is safe to change.
 
-## Stop Conditions
+## Stop conditions
 
 Preserve rather than aggressively refactor when:
 

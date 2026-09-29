@@ -1,4 +1,4 @@
-# Deterministic Tooling Policy
+# Deterministic tooling policy
 
 Use deterministic tools for problems they can reliably establish.
 
@@ -15,7 +15,7 @@ Examples:
 
 Tool output is evidence, not architectural authority.
 
-## Project Tools First
+## Project tools first
 
 Prefer tools already configured by the repository.
 
@@ -23,7 +23,7 @@ Do not install a new slop scanner or refactoring dependency merely because this 
 
 Use repository configuration when available.
 
-## Structural Search and Rewrite
+## Structural search and rewrite
 
 AST/CST tools are strong for locating syntactic patterns.
 
@@ -43,7 +43,7 @@ Do not bulk-rewrite:
 - unresolved type mismatches;
 - async error behavior.
 
-## Dead-Code and Dependency Analysis
+## Dead-code and dependency analysis
 
 Unused-code tools build a model of repository reachability.
 
@@ -66,7 +66,7 @@ Before deletion:
 4. verify entry/plugin configuration;
 5. delete only when semantic ownership confirms it is dead.
 
-## Suppression Policy
+## Suppression policy
 
 Do not respond to surprising findings by immediately adding ignores or suppression.
 
@@ -78,7 +78,7 @@ First determine whether:
 
 Suppression should document a known limitation, not hide unexplained evidence.
 
-## Tool Confidence
+## Tool confidence
 
 Classify findings:
 
