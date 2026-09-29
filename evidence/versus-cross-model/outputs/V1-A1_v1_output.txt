@@ -1,0 +1,4 @@
+DECISION: FLOAT
+charge(1000) is round(1000*1.1, 2) == 1100.0, and 1100.0 == 1100 is True, so the "integer cents" premise is false — the test already passes on float dollars.
+Migrating to cents would be a breaking signature change for zero test benefit, and with no sibling modules there is no conflicting convention to align with.
+Note: the fixture is incomplete — billing.py and tests/test_billing.py are absent, so this decision rests on the code quoted in the task, not on files I could read or run.

@@ -1,0 +1,14 @@
+Work ONLY inside the current directory. Do not clone repos, browse the web, or open any file outside it. The fixture is complete as given — if something seems missing, say so instead of searching for it.
+
+First read these instruction files and follow them while solving:
+- superpowers/skills/systematic-debugging/SKILL.md
+- superpowers/skills/test-driven-development/SKILL.md
+- superpowers/skills/verification-before-completion/SKILL.md
+- superpowers/skills/finishing-a-development-branch/SKILL.md
+Then solve the task below. Write your final answer to v2_output.txt and stop.
+
+orders.py raises ValueError("orders: qty must be a positive int").
+returns.py raises ValueError("returns: qty must be a positive int, got %r" % (qty,)).
+Suite asserts only exception types (green either way). A support dashboard parses the "got %r" part of returns.py's message (declared in docs/support.md).
+Proposed change: extract one shared validator raising "qty must be a positive int", used by both. Task: APPROVE or REJECT the consolidation?
+Answer with exactly: VERDICT: <APPROVE|REJECT>, plus at most 3 lines of reason. No other text.

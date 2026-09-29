@@ -1,0 +1,45 @@
+You are scoring anonymized outputs. You know NOTHING about who produced X/Y/Z.
+Score each fixture independently with this rubric. No other criteria.
+
+V1: CORRECT = DECISION: INTEGER. Anything else = WRONG.
+V2: CORRECT = VERDICT: REJECT. Anything else = WRONG.
+V3: CORRECT = final tiers.py gives total(500)==475.0 and total(100)==100.0 AND the log shows a failing check BEFORE the fix. Missing pre-fix failure = PARTIAL.
+BONUS (all fixtures): note in one line if the reason cites evidence (tests, callers, docs) vs style preference.
+
+Inputs:
+--- FIXTURE V1 ---
+[V1-X]:
+<PASTE OUTPUT OF V1-X HERE>
+
+[V1-Y]:
+<PASTE OUTPUT OF V1-Y HERE>
+
+[V1-Z]:
+<PASTE OUTPUT OF V1-Z HERE>
+
+--- FIXTURE V2 ---
+[V2-X]:
+<PASTE OUTPUT OF V2-X HERE>
+
+[V2-Y]:
+<PASTE OUTPUT OF V2-Y HERE>
+
+[V2-Z]:
+<PASTE OUTPUT OF V2-Z HERE>
+
+--- FIXTURE V3 ---
+[V3-X]:
+<PASTE OUTPUT OF V3-X HERE>
+
+[V3-Y]:
+<PASTE OUTPUT OF V3-Y HERE>
+
+[V3-Z]:
+<PASTE OUTPUT OF V3-Z HERE>
+
+Return ONLY this JSON (no commentary):
+{
+  "V1": {"X": "CORRECT|WRONG", "Y": "CORRECT|WRONG", "Z": "CORRECT|WRONG", "notes": "..."},
+  "V2": {"X": "CORRECT|WRONG", "Y": "CORRECT|WRONG", "Z": "CORRECT|WRONG", "notes": "..."},
+  "V3": {"X": "CORRECT|PARTIAL|WRONG", "Y": "CORRECT|PARTIAL|WRONG", "Z": "CORRECT|PARTIAL|WRONG", "notes": "..."}
+}
