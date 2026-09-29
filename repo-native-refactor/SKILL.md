@@ -132,6 +132,11 @@ Scale the completion report to the change. Omit empty sections. Format completio
 ### Result
 Use one: **Verified**, **Verified with caveats**, **Needs review**, or **Failed verification**.
 
+For review-only requests, an empty findings list is a complete result, not an
+embarrassing one. Never manufacture findings to fill a report: each reported
+finding needs a producer, a consumer, and an observed consequence, or it is
+not reported.
+
 ### Changed
 Summarize material corrections by file and function.
 

@@ -10,7 +10,7 @@ LOG = []
 
 def handle(job_id, user):
     desc = JobDesc(job_id)
-    LOG.append(f"request {desc}")  # BUG: f-string evaluates BEFORE the auth check
+    LOG.append(f"request {desc}")
     if not allowed(user, job_id):
         raise errors.Denied()
     return {"ok": True}
