@@ -6,10 +6,8 @@ Use this reference when a task alters core contracts, architectural boundaries, 
 
 ## 1. Intentional Contract Changes vs. Regressions
 
-When requirements evolve, contracts must adapt:
-
-- **Distinguish intent:** An intentional contract change alters public API signatures, serialization schemas, data models, or error codes because the user explicitly requested new behavior. A regression is an unintended break in existing functionality.
-- **Accept requested changes:** Do not fight explicit user requests by forcing compatibility with deprecated behavior. Refactoring and foundation work must accommodate authorized changes while preserving unaffected contracts.
+When requirements evolve, contracts must adapt. Tell intent apart from regression: an intentional change alters public API signatures, schemas, data models, or error codes because the user explicitly asked for new behavior. A regression is an unintended break in existing functionality.
+Accept what the user requested. Don't fight explicit requests by forcing compatibility with deprecated behavior. Foundation and refactor work both accommodate authorized changes while preserving untouched contracts.
 
 ---
 

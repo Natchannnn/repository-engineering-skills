@@ -1,4 +1,4 @@
-# Evaluation Harness & Archive Verification Guide
+# Evaluation harness and archive verification guide
 
 This document describes how to execute the evaluation harnesses, run verification checks, and verify historical benchmark archives.
 
@@ -11,7 +11,7 @@ The repository includes two independent evaluation harnesses:
 | Component | Directory | Purpose |
 | :--- | :--- | :--- |
 | **Foundation Harness** | `repo-foundation/evals/` | Multi-checkpoint lifecycle verification, deterministic snapshots, exact rational scoring |
-| **Refactor Harness** | `repo-native-refactor/evals/` | Cryptographic change evaluation, runner isolation, patch roundtrip integrity |
+| **Refactor Harness** | `repo-native-refactor/evals/` | Hash-checked change evaluation, runner isolation, patch roundtrip integrity |
 | **Behavioral Pilot 1** | `pilots/small-behavioral-pilot/` | 9-run behavioral evaluation (D1, D3, R1) with 42 self-audit checks |
 | **Phase 2 Pilot** | `pilots/phase2-contract-and-review/` | 27-run contract drift and review evaluation (D2, R2A, R2B) with 35 self-audit checks |
 | **Archive Evidence** | `evals-suite/` | 31 sealed historical evidence packets from experimental runs |
@@ -79,7 +79,7 @@ The script iterates through all 31 verifier scripts, checks that all 31 are pres
 
 ## 5. Running Pilot Verifier Self-Audit Suites
 
-The empirical pilots under `pilots/` include deterministic test verifiers and pre-flight self-audit suites:
+The pilots under `pilots/` include deterministic test verifiers and pre-flight self-audit suites:
 
 ```bash
 # Pilot 1 self-audit suites (42 checks across D1, D3, R1):

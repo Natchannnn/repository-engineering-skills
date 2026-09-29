@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Corrected Pilot 1 outcome from 9/9 to 7/9 PASS (A0 3/3, A1 2/3, A2 2/3 — Runs 4-5 FAIL on strict Test ID schema) to match `PROTOCOL.md` §5-6 and evidence JSONs.
+- Corrected Pilot 1 outcome from 9/9 to 7/9 PASS (A0 3/3, A1 2/3, A2 2/3; Runs 4-5 FAIL on strict Test ID schema) to match `PROTOCOL.md` section 5-6 and evidence JSONs.
 - Clarified Phase 2 27/27 as ceiling effect with no measurable skill advantage, and CP2/CP3 ablations as n=1 single-judge case studies.
 - Fixed Phase 2 self-audit docstring from 17 to 35 tests (15 D2 + 9 R2A + 11 R2B) and clarified package test numbering.
 
