@@ -2,10 +2,14 @@
 
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![version](https://img.shields.io/badge/version-0.3.0-green)](CHANGELOG.md) [![payload](https://img.shields.io/badge/payload-23%20files-lightgrey)](docs/installation.md)
 
-Coding agents like to "improve" code in ways that quietly break things. In one of our test cases, an agent changed a declared `str` path to `pathlib.Path`: tests passed, but downstream callers broke. These two skills keep agents in scope and keep public contracts as declared.
+Vibe coding works great until you're 10 or 20 sessions in. As different models and chat sessions touch the project, you have two options: refactor the whole thing or just give up. The problem usually isn't a lack of "clean code"—it's a lack of **consistency**. Let's say one agent uses a `str` path, and the next one, bro "upgrades" it to `pathlib.Path`, and another dumps a 300-line diff of unnecessary rewrites. Yikes.
 
-- **`repo-foundation`**: start modules, add features, migrate contracts, resume work without breaking public APIs.
-- **`repo-native-refactor`**: read-only diff audits and small cleanups. No redesign, no scope creep.
+These two companion skills keep agents consistent over long projects:
+
+- **`repo-foundation`**: sets up boundaries, baseline conventions, and contracts so every new session knows the ground rules.
+- **`repo-native-refactor`**: stops diff bloat, catches contract drift, and makes new changes blend naturally into the existing code.
+
+The goal: you can vibe code across dozens of sessions with different agents, and the repo still looks like one person wrote it.
 
 ---
 
