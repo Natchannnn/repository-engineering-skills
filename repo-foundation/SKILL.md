@@ -1,6 +1,6 @@
 ---
 name: repo-foundation
-description: Build features on a clean repo foundation without breaking public API. Use when starting a module, adding a feature, migrating a contract, or resuming work.
+description: Add features, start modules, migrate contracts, or pick up half-finished work without breaking the public API. Use for "add X to this project", "set up a new module", "change this schema", "continue where we left off".
 metadata:
   version: "0.2.0"
   license: "MIT"

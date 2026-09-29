@@ -1,6 +1,6 @@
 ---
 name: repo-native-refactor
-description: Audit and clean up code changes to match repo semantics and contracts. Use after implementation for small cleanup, behavior-preserving refactoring with verification, and review prep without altering authorized behavior.
+description: Review a diff or PR without editing it, or tidy a change set without changing behavior. Use for "review my changes", "check this diff for contract breaks", "clean this up before I open a PR".
 metadata:
   version: "0.2.0"
   license: "MIT"

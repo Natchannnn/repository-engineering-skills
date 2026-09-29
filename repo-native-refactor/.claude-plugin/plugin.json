@@ -2,7 +2,7 @@
   "author": {
     "name": "Natchannnn"
   },
-  "description": "Audit and clean up code changes to match repo semantics and contracts.",
+  "description": "Review a diff or PR without editing it, or tidy a change set without changing behavior.",
   "keywords": [
     "code-review",
     "refactoring",
