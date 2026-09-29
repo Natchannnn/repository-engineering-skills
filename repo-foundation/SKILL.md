@@ -19,13 +19,14 @@ Build on a foundation that's just big enough, add features on top of it, and cha
   - Establish a clean baseline before mutating code: use the pre-existing revision/commit when Git exists; use a file inventory or snapshot when uninitialized or greenfield.
   - In a dirty workspace, protect pre-existing uncommitted user modifications. You may edit distinct parts of the same file as long as user work is preserved. Stop and ask only if there is an actual collision or ambiguous intent.
   - Never create commits or force Git initialization solely for handoff or tracking.
-- **Conventions and precedents:** Reuse conventions only with healthy repository precedent. Do not treat accidental patterns or temporary workarounds as precedent, and do not expand tasks into out-of-scope cleanup.
+  - Reuse conventions only with healthy repository precedent. Don't treat accidental patterns or temporary workarounds as precedent, and don't expand into out-of-scope cleanup.
+  - Don't push, publish, deploy, change branch protection, install system hooks, or buy anything unless the user asks.
 - **Prose, naming, and restraint:**
   - Names reflect business domain concepts and ownership.
   - Add comments only for information code cannot express: grounded rationale, non-obvious invariants, units, rounding, ordering, protocol quirks, or compatibility.
   - Do not narrate syntax; do not invent tickets, incidents, owners, or production histories.
   - Treat error and CLI text as contract surface: check callers and parsers before rewording.
-  - A ticket, PR, or incident reference you cannot click through to is fiction — delete it.
+  - A ticket, PR, or incident reference you cannot click through to is fiction: delete it.
   - Do not strip valuable comments merely for cosmetic brevity; do not enforce arbitrary comment ratios.
   - Do not add abstractions, wrappers, or factory layers without concrete ownership, contract, or test seam needs.
 - **Preserve consumed public contracts:** See `references/shared-contracts.md` §1 for the canonical rule. In short: preserve documented or consumed types/values/errors/serialization; only change a contract when the task clearly authorizes it, then update callers/tests/docs in scope.
@@ -33,9 +34,8 @@ Build on a foundation that's just big enough, add features on top of it, and cha
   - Record baseline failures and distinguish: (1) pre-existing failures outside scope, (2) in-scope failures to fix, (3) regressions from current changes, and (4) environment errors.
   - Verify the final code state; never use pre-cleanup test results to certify modified code.
   - Add or update persistent tests when a change introduces behavior, fixes a defect, alters a contract, or exposes a meaningful coverage gap. Prefer the repository's existing test framework and structure. Do not add tests solely for file-count or coverage optics. For documentation-only or mechanically verified changes, use the relevant lightweight checks and explain any material verification gap.
+  - Check every requirement before you say you're done. Say what you verified, what you only read, and what you assumed. A command that exits 0 doesn't count if the file it should make isn't there.
 - **Failure invariants & state preservation:** If an operation can fail halfway, decide what must stay untouched. Validate inputs and ownership first, build the replacement on the side, keep the old state until the new one is ready. Test the failure boundary.
-- **Requirement-bounded completion:** Check every requirement before you say you're done. Say what you verified, what you only read, and what you assumed. A command that exits 0 doesn't count if the file it should make isn't there.
-- **No speculative authority:** Don't push, publish, deploy, change branch protection, install system hooks, or buy anything unless the user asks.
 
 ---
 
@@ -53,7 +53,7 @@ Adopting an existing repository begins with mode selection; do not default to re
 
 ## Continue Workflow (Core)
 
-Execute routine feature development and bug fixes on an existing foundation directly from core instructions:
+Routine feature work runs straight from the mode above plus core principles, no extra reference needed:
 
 ### 1. Scope and Baseline
 Confirm the user's objective, observable consequences, affected boundaries, baseline revision/inventory, and any uncommitted user changes to preserve.
@@ -75,11 +75,7 @@ Confirm the user's objective, observable consequences, affected boundaries, base
 
 ## Companion Coordination (`repo-native-refactor`)
 
-- **Complementary roles:** Foundation builds, implements, and adapts; Refactor audits, tightens prose, removes residue, and aligns conventions within scope. Foundation does not reimplement refactor's taxonomy or risk bands; Refactor does not revert intentional, requested behavioral changes.
-- **Discovery and fallback:** Locate companion through host-supported discovery only; do not hardcode paths, download, or assume mentioning the name triggers execution. Foundation operates fully without companion (report companion not used). Same-agent self-review is not independent review.
-- **Invocation timing:** Invoke refactor at meaningful checkpoints (completed feature, bootstrap slice, architectural evolution, or explicit audit request). Do not invoke after minor edits or lightweight fixes.
-- **Minimal handoff contract:** Transfer objective/scope/intentional changes, baseline & user changes, contracts & precedents, check status & limitations from existing context without creating handoff files.
-- **Post-cleanup and loop limits:** Rerun affected checks on final code state after refactor edits. Perform at most one refactor pass per checkpoint by default; iterate only on concrete findings or failing checks. If a product decision is missing, ask the user; do not guess or unilaterally redesign.
+Foundation builds; refactor audits and cleans up. After a finished feature, ask for one refactor pass if the host has it (see [references/companion.md](references/companion.md)). Rerun affected checks after its edits; same-agent self-review is not independent review.
 
 ---
 
@@ -93,10 +89,11 @@ Read supporting references only when the corresponding trigger occurs:
 - **[references/verification.md](references/verification.md):** Read when designing checks for greenfield code, high-risk boundaries (auth, data loss, concurrency), or weak test suites.
 - **[references/shared-contracts.md](references/shared-contracts.md):** Canonical contract + evidence hierarchy + final-state rule. Read when touching any public interface, reconciling conflicting requirements, or certifying completion.
 - **[references/migration-examples.md](references/migration-examples.md):** Atomic vs transitional migration patterns. Read in Evolve mode before mutating persisted state.
+- **[references/companion.md](references/companion.md):** Full companion coordination (roles, handoff, loop limits). Read when planning a refactor pass with `repo-native-refactor`.
 
 ---
 
 ## When NOT to Use
 
-- **Trivial edits:** Skip this skill for typos, isolated script adjustments, or formatting-only changes — the coordination overhead is not justified.
+- **Trivial edits:** Skip this skill for typos, isolated script adjustments, or formatting-only changes: the overhead is not worth it.
 - **Ambiguous precedent:** When repository conventions are ambiguous or conflicting, preserve the dominant local pattern and document the choice in the completion report rather than speculating.

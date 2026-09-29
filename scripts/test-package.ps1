@@ -71,8 +71,8 @@ try {
 
     if ($manifest.working_tree_clean -ne $true) { throw "Test 1 FAILED: expected working_tree_clean to be true" }
     if ($manifest.source_commit -ne $fixtureCommit) { throw "Test 1 FAILED: source_commit mismatch" }
-    if ($manifest.file_count -ne 22) { throw "Test 1 FAILED: expected exactly 22 payload files, got $($manifest.file_count)" }
-    Write-Host "    [PASS] Clean repo build succeeded with 22 verified payload files."
+    if ($manifest.file_count -ne 22) { throw "Test 1 FAILED: expected exactly 23 payload files, got $($manifest.file_count)" }
+    Write-Host "    [PASS] Clean repo build succeeded with 23 verified payload files."
 
     # -------------------------------------------------------------
     # Test 2: Timestamp UTC format and window check (R3 & T1)
@@ -97,7 +97,7 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "Test 3 FAILED: Byte-for-byte comparison against Git commit failed:`n$verifyOutput"
     }
-    Write-Host "    [PASS] All 22 payload files match Git commit objects byte-for-byte."
+    Write-Host "    [PASS] All 23 payload files match Git commit objects byte-for-byte."
 
     # -------------------------------------------------------------
     # Test 3b: Negative control - mutated payload must FAIL Git comparison (T2)
@@ -211,7 +211,7 @@ try {
         throw "Test 5 FAILED: Ignored files leaked into release package!"
     }
     if ($manifestRelease.file_count -ne 22) {
-        throw "Test 5 FAILED: Expected 22 files in release manifest, found $($manifestRelease.file_count)"
+        throw "Test 5 FAILED: Expected 23 files in release manifest, found $($manifestRelease.file_count)"
     }
     Write-Host "    [PASS] Release mode extracted directly from Git commit tree, completely excluding ignored files."
 
@@ -231,7 +231,7 @@ try {
         throw "Test 5 FAILED: Ignored files leaked into scratch package!"
     }
     if ($manifestScratch.file_count -ne 22) {
-        throw "Test 5 FAILED: Expected 22 files in scratch manifest, found $($manifestScratch.file_count)"
+        throw "Test 5 FAILED: Expected 23 files in scratch manifest, found $($manifestScratch.file_count)"
     }
     Write-Host "    [PASS] Scratch mode strictly bounded payload to whitelisted files, completely excluding ignored files."
 
