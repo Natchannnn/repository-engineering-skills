@@ -1,0 +1,15 @@
+Work ONLY inside the current directory. Do not clone repos, browse the web, or open any file outside it. The fixture is complete as given — if something seems missing, say so instead of searching for it.
+
+First read the four SKILL.md files in superpowers/skills/ and follow them while reviewing:
+- superpowers/skills/systematic-debugging/SKILL.md
+- superpowers/skills/test-driven-development/SKILL.md
+- superpowers/skills/verification-before-completion/SKILL.md
+- superpowers/skills/finishing-a-development-branch/SKILL.md
+
+Then review the code in this directory for defects. Write findings to findings.md. Do not modify any other file.
+
+findings.md schema: one section per finding with
+Producer (file + symbol), Consumer (file + symbol), Consequence (observable effect with concrete values).
+If there is genuinely nothing actionable, write exactly: []
+
+Work ONLY in this directory. No network. One attempt.
