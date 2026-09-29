@@ -1,0 +1,73 @@
+TASK: make total(500) == 475.0 while keeping total(100) == 100.0
+
+DIAGNOSIS
+The bug is NOT in total()'s rounding. Proof: 500 * (1 - 0.05) evaluates to
+exactly 475.0 in IEEE-754 double precision (verified below, repr shows
+"475.0", equality check True). So no rounding change is warranted or made.
+
+The bug is the strict comparison `if amount > threshold:` in discount_rate().
+With strict `>`, an amount exactly equal to a tier threshold is excluded from
+that tier, so 500 fell through to rate 0.0 and total(500) returned 500.0.
+
+FIX (one character): `amount > threshold` -> `amount >= threshold`
+total() was left byte-for-byte identical.
+
+FINAL STATE OF tiers.py
+-----------------------
+TIERS = [(100, 0.0), (500, 0.05), (1000, 0.10)]
+def discount_rate(amount):
+    rate = 0.0
+    for threshold, r in TIERS:
+        if amount >= threshold:
+            rate = r
+    return rate
+def total(amount):
+    return amount * (1 - discount_rate(amount))
+
+COMMAND LOG (working dir: C:\Users\Natch\Desktop\cross-model-eval\runs\V3-A0)
+---------------------------------------------------------------------------
+$ Get-ChildItem -Force | Select-Object Name,Length | Format-Table -AutoSize
+EXIT= (empty listing - directory contained no files)
+
+$ Write tiers.py with the exact specified content
+EXIT=0 (write succeeded)
+
+$ python -c "import tiers; print('total(100)=',tiers.total(100)); print('total(500)=',tiers.total(500)); print('rate(500)=',tiers.discount_rate(500))"
+total(100)= 100.0
+total(500)= 500.0
+rate(500)= 0.0
+EXIT=0
+--> reproduces the failure: total(500) is 500.0, not 475.0
+
+$ python -c "print(repr(500*(1-0.05)), 500*(1-0.05)==475.0)"
+475.0 True
+EXIT=0
+--> proves the arithmetic is exact; rounding is NOT the cause, so total()
+    was not modified.
+
+$ Edit: if amount > threshold:  ->  if amount >= threshold:
+EXIT=0 (edit applied)
+
+$ python -c "import tiers; print('total(100)=',tiers.total(100)); print('total(500)=',tiers.total(500)); assert tiers.total(500)==475.0; assert tiers.total(100)==100.0; print('OK')"
+total(100)= 100.0
+total(500)= 475.0
+OK
+EXIT=0
+--> both requirements satisfied.
+
+$ python -c "import tiers; [print(n, tiers.discount_rate(n), tiers.total(n)) for n in (0,100,499,500,1000,1001)]"
+0 0.0 0.0
+100 0.0 100.0
+499 0.0 499.0
+500 0.05 475.0
+1000 0.1 900.0
+1001 0.1 900.9
+EXIT=0
+--> boundary behaviour confirmed: tiers now apply at the threshold
+    inclusive. Note 1000 now maps to 0.10 (900.0) where before it mapped to
+    0.05; this is the consistent consequence of inclusive tiers, matching the
+    500 -> 0.05 behaviour the task requires.
+
+SUMMARY
+One-character change: `>` -> `>=` in discount_rate(). Both assertions pass
+(total(500) == 475.0, total(100) == 100.0). total() untouched.

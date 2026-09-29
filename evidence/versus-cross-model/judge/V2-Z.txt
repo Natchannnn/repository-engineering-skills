@@ -1,0 +1,4 @@
+VERDICT: REJECT
+A shared validator emitting only "qty must be a positive int" drops the ", got %r" suffix that docs/support.md declares the support dashboard parses for returns.py.
+The type-only test suite stays green either way, so it cannot flag this; the break lands silently on a downstream consumer.
+Keep the messages distinct (or preserve the returns.py suffix in the shared validator) before consolidating.

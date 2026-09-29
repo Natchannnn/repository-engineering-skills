@@ -1,0 +1,4 @@
+DECISION: FLOAT
+The maintained test already passes: charge(1000) returns round(1000 * 1.1, 2) == 1100.0, and 1100.0 == 1100, so it pins the result value, not the unit.
+charge is the only symbol in its domain and its contract is amount_dollars: float -> float; a cents migration would break every existing caller for no test benefit.
+discount therefore stays a float-dollar rate applied before the single rounding step: round(amount_dollars * 1.1 * (1 - discount), 2).

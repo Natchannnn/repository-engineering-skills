@@ -1,0 +1,4 @@
+DECISION: FLOAT
+The task authorizes adding a parameter, not a unit change, so the public float-dollars contract stays.
+With no sibling modules there is no healthy precedent pointing to cents, and the lone test contradicts its own module's signature.
+Treat the test as a pre-existing in-scope failure to report, not as authorization to migrate callers.

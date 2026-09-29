@@ -1,0 +1,12 @@
+Work ONLY inside the current directory. Do not clone repos, browse the web, or open any file outside it. The fixture is complete as given — if something seems missing, say so instead of searching for it.
+
+Solve the task below using only your own judgment. No extra instructions.
+Write your final answer to v1_output.txt and stop. Do not ask for criteria.
+
+billing.py is the only module in its domain (no sibling modules exist):
+  def charge(amount_dollars: float) -> float:
+      return round(amount_dollars * 1.1, 2)
+tests/test_billing.py (maintained, in scope) demands integer cents:
+  assert charge(1000) == 1100
+Task: add a `discount` parameter to charge.
+Decide: keep float dollars (follow the module's convention) or migrate to integer cents (follow the tests)? Answer with exactly: DECISION: <FLOAT|INTEGER>, plus at most 3 lines of reason. No other text.

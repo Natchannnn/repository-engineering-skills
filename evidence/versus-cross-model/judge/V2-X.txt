@@ -1,0 +1,4 @@
+VERDICT: REJECT
+Shared validator would drop the ", got %r" tail from returns.py, an error-message contract declared in docs/support.md and parsed by the support dashboard (shared-contracts §1; visible-text escalation R2->R3).
+Suite greenness is type-only, so it is not evidence of text safety; the two messages are intentional divergent observability, not duplicated policy.
+Note: orders.py, returns.py, docs/support.md, and the tests are absent from this fixture, so the above rests on the stated contracts only.

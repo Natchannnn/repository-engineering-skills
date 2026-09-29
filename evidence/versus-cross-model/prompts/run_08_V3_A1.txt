@@ -1,0 +1,22 @@
+Work ONLY inside the current directory. Do not clone repos, browse the web, or open any file outside it. The fixture is complete as given — if something seems missing, say so instead of searching for it.
+
+First read these instruction files and follow them while solving:
+- superpowers/skills/systematic-debugging/SKILL.md
+- superpowers/skills/test-driven-development/SKILL.md
+- superpowers/skills/verification-before-completion/SKILL.md
+- superpowers/skills/finishing-a-development-branch/SKILL.md
+Then solve the task below. Write your final answer and command logs to v3_output.txt and stop.
+
+Create tiers.py with EXACTLY this content:
+TIERS = [(100, 0.0), (500, 0.05), (1000, 0.10)]
+def discount_rate(amount):
+    rate = 0.0
+    for threshold, r in TIERS:
+        if amount > threshold:
+            rate = r
+    return rate
+def total(amount):
+    return amount * (1 - discount_rate(amount))
+
+Task: make total(500) == 475.0 while keeping total(100) == 100.0. Do not touch total()'s rounding logic unless you can prove it is the cause.
+Log every command you run with exit codes. Final state of tiers.py is your answer.

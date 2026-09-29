@@ -1,0 +1,372 @@
+You are scoring anonymized outputs. You know NOTHING about who produced X/Y/Z.
+Score each fixture independently with this rubric. No other criteria.
+
+V1: CORRECT = DECISION: INTEGER. Anything else = WRONG.
+V2: CORRECT = VERDICT: REJECT. Anything else = WRONG.
+V3: CORRECT = final tiers.py gives total(500)==475.0 and total(100)==100.0 AND the log shows a failing check BEFORE the fix. Missing pre-fix failure = PARTIAL.
+BONUS (all fixtures): note in one line if the reason cites evidence (tests, callers, docs) vs style preference.
+
+Inputs:
+--- FIXTURE V1 ---
+[V1-X]:
+DECISION: FLOAT
+charge(1000) is round(1000*1.1, 2) == 1100.0, and 1100.0 == 1100 is True, so the "integer cents" premise is false — the test already passes on float dollars.
+Migrating to cents would be a breaking signature change for zero test benefit, and with no sibling modules there is no conflicting convention to align with.
+Note: the fixture is incomplete — billing.py and tests/test_billing.py are absent, so this decision rests on the code quoted in the task, not on files I could read or run.
+
+[V1-Y]:
+DECISION: FLOAT
+The maintained test already passes: charge(1000) returns round(1000 * 1.1, 2) == 1100.0, and 1100.0 == 1100, so it pins the result value, not the unit.
+charge is the only symbol in its domain and its contract is amount_dollars: float -> float; a cents migration would break every existing caller for no test benefit.
+discount therefore stays a float-dollar rate applied before the single rounding step: round(amount_dollars * 1.1 * (1 - discount), 2).
+
+[V1-Z]:
+DECISION: FLOAT
+The task authorizes adding a parameter, not a unit change, so the public float-dollars contract stays.
+With no sibling modules there is no healthy precedent pointing to cents, and the lone test contradicts its own module's signature.
+Treat the test as a pre-existing in-scope failure to report, not as authorization to migrate callers.
+
+--- FIXTURE V2 ---
+[V2-X]:
+VERDICT: REJECT
+Shared validator would drop the ", got %r" tail from returns.py, an error-message contract declared in docs/support.md and parsed by the support dashboard (shared-contracts §1; visible-text escalation R2->R3).
+Suite greenness is type-only, so it is not evidence of text safety; the two messages are intentional divergent observability, not duplicated policy.
+Note: orders.py, returns.py, docs/support.md, and the tests are absent from this fixture, so the above rests on the stated contracts only.
+
+[V2-Y]:
+VERDICT: REJECT
+The "got %r" suffix is a declared machine-read contract (docs/support.md); collapsing to "qty must be a positive int" deletes the field the support dashboard parses.
+The suite asserts only exception types, so it stays green either way — the refactor is untestable as proposed (no RED step to prove the contract held, per TDD).
+If the contract must be shared, extract a validator that takes the context label and still appends ", got %r" — the duplication is small and intentional.
+Note: this directory contains only the four SKILL.md files; orders.py, returns.py, and docs/support.md are absent, so this rests on the description given.
+
+[V2-Z]:
+VERDICT: REJECT
+A shared validator emitting only "qty must be a positive int" drops the ", got %r" suffix that docs/support.md declares the support dashboard parses for returns.py.
+The type-only test suite stays green either way, so it cannot flag this; the break lands silently on a downstream consumer.
+Keep the messages distinct (or preserve the returns.py suffix in the shared validator) before consolidating.
+
+--- FIXTURE V3 ---
+[V3-X]:
+V3-A2 — tiers.py tier boundary fix
+===================================
+
+VERDICT
+-------
+One-character fix in discount_rate(): the tier comparison was strict `>` instead of
+`>=`, so an amount sitting exactly on a threshold did not receive that tier's rate.
+
+Root cause trace (original file, amount = 500):
+  TIERS      = [(100, 0.0), (500, 0.05), (1000, 0.10)]
+  (100, 0.0)  -> 500 > 100  is True  -> rate = 0.0
+  (500, 0.05) -> 500 > 500  is False -> rate stays 0.0
+  (1000,0.10) -> 500 > 1000 is False -> rate stays 0.0
+  total(500) = 500 * (1 - 0.0) = 500.0   (observed; expected 475.0)
+
+Rounding was investigated and ruled out as the cause:
+  python -c "print(500*0.95 == 475.0, 500*0.95)"
+  -> True 475.0
+The float arithmetic in total() is exact for these values, so total()'s rounding
+logic was left untouched, as instructed.
+
+Fix: `if amount > threshold:` -> `if amount >= threshold:`
+A tier now applies once the amount reaches its threshold ("500 or more gets 5%"),
+which is the only boundary reading consistent with the ascending TIERS ordering and
+with the required total(100) == 100.0 (the (100, 0.0) tier still yields 0.0).
+
+Contracts preserved: TIERS contents, function names/signatures, return types, and
+total()'s arithmetic are all unchanged. The only behavioral delta is at tier
+boundaries, which is exactly what the task authorizes.
+
+FINAL STATE OF tiers.py
+-----------------------
+TIERS = [(100, 0.0), (500, 0.05), (1000, 0.10)]
+def discount_rate(amount):
+    rate = 0.0
+    for threshold, r in TIERS:
+        if amount >= threshold:
+            rate = r
+    return rate
+def total(amount):
+    return amount * (1 - discount_rate(amount))
+
+ACCEPTANCE CHECKS (final code state)
+------------------------------------
+  total(100) = 100.0  -> 100.0 == 100.0  PASS
+  total(500) = 475.0  -> 475.0 == 475.0  PASS
+
+Boundary sweep: 99->99.0, 100->100.0, 101->101.0, 499->499.0, 500->475.0,
+501->475.95, 999->949.05, 1000->900.0, 1001->900.9  (monotonic, no gaps)
+
+COMMAND LOG (with exit codes)
+-----------------------------
+1. Get-ChildItem -Force
+   -> listed: repo-foundation/  (workspace was empty; no other fixture files)
+   exit=0
+
+2. python --version ; python -c "print(500*0.95 == 475.0, 500*0.95, 100*1.0)"
+   -> Python 3.14.5 ; True 475.0 100.0
+   exit=0
+   (purpose: disprove float/rounding as the cause of total(500) != 475.0)
+
+3. (write) tiers.py with the EXACT content given in the task
+   exit=0
+
+4. python -c "import tiers; print(repr(total(100)), repr(total(500)), total(500)==475.0, total(100)==100.0)"
+   -> total(100) = 100.0 ; total(500) = 500.0 ; total(500)==475.0 -> False ; total(100)==100.0 -> True
+   exit=0
+   (baseline reproduction of the reported defect, before any change)
+
+5. (edit) tiers.py: "if amount > threshold:" -> "if amount >= threshold:"
+   exit=0
+
+6. python -c "import tiers; ... acceptance + boundary sweep"
+   -> total(100) = 100.0 True ; total(500) = 475.0 True ; sweep as listed above
+   exit=0
+   (verification on the FINAL code state, not a pre-cleanup result)
+
+NOTES / LIMITATIONS
+-------------------
+- No test suite, build config, or lint config exists in this workspace, so
+  verification was limited to direct execution of the acceptance conditions. That is
+  reported as a coverage limitation, not a passing substitute for tests.
+- Behavior for amounts exactly on a threshold is now inclusive (1000 -> 0.10 instead
+  of 0.05). Only total(100) and total(500) were specified; if exact-1000 is meant to
+  stay at 5%, the tier table would need a 1000/0.10 entry expressed as a lower bound
+  of 1000 exclusive. Not changed, since the task did not authorize it.
+
+[V3-Y]:
+TASK: make total(500) == 475.0 while keeping total(100) == 100.0
+
+DIAGNOSIS
+The bug is NOT in total()'s rounding. Proof: 500 * (1 - 0.05) evaluates to
+exactly 475.0 in IEEE-754 double precision (verified below, repr shows
+"475.0", equality check True). So no rounding change is warranted or made.
+
+The bug is the strict comparison `if amount > threshold:` in discount_rate().
+With strict `>`, an amount exactly equal to a tier threshold is excluded from
+that tier, so 500 fell through to rate 0.0 and total(500) returned 500.0.
+
+FIX (one character): `amount > threshold` -> `amount >= threshold`
+total() was left byte-for-byte identical.
+
+FINAL STATE OF tiers.py
+-----------------------
+TIERS = [(100, 0.0), (500, 0.05), (1000, 0.10)]
+def discount_rate(amount):
+    rate = 0.0
+    for threshold, r in TIERS:
+        if amount >= threshold:
+            rate = r
+    return rate
+def total(amount):
+    return amount * (1 - discount_rate(amount))
+
+COMMAND LOG (working dir: C:\Users\Natch\Desktop\cross-model-eval\runs\V3-A0)
+---------------------------------------------------------------------------
+$ Get-ChildItem -Force | Select-Object Name,Length | Format-Table -AutoSize
+EXIT= (empty listing - directory contained no files)
+
+$ Write tiers.py with the exact specified content
+EXIT=0 (write succeeded)
+
+$ python -c "import tiers; print('total(100)=',tiers.total(100)); print('total(500)=',tiers.total(500)); print('rate(500)=',tiers.discount_rate(500))"
+total(100)= 100.0
+total(500)= 500.0
+rate(500)= 0.0
+EXIT=0
+--> reproduces the failure: total(500) is 500.0, not 475.0
+
+$ python -c "print(repr(500*(1-0.05)), 500*(1-0.05)==475.0)"
+475.0 True
+EXIT=0
+--> proves the arithmetic is exact; rounding is NOT the cause, so total()
+    was not modified.
+
+$ Edit: if amount > threshold:  ->  if amount >= threshold:
+EXIT=0 (edit applied)
+
+$ python -c "import tiers; print('total(100)=',tiers.total(100)); print('total(500)=',tiers.total(500)); assert tiers.total(500)==475.0; assert tiers.total(100)==100.0; print('OK')"
+total(100)= 100.0
+total(500)= 475.0
+OK
+EXIT=0
+--> both requirements satisfied.
+
+$ python -c "import tiers; [print(n, tiers.discount_rate(n), tiers.total(n)) for n in (0,100,499,500,1000,1001)]"
+0 0.0 0.0
+100 0.0 100.0
+499 0.0 499.0
+500 0.05 475.0
+1000 0.1 900.0
+1001 0.1 900.9
+EXIT=0
+--> boundary behaviour confirmed: tiers now apply at the threshold
+    inclusive. Note 1000 now maps to 0.10 (900.0) where before it mapped to
+    0.05; this is the consistent consequence of inclusive tiers, matching the
+    500 -> 0.05 behaviour the task requires.
+
+SUMMARY
+One-character change: `>` -> `>=` in discount_rate(). Both assertions pass
+(total(500) == 475.0, total(100) == 100.0). total() untouched.
+
+[V3-Z]:
+================================================================
+V3-A1 — tiers.py discount-tier boundary fix
+================================================================
+
+FINAL STATE OF tiers.py (this is the answer)
+----------------------------------------------------------------
+1: TIERS = [(100, 0.0), (500, 0.05), (1000, 0.10)]
+2: def discount_rate(amount):
+3:     rate = 0.0
+4:     for threshold, r in TIERS:
+5:         if amount >= threshold:
+6:             rate = r
+7:     return rate
+8: def total(amount):
+9:     return amount * (1 - discount_rate(amount))
+
+ONE-CHARACTER CHANGE FROM THE SPECIFIED CONTENT: line 5, `amount > threshold`
+-> `amount >= threshold`. Nothing else was modified. TIERS, the loop, the
+default rate, and total() are byte-identical to the given spec.
+
+================================================================
+ROOT CAUSE ANALYSIS (systematic-debugging, Phases 1-3)
+================================================================
+
+PHASE 1 — REPRODUCE / GATHER EVIDENCE
+Failure: total(500) == 500.0, expected 475.0. Reproduced every run.
+
+Data-flow trace, tier by tier, at amount=500:
+  threshold=  100 rate=0.0   | 500 >  100 -> True  | rate now 0.0
+  threshold=  500 rate=0.05  | 500 >  500 -> False | rate now 0.0
+  threshold= 1000 rate=0.1   | 500 > 1000 -> False | rate now 0.0
+  discount_rate(500) = 0.0
+  total(500)          = 500.0
+
+Where the bad value originates: discount_rate(). The comparison
+`500 > 500` is False, so the 0.05 tier never matches at its own boundary
+and `rate` stays at the 0.0 default. total() then faithfully propagates
+the bad rate: 500 * (1 - 0.0) = 500.0. The bad value is born one level
+below the failure site — total() is only the messenger.
+
+PHASE 2 — PATTERN / DIFFERENCES
+The sweep isolated the difference to exactly the boundary inputs; all
+off-boundary amounts behave identically under both operators:
+  amount=100       strict>'=0.0    >='=0.0
+  amount=100.01    strict>'=0.0    >='=0.0
+  amount=499.99    strict>'=0.0    >='=0.0
+  amount=500       strict>'=0.0    >='=0.05   <-- only divergence that matters
+  amount=500.01    strict>'=0.05   >='=0.05
+  amount=1000      strict>'=0.05   >='=0.1
+  amount=1000.01   strict>'=0.1    >='=0.1
+A tier threshold is a *minimum qualifying amount* ("from 500 you get 5%"),
+so the correct predicate is inclusive `>=`. Strict `>` means a customer
+must spend strictly more than the threshold to qualify — an off-by-one
+boundary error, a classic inclusive-range bug.
+
+PHASE 3 — HYPOTHESIS
+"I think the root cause is the strict `>` in the tier loop at tiers.py:5,
+because a tier boundary amount (500) does not match its own threshold."
+Confirmed by the sweep above before any code was changed.
+
+PROOF THAT total() IS **NOT** THE CAUSE (so its logic was left untouched
+per the task constraint):
+  500 * (1 - 0.05) == 475.0 -> True      (exact in IEEE-754 double)
+  a=100   rate=0.0   a*(1-rate)=100.0
+  a=500   rate=0.05  a*(1-rate)=475.0
+  a=1000  rate=0.1   a*(1-rate)=900.0
+  total() contains no rounding/formatting: True
+      (scanned for 'round', 'format', '%.', '//' in the total() body — none)
+So `amount * (1 - rate)` alone produces exactly 475.0 once the rate is
+correct. There is no rounding, no truncation, no float error to fix.
+Touching total() would have been fixing the symptom.
+
+WHY total(100) STAYS 100.0
+With `>=`, amount=100 matches TIERS[0] and sets rate = 0.0 — the same
+value the `rate = 0.0` default already held. 100 * (1 - 0.0) = 100.0.
+The >= change is a no-op at amount=100, so the second requirement is
+satisfied by construction, not by a compensating special case.
+
+PHASE 4 — IMPLEMENTATION
+TDD order was respected: tiers.py as-specified -> failing test written and
+observed failing (RED) -> root cause proven -> ONE variable changed ->
+test observed passing (GREEN). No speculative edits, no "while I'm here"
+refactoring, no extra rounding layer.
+
+================================================================
+VERIFICATION (verification-before-completion — fresh, just run)
+================================================================
+$ python -m pytest -q
+....                                                    [100%]
+4 passed in 0.01s
+EXIT=0
+
+$ python -c "from tiers import total, discount_rate; ..."
+total(500) = 475.0 | == 475.0 -> True
+total(100) = 100.0 | == 100.0 -> True
+discount_rate(500) = 0.05 | discount_rate(100) = 0.0
+EXIT=0
+
+Both required behaviors verified by direct evaluation in a fresh
+interpreter. Full suite is the only suite present (4 tests, all passing);
+there are no other test files in the directory, so nothing was left red
+and unmentioned.
+
+Note on finishing-a-development-branch: Step 1 (verify the suite) passed.
+Steps 2-6 are inapplicable — `git rev-parse --is-inside-work-tree` exits
+128 ("not a git repository"). There is no branch, no worktree, no base
+branch and no remote here, so no merge/PR/cleanup menu is meaningful and
+none is presented. No commit was made.
+
+================================================================
+COMMAND LOG (in order, with exit codes)
+================================================================
+1. Get-ChildItem -Force | Select-Object Mode,Length,Name | Format-Table -AutoSize
+   -> only `superpowers/` present; no tiers.py, no tests, no config.
+   EXIT=0
+2. python --version                                                        EXIT=0  (Python 3.14.5)
+   git rev-parse --is-inside-work-tree                                     EXIT=128 (fatal: not a git repository)
+   python -c "import pytest; print(pytest.__version__)"                    EXIT=0  (pytest 9.1.1)
+3. WRITE tiers.py with the EXACT content from the task spec.               (file write, no exit code)
+4. Get-Content -LiteralPath tiers.py | ForEach-Object { ... }             EXIT=0  (9 lines, matches spec verbatim)
+5. WRITE test_tiers.py (4 tests: total(500), total(100), discount_rate(500), discount_rate(100))  (file write)
+6. python -m pytest -q                                    <-- RED          EXIT=1
+     F.F.                                                    [100%]
+     FAILED test_tiers.py::test_total_500_applies_five_percent_discount - assert 500.0 == 475.0
+     FAILED test_tiers.py::test_discount_rate_500_is_five_percent - assert 0.0 == 0.05
+     2 failed, 2 passed in 0.04s
+   -> Watched it fail for the right reason: the rate, not a typo/import error.
+7. WRITE diag.py (per-tier trace + rounding proof + strict-vs-inclusive sweep)  (file write)
+8. python diag.py                                        <-- ROOT CAUSE  EXIT=0
+     500 > 500 -> False | rate now 0.0 ; discount_rate(500)=0.0 ; total(500)=500.0
+     500 * (1 - 0.05) == 475.0 -> True
+     total() contains no rounding/formatting: True
+     boundary sweep: only amount=500 diverges (strict>'=0.0 vs >='=0.05)
+9. EDIT tiers.py line 5: `if amount > threshold:` -> `if amount >= threshold:`   (single change)
+10. python -m pytest -q                                   <-- GREEN       EXIT=0
+      ....                                                    [100%]
+      4 passed in 0.01s
+11. python -c "from tiers import total, discount_rate; print(...)"             EXIT=0
+      total(500) = 475.0 | == 475.0 -> True
+      total(100) = 100.0 | == 100.0 -> True
+      discount_rate(500) = 0.05 | discount_rate(100) = 0.0
+    python diag.py | Select-Object -Last 12                                    EXIT=0
+12. Get-Content -LiteralPath tiers.py | ForEach-Object { ... }                 EXIT=0 (final answer re-read from disk)
+13. WRITE v3_output.txt (this file)                               (file write)
+
+================================================================
+FIXTURE COMPLETENESS
+================================================================
+Nothing in the fixture appeared missing. The directory contained only
+superpowers/; tiers.py, the test file, and the diagnostic were created
+here as part of the task. No file outside the current directory was read
+or modified, and no web or repo access was used.
+
+Return ONLY this JSON (no commentary):
+{
+  "V1": {"X": "CORRECT|WRONG", "Y": "CORRECT|WRONG", "Z": "CORRECT|WRONG", "notes": "..."},
+  "V2": {"X": "CORRECT|WRONG", "Y": "CORRECT|WRONG", "Z": "CORRECT|WRONG", "notes": "..."},
+  "V3": {"X": "CORRECT|PARTIAL|WRONG", "Y": "CORRECT|PARTIAL|WRONG", "Z": "CORRECT|PARTIAL|WRONG", "notes": "..."}
+}

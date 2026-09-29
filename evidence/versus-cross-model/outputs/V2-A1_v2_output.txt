@@ -1,0 +1,5 @@
+VERDICT: REJECT
+The "got %r" suffix is a declared machine-read contract (docs/support.md); collapsing to "qty must be a positive int" deletes the field the support dashboard parses.
+The suite asserts only exception types, so it stays green either way — the refactor is untestable as proposed (no RED step to prove the contract held, per TDD).
+If the contract must be shared, extract a validator that takes the context label and still appends ", got %r" — the duplication is small and intentional.
+Note: this directory contains only the four SKILL.md files; orders.py, returns.py, and docs/support.md are absent, so this rests on the description given.
