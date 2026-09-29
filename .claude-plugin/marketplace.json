@@ -6,12 +6,12 @@
   },
   "plugins": [
     {
-      "description": "Build features on a clean repo foundation without breaking public API.",
+      "description": "Add features, start modules, migrate contracts, or pick up half-finished work without breaking the public API.",
       "name": "repo-foundation",
       "source": "./repo-foundation"
     },
     {
-      "description": "Audit and clean up code changes to match repo semantics and contracts.",
+      "description": "Review a diff or PR without editing it, or tidy a change set without changing behavior.",
       "name": "repo-native-refactor",
       "source": "./repo-native-refactor"
     }
