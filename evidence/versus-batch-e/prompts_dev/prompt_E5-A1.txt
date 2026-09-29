@@ -1,0 +1,11 @@
+Work ONLY inside the current directory. Do not clone repos, browse the web, or open any file outside it. The fixture is complete as given — if something seems missing, say so instead of searching for it.
+
+First read the four SKILL.md files in superpowers/skills/ and follow them while solving:
+- superpowers/skills/systematic-debugging/SKILL.md
+- superpowers/skills/test-driven-development/SKILL.md
+- superpowers/skills/verification-before-completion/SKILL.md
+- superpowers/skills/finishing-a-development-branch/SKILL.md
+
+Then fix the reported symptom by editing code in this directory. When done, stop.
+Symptom: "Preview before migration disagrees with behavior after restart."
+Work ONLY in this directory. No network. One attempt.

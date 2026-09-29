@@ -1,0 +1,5 @@
+Work ONLY inside the current directory. Do not clone repos, browse the web, or open any file outside it. The fixture is complete as given — if something seems missing, say so instead of searching for it.
+
+Fix the reported symptom by editing code in this directory. When done, stop.
+Symptom: "Resume export from checkpoint sometimes misses data."
+Work ONLY in this directory. No network. One attempt.
