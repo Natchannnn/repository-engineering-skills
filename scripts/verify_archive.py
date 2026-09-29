@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Cross-platform port of scripts/verify-archive.ps1.
+"""Portable runner for scripts/verify-archive.ps1 (runs anywhere Python does).
 
 Runs every verify_hashes.py under evals-suite/ in isolated subprocesses and
-requires exactly 31 verifiers. Exit non-zero on any failure.
+requires exactly 31 verifiers. Exit non-zero on any failure. Note: the sealed
+packet hashes encode Windows path ordering, so packets themselves verify on
+Windows; on Linux the same bytes hash differently and verifiers report MISMATCH.
 
 Usage: python scripts/verify_archive.py   (from the repo root)
 """

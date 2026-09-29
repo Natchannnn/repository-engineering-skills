@@ -2,7 +2,7 @@
 name: repo-foundation
 description: Add features, start modules, migrate contracts, or pick up half-finished work without breaking the public API. Use for "add X to this project", "set up a new module", "change this schema", "migrate the database", "continue where we left off", "fix this bug", "split this module".
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
   license: "MIT"
 ---
 
@@ -14,7 +14,7 @@ Build on a foundation that's just big enough, add features on top of it, and cha
 
 ## Core principles
 
-- **No universal dogma** means don't impose a layout, error pattern, or framework the project doesn't need, and plain standard library is fine.
+- **No universal dogma:** don't impose a layout, error pattern, or framework the project doesn't need. Plain standard library is fine.
 - **Scope, baseline, and user work:**
   - Establish a clean baseline before mutating code: use the pre-existing revision/commit when Git exists; use a file inventory or snapshot when uninitialized or greenfield.
   - In a dirty workspace, protect pre-existing uncommitted user modifications. You may edit distinct parts of the same file as long as user work is preserved. Stop and ask only if there is an actual collision or ambiguous intent.
@@ -29,13 +29,13 @@ Build on a foundation that's just big enough, add features on top of it, and cha
   - A ticket, PR, or incident reference you cannot click through to is fiction: delete it.
   - Do not strip valuable comments merely for cosmetic brevity; do not enforce arbitrary comment ratios.
   - Do not add abstractions, wrappers, or factory layers without concrete ownership, contract, or test seam needs.
-- **Preserve consumed public contracts** as defined in `references/shared-contracts.md` §1, which means preserve documented or consumed types/values/errors/serialization and change a contract only when the task clearly authorizes it, then update callers/tests/docs in scope.
+- **Preserve consumed public contracts** as defined in `references/shared-contracts.md` §1: keep documented types, values, errors, and serialization. Change a contract only when the task clearly authorizes it, then update callers, tests, and docs in scope.
 - **Verification rigor & proportionate testing:**
   - Record baseline failures and distinguish: (1) pre-existing failures outside scope, (2) in-scope failures to fix, (3) regressions from current changes, and (4) environment errors.
   - Verify the final code state; never use pre-cleanup test results to certify modified code.
   - Add or update persistent tests when a change introduces behavior, fixes a defect, alters a contract, or exposes a meaningful coverage gap. Prefer the repository's existing test framework and structure. Do not add tests solely for file-count or coverage optics. For documentation-only or mechanically verified changes, use the relevant lightweight checks and explain any material verification gap.
   - Check every requirement before you say you're done. Say what you verified, what you only read, and what you assumed. A command that exits 0 doesn't count if the file it should make isn't there.
-- **Failure invariants & state preservation** requires that if an operation can fail halfway, you decide what must stay untouched, then validate inputs and ownership first, build the replacement on the side, keep the old state until the new one is ready, and test the failure boundary.
+- **Failure invariants & state preservation:** if an operation can fail halfway, decide what must stay untouched. Validate inputs and ownership first, build the replacement on the side, keep the old state until the new one is ready, and test the failure boundary.
 
 ---
 
@@ -59,7 +59,7 @@ Routine feature work runs straight from the mode above plus core principles, no 
 Confirm the user's objective, observable consequences, affected boundaries, baseline revision/inventory, and any uncommitted user changes to preserve.
 
 ### 2. Implement just enough
-- **Assumptions vs. product decisions** means choose conventional, reversible defaults (directory layout, helper naming, standard library choices) autonomously, and bundle and ask product/architectural decisions (external dependencies, data schema changes, new auth schemes) before making breaking changes.
+- **Assumptions vs. product decisions:** choose conventional, reversible defaults (directory layout, helper naming, standard library choices) on your own. Bundle product and architectural decisions (external dependencies, data schema changes, new auth schemes) into one question before breaking anything.
 - **Intentional contract changes** occur when a task explicitly requires changing a contract, so verify that callers and tests reflect the new contract rather than forcing deprecated behavior.
 
 ### 3. Verify proportionately
@@ -67,9 +67,9 @@ Confirm the user's objective, observable consequences, affected boundaries, base
 - **High-risk vigilance** applies because single-line changes to authorization, permissions, data migrations, cryptography, persistence lifecycles, or concurrency carry critical risk, so read [verification](references/verification.md) when designing checks for critical boundaries.
 
 ### 4. Continuity and state
-- **Implementation vs. requirements** means existing code shows current behavior but is not proof of meeting requirements, and passing tests do not guarantee completeness if acceptance requirements were omitted.
-- **Reconciliation** means use the evidence hierarchy to guide investigation and not to resolve material contradictions automatically, reconcile conflicting requirements, documentation, callers, and tests before changing the affected contract, and when task notes and code conflict, cross-check requirements and tests and do not default to editing notes to rubber-stamp code, and if resuming across sessions or taking over a repo, read [continuity](references/continuity.md).
-- **Tracking** means reuse existing repository mechanisms (issue trackers, project notes) and do not create dedicated handoff files for routine features.
+- **Implementation vs. requirements:** existing code shows current behavior. That is not proof of meeting requirements, and passing tests don't guarantee completeness if acceptance was never tested.
+- **Reconciliation:** use the evidence hierarchy to guide investigation, not to settle contradictions for you. If requirements, docs, callers, and tests disagree, reconcile them before changing the contract. If notes and code disagree, check requirements and tests; don't edit the notes to match the code.
+- **Tracking:** reuse issue trackers and project notes. Don't create handoff files for routine features.
 
 ---
 

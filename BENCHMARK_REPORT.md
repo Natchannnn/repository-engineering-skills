@@ -18,7 +18,7 @@ Four rounds below. Hash checks you can re-run locally; judge scores you cannot:
 2. **Phase 2 (three small patches):** *Strict literal contract adherence*, *Proportionate test artifact authorship*, and the *Minimal intervention and evidence gate*.
 3. **Phase 3 (retest with Claude Sonnet 4.6):** Checked whether the patched skills fixed the blind spots head-to-head:
    - **CP2 Greenfield Slice:** Control altered the type contract (`Path`, 19/24); Treatment scored **24/24**.
-   - **CP3 multi-tenant migration (the hardest task):** Both passed runtime tests (25/25). Blind judge review awarded **4.00 / 4.00 (100%)** to Treatment vs **2.84 / 4.00 (71.0%)** to Control. Treatment 4.00/4.00, control 2.84/4.00. One run each, one judge, so treat it as a case study. Control failed the mandatory `documentation_synchronized` hard gate and duplicated validation logic.
+   - **CP3 multi-tenant migration (the hardest task):** Both passed runtime tests (25/25). Blind judge review awarded **4.00 / 4.00** to Treatment vs **2.84 / 4.00** to Control. One run each, one judge, so treat it as a case study. Control failed the mandatory `documentation_synchronized` hard gate and duplicated validation logic.
 4. **Phase 4 (harness self-tests):** 32 automated harness integrity tests executed and verified in 63.3s at commit `ae83651` (expanded to 33 tests at commit `200286c` with Windows 8.3 short-path resolution).
 
 ---
@@ -108,9 +108,7 @@ One more honest note: treatment's updated `README.md` mentioned a CLI export tha
 
 ## 5. Phase 4: harness self-tests
 
-The test harness in `repo-native-refactor/evals/` passed its deterministic self-tests:
-- **Earlier run (commit `ae83651`):** `Ran 32 tests in 63.339s, OK` (32/32).
-- **Current release (commit `200286c`):** `Ran 33 tests in 70.755s, OK` (33/33; added Windows 8.3 short-path resolution).
+The test harness in `repo-native-refactor/evals/` passed its deterministic self-tests, currently 33/33 (`Ran 33 tests in 70.755s, OK`, including Windows 8.3 short-path resolution added after an earlier 32/32 run at commit `ae83651`):
 - **What the tests check:**
   - Strict SHA-256 tree hash computation over directory snapshots.
   - Rejection of post-collection tampering (patch alteration, task mutation, metadata edits).
@@ -119,7 +117,21 @@ The test harness in `repo-native-refactor/evals/` passed its deterministic self-
 
 ---
 
-## 6. Summary across phases
+## 6. Cross-model rounds and Batch E fixtures
+
+Everything above ran before the skill text changed. What follows ran after; read with the version in mind.
+
+Skill versions by measurement: Gate 3 and Phase 3 ran pre-release skill text (before `0.2.0`). Pilots 1 and 2 ran the `0.2.0` text. The red-team, Batch E fixtures, and cross-model rounds ran against `0.2.0` with Batch D patches; wording waves after that changed prose only (see Wave 5a must/never diff) and were never behaviorally re-tested — CP2/CP3 reruns are still pending.
+
+Cross-model round 1 (Space Bunny) covered 3 fixtures times 3 arms. One fixture was void (its "failing" test passed on broken code; builder error, fixture discarded) and two were uncontested. Full record in `evidence/versus-cross-model/`.
+
+Cross-model round 2 (Space Bunny, Batch E fixtures E1–E5) had dev fixtures going 9/9 PASS for all arms (solvable, not discriminating). E3's clean control held real shared-code defects, so its rubric now classifies findings three ways instead of demanding emptiness. E4 is the one discriminating result: all arms found the planted defect, but both skill sets false-positived on clean code while the bare model correctly returned nothing. That finding added the empty-findings rule to the refactor skill. Full record in `evidence/versus-batch-e/`.
+
+Batch E fixtures (E1–E8) cover held-out expiry, authorized Path migration, a hard refactor-only pair, and five Astra-sourced cases. Each was validated four ways (broken fails, solution passes, trap fix caught, teeth proven) before any arm runs. See `adversarial/batch-e/`.
+
+---
+
+## 7. Summary across phases
 
 ### Agent behavior
 
@@ -135,11 +147,11 @@ The test harness in `repo-native-refactor/evals/` passed its deterministic self-
 | :--- | :--- | :--- | :---: | :--- |
 | **Refactor Harness Suite** | Python 3.14 `unittest` | 33 tests | **33 / 33 Passed** | Blind review protocol, patch round-tripping, non-finite score rejection, Windows 8.3 path resolution. |
 | **Foundation Harness Suite** | Python 3.14 `unittest` | 26 tests | **26 / 26 Passed** | Byte snapshot determinism, atomic rollback on I/O failure, unmanaged target protection. |
-| **Historical Archive Evidence** | `scripts/verify-archive.ps1` | 31 packets | **31 / 31 Passed** | Exact SHA-256 tree hash parity across fresh clones and line ending configurations. |
+| **Historical Archive Evidence** | `scripts/verify-archive.ps1` (Windows) | 31 packets | **31 / 31 Passed** | SHA-256 tree hashes sealed in Windows path order; Linux sorts the same names differently, so packets verify on Windows only. |
 
 ---
 
-## 7. Verify it yourself
+## 8. Verify it yourself
 
 Run these locally. No network or API keys needed. (Rerunning the live agent runs needs model access; see Phase 1 and Phase 3 above.)
 

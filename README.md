@@ -98,7 +98,7 @@ correctness problem exists. Keep authorized behavior. Re-run affected checks.
 - Pilot 1 README once claimed 9/9; evidence says 7/9 (2 fails on test-ID format, code was fine). Kept the fails.
 - CP3 docs mentioned a CLI export that didn't exist yet. Noted, not hidden.
 - My own red-team found the two skills disagreeing on tests-vs-convention. Fixed by adding the missing rank.
-- Duelo with `superpowers` taught me my verification lacked reproduce-first + red-green. Stole it.
+- Duel with `superpowers` taught me my verification lacked reproduce-first + red-green. Stole it.
 
 ---
 

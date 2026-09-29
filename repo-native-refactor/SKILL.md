@@ -2,7 +2,7 @@
 name: repo-native-refactor
 description: Review a diff or PR without editing it, or tidy a change set without changing behavior. Use for "review my changes", "check this diff for contract breaks", "clean this up before I open a PR", "is this safe", "merge the duplicates".
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
   license: "MIT"
 ---
 
@@ -11,11 +11,11 @@ metadata:
 Produce the smallest coherent change that belongs naturally in the target repository.
 
 Prioritize in order:
-1. **Correctness and security** requires preventing regressions, avoiding new security vulnerabilities, and handling boundary conditions.
-2. **Semantic integrity** means preserving existing invariants, state transitions, validation, and error boundaries.
-3. **Contracts stay as declared.** Rule lives in `references/shared-contracts.md` §1. Preserve the target contracts authorized by the task; otherwise preserve exact declared types. Internal helpers are allowed only when exposed contracts stay exact.
-4. **Repository conformity** means matching surrounding naming, domain conventions, and architectural precedents.
-5. **Economy and simplicity** means minimal intervention, so delete dead weight and avoid premature abstractions.
+1. **Correctness and security:** prevent regressions, avoid new security vulnerabilities, handle boundary conditions.
+2. **Semantic integrity:** preserve existing invariants, state transitions, validation, and error boundaries.
+3. **Contracts stay as declared:** the rule lives in `references/shared-contracts.md` §1. Preserve the authorized target contract; otherwise keep exact declared types. Internal helpers are fine when exposed contracts stay exact.
+4. **Repository conformity:** match surrounding naming, domain conventions, and architectural precedents.
+5. **Economy and simplicity:** minimal intervention. Delete dead weight, avoid premature abstractions.
 
 This is a post-implementation audit and small cleanup skill. It is not permission to redesign the repository. Establish a concrete consequence such as inconsistent behavior, duplicated policy that must change together, unclear ownership, avoidable resource cost, or a demonstrated maintenance obstacle. Leave healthy code unchanged when the benefit is speculative.
 
@@ -23,15 +23,15 @@ This is a post-implementation audit and small cleanup skill. It is not permissio
 
 ## Minimal intervention and evidence gate
 
-- **Evidence-based intervention** means refactor only when there is concrete evidence of divergence, defect, or operational risk, and if greenfield code or an additive feature diff is already minimal, idiom-compliant, and passes tests, do not invent work or restructure working code, since a recognizable pattern or style preference is a candidate finding and not justification for mutation.
-- **Semantic DRY (Cost-benefit consolidation)** permits merging duplicated logic only when the copies share an owner, an invariant, and a reason to change and only if merging saves more than the extra indirection costs, while two similar-looking checks in different domains stay separate and small local duplication stays when merging would obscure ownership.
-- **Contract boundary protection** means preserve public interfaces, parameter names, and return types except where their change is clearly authorized by the task, and during cleanup preserve the authorized target contract rather than reverting to the previous contract.
+- **Evidence-based intervention:** refactor only with concrete evidence of divergence, defect, or operational risk. If greenfield code or an additive diff is already minimal, idiomatic, and passing, leave it. A pattern you recognize is a candidate finding, not a reason to change anything.
+- **Semantic DRY (Cost-benefit consolidation):** merge duplicated logic only when the copies share an owner, an invariant, and a reason to change, and only if merging saves more than it costs. Leave similar-looking checks in separate domains alone, and keep small local duplication when merging would obscure ownership.
+- **Contract boundary protection:** preserve public interfaces, parameter names, and return types, except where the task clearly authorizes the change. During cleanup, keep the authorized target contract; don't revert to the old one.
 
 ---
 
 ## Operating modes
 
-- **Review vs. Refactor Authority** establishes whether the requested outcome is findings, edits, or both, where a review-only request authorizes inspection and verification and not source modification, and an authorized cleanup permits bounded corrections within scope, so do not require repeated approval for routine implementation choices.
+- **Review vs. Refactor Authority:** first establish the outcome: findings, edits, or both. Review-only means inspection and verification, no source edits. Authorized cleanup allows bounded corrections; don't ask approval again for routine choices.
 - **Change-Set Cleanup** applies to a working tree, branch, commit range, feature, or bounded implementation checkpoint, where you work diff-first and inspect surrounding code only to understand ownership, contracts, and relevant precedent.
 - **Repository Rehabilitation** applies only when explicitly requested across multiple domains, so read [repository rehabilitation](references/repository-rehabilitation.md), build a concise profile, and work in independently verifiable batches.
 
