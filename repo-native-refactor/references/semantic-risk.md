@@ -8,7 +8,7 @@ Transformation safety measures confidence that a rewrite preserves meaning.
 
 They are related but separate.
 
-## R0 — Mechanical
+## R0 - Mechanical
 
 Typical examples:
 
@@ -23,7 +23,7 @@ Policy:
 
 Automatic mutation is acceptable when repository tooling establishes the transformation.
 
-## R1 — Low Structural Risk
+## R1 - Low Structural Risk
 
 Typical examples:
 
@@ -36,7 +36,7 @@ Policy:
 
 Mutation is acceptable when scope is local and verification is straightforward.
 
-## R2 — Contextual Structural Risk
+## R2 - Contextual Structural Risk
 
 Typical examples:
 
@@ -56,7 +56,7 @@ Require a concrete maintainability or semantic benefit.
 
 Do not refactor merely because another form is prettier.
 
-## R3 — Semantic Risk
+## R3 - Semantic Risk
 
 Typical examples:
 
@@ -77,7 +77,7 @@ Never bulk-rewrite.
 
 Establish the preservation contract and meaningful behavioral verification.
 
-## R4 — Critical Boundary
+## R4 - Critical Boundary
 
 Typical examples:
 
@@ -99,13 +99,13 @@ When evidence is incomplete, preserve behavior and report the finding.
 
 ## Transformation Classes
 
-### Class A — Proven Mechanical
+### Class A - Proven Mechanical
 
 May be applied unattended.
 
 The rewrite must have clear local equivalence or be an established project-tool transformation.
 
-### Class B — Context Sensitive
+### Class B - Context Sensitive
 
 Generate or consider a candidate change, then inspect and verify.
 
@@ -117,7 +117,7 @@ Examples:
 - abstraction removal;
 - context-sensitive comment or documentation changes.
 
-### Class C — Semantic
+### Class C - Semantic
 
 Requires reasoning about behavioral ownership.
 
@@ -144,7 +144,7 @@ Prose risk depends on its role, not its appearance.
 
 Phrase matching can find candidates but cannot establish a transformation class.
 
-## Refactor Justification Gate
+## Justification gate
 
 Before a significant R2+ mutation establish:
 
@@ -166,7 +166,7 @@ If the only justification is “cleaner”, “more elegant”, or “more senio
 
 **Visible-text escalation:** if a structural change alters user- or contract-visible text
 (error messages, CLI output, logs, event fields, snapshots), escalate one band
-(R1→R2, R2→R3) and treat that text as an observable contract: preserve it exactly or
+(R1-R2, R2-R3) and treat that text as an observable contract: preserve it exactly or
 update its consumers within scope. A green suite that asserts only exception types does
 not prove the text is safe to change.
 

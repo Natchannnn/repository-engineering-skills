@@ -1,7 +1,7 @@
 # Real-world runs (Batch C)
 
 Skills tested outside their own toy fixtures. Every run below names its operator,
-base commit, and verdict — PASS and no-action both recorded, nothing cherry-picked.
+base commit, and verdict, PASS and no-action both recorded, nothing cherry-picked.
 
 | Run | Target | Task | Verdict |
 |---|---|---|---|
@@ -10,11 +10,11 @@ base commit, and verdict — PASS and no-action both recorded, nothing cherry-pi
 | [C2 control](../evidence/realworld-six/run.md) | `benjaminp/six` @ `c8e3940` | looked for the same gap class | NO-ACTION, tree left clean |
 
 External clones live in temp dirs (no forks, no upstream PRs). The colorama test added
-there is not contributed upstream — it is evidence of the workflow, kept in `run.md`.
+there is not contributed upstream, it is evidence of the workflow, kept in `run.md`.
 
 ## What this proves and what it does not
 
-- The Continue → verify → review loop works on unfamiliar, real code with real suites
+- The Continue-verify-review loop works on unfamiliar, real code with real suites
   (42 + 196 tests green around the changes).
 - The evidence gate fires both ways: one real test added, one repo correctly untouched.
 - It does not prove general efficacy: n=3, one operator (me, the repo author), no blind
@@ -22,6 +22,6 @@ there is not contributed upstream — it is evidence of the workflow, kept in `r
 
 ## Reproduce
 
-`docker build -t reskills . && docker run --rm reskills` — see `docs/reproduce.md`.
+`docker build -t reskills . && docker run --rm reskills`, see `docs/reproduce.md`.
 Found the hard way: `python:3.12-slim` ships without `git`, which the refactor harness
 needs; the Dockerfile installs it. Windows-only PowerShell suites stay out of the image.

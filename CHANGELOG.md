@@ -19,19 +19,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Canonical shared contracts (`docs/contracts-canonical.md` + `scripts/sync-shared.py` with `--check`) to eliminate `str` vs `Path` duplication drift.
 - Few-shot guidance: `refactor-examples.md` (R0–R4) and `migration-examples.md` (atomic vs transitional) plus `Reference Routing` table for refactor.
 - Tooling: `scripts/classify-risk.py` triage helper, `scripts/install-skills.sh` POSIX mirror, `requirements-test.txt` pinned `jsonschema==4.23.0`, Linux harness CI job.
-- Runtime payload expanded 17 → 22 files (shared contracts + examples + refactor adapter).
+- Runtime payload expanded from 17 to 22 files (shared contracts + examples + refactor adapter).
 - Claude plugin marketplace manifests (`.claude-plugin/marketplace.json` + per-skill `plugin.json`), all passing `claude plugin validate`.
 
 ### Changed
 - Replaced manual copy snippets with Skills CLI instructions and distinguished installation checks from host behavior and harness tests.
-- Humanized skill wording: shorter router descriptions, field notes with real failure links, author-notes sections, slop sweep (`surgical`/`high-leverage`/`additionally`/`comprehensive`).
+- Humanized skill wording: shorter router descriptions, field notes with real failure links, author-notes sections, word-list sweep.
 
 ### Docs
 - README hero with badges, 60-second try, honest 34/36 PASS count, and `What I got wrong`.
 - New `docs/demo/` guide with GIF rendered from real runs and `ADOPTERS.md` + issue templates.
 - Multi-agent install matrix (`claude-code`, `cursor`, `opencode`, `gemini-cli`) with byte spot-checks, plus `docs/launch-kit.md` paste-ready blurbs.
 - Batch C evidence: `runs/realworld-self` review with 2 fixes, `runs/realworld-colorama` regression test run, `runs/realworld-six` negative control, plus `Dockerfile` + `docs/reproduce.md` one-command Linux reproduce (found: slim image needs `git` installed for the harness).
-- CI Python 3.14 → 3.12 matrix (Windows full + Linux harness) with shared-contracts sync gate.
+- CI Python moved from 3.14 to 3.12 with a Linux harness job, plus shared-contracts sync gate.
 
 ## [0.1.0] - 2026-09-26
 

@@ -50,10 +50,4 @@ the affected contract.
 
 Two questions that both skills use when the text alone under-determines the answer.
 
-- **Healthy-precedent test (outcome-based, never popularity-based):** a pattern counts as
-  healthy precedent only if: (1) code outside its original author consumes it,
-  (2) it does not contradict docs or contracts, and (3) you would copy it into a new
-  domain without apology. A workaround with tests and docs still fails this test.
-- **Ownership test:** when two domains overlap, the owner is whoever owns the failure —
-  who gets paged, who fixes the bug, whose reason to change fires first. Consolidate
-  toward that owner, or leave both alone.
+A pattern counts as healthy precedent only if three things hold: code outside its original author consumes it, it does not contradict docs or contracts, and you would copy it into a new domain without apology. Popularity proves nothing; a workaround with tests and docs still fails. When two domains overlap, the owner is whoever owns the failure (who gets paged, who fixes the bug, whose reason to change fires first). Consolidate toward that owner, or leave both alone.

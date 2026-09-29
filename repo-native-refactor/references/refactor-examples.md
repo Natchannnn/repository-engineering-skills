@@ -1,8 +1,8 @@
 # Refactor Examples by Risk Band (R0–R4)
 
-Read this when `SKILL.md` Workflow steps 3–4 flag a candidate finding. Each band shows a minimal good vs bad intervention. Do not mutate on style alone — each good example cites a concrete consequence.
+Read this when `SKILL.md` Workflow steps 3–4 flag a candidate finding. Each band shows a minimal good vs bad intervention. Do not mutate on style alone. Each good example cites a concrete consequence.
 
-## R0 — Mechanical (formatter-provable)
+## R0 - Mechanical (formatter-provable)
 
 Bad: hand-reformat churn across 40 files in a feature diff.
 ```diff
@@ -11,7 +11,7 @@ Bad: hand-reformat churn across 40 files in a feature diff.
 ```
 Good: run repo formatter only on touched lines, zero semantic diff. Consequence avoided: review noise.
 
-## R1 — Low Structural (local residue)
+## R1 - Low Structural (local residue)
 
 Bad: leave `import os` unused + `print(debug)` in shipped diff.
 ```python
@@ -25,7 +25,7 @@ Good:
 ```
 Verify: affected unit test still passes. Consequence: dead weight + log leak.
 
-## R2 — Contextual Structural (predicate extraction)
+## R2 - Contextual Structural (predicate extraction)
 
 Bad: duplicate inverted validation in two owners (from CP3 control `_needs_migration` pattern):
 ```python
@@ -40,7 +40,7 @@ def _is_valid_tenant(v) -> bool:
 ```
 Consolidate only when shared ownership + same reason to change. Keep small local duplication if abstraction adds coupling. Consequence: divergent policy.
 
-## R3 — Semantic (retry / serialization / transactions)
+## R3 - Semantic (retry / serialization / transactions)
 
 Bad: blanket retry hiding infra failure:
 ```python
@@ -57,12 +57,12 @@ for attempt in range(3):
 ```
 Never mass-rewrite R3 without explicit instruction + verified tests.
 
-## R4 — Critical Boundary (auth / migration / durability)
+## R4 - Critical Boundary (auth / migration / durability)
 
 Bad: mutate contract in place without preserving last-valid state.
 Good: preserve + report, do not guess:
 ```python
 # preserve LEDGER_FILE: str contract, stage replacement, fsync, atomic rename
-# if intent/ownership/migration semantics unclear → stop and report
+# if intent/ownership/migration semantics unclear, stop and report
 ```
-Maximum conservatism. Missing evidence → preserve + completion report `Needs review`.
+Maximum conservatism. Missing evidence means preserve plus a completion report `Needs review`.

@@ -14,7 +14,7 @@ I tested both skills, found three problems, patched them, then tested again:
 - **`repo-native-refactor`**: Evidence-based scoped refactoring, semantic predicate consolidation (DRY), and change-set cleanup.
 
 Four rounds below. Hash checks you can re-run locally; judge scores you cannot:
-1. **Phase 1 (Gate 3 Live Campaign — 32 Checkpoints):** Evaluated on **Space Bunny** (OpenCode) and judged blindly by **OpenAI Codex**. Result: 32/32 functional pass, but revealed 3 critical blindspots (raw models substituted `Path` for `str`, zero persistent test files authored, and premature refactoring on greenfield code caused Variant C/D to score lower than Baseline A). Raw candidate workspaces are preserved under `evals-suite/gate3_space_bunny/`.
+1. **Phase 1 (Gate 3 live campaign, 32 checkpoints):** Space Bunny (OpenCode) did the work, OpenAI Codex judged blind. Result: 32/32 functional pass, but three blind spots (raw models swapped `Path` for `str`, never authored test files, and premature refactoring on greenfield code caused Variants C and D to score lower than Baseline A). Raw candidate workspaces are preserved under `evals-suite/gate3_space_bunny/`.
 2. **Phase 2 (three small patches):** *Strict literal contract adherence*, *Proportionate test artifact authorship*, and the *Minimal intervention and evidence gate*.
 3. **Phase 3 (retest with Claude Sonnet 4.6):** Checked whether the patched skills fixed the blind spots head-to-head:
    - **CP2 Greenfield Slice:** Control altered the type contract (`Path`, 19/24); Treatment scored **24/24**.
@@ -24,15 +24,9 @@ Four rounds below. Hash checks you can re-run locally; judge scores you cannot:
 ---
 
 ## 2. Phase 1: Gate 3 live campaign (Space Bunny and Codex)
-
 ### Cohort setup
-- **Tester Agent:** Space Bunny (OpenCode)
-- **Blind Judge:** OpenAI Codex
-- **Workload:** 32 checkpoints across 4 variants and 2 repeated runs (`rep01`, `rep02`):
-  - **Variant A:** Baseline (No Skills)
-  - **Variant B:** `repo-foundation`
-  - **Variant C:** `repo-native-refactor`
-  - **Variant D:** Combined (Foundation + Refactor)
+
+Tester Space Bunny (OpenCode), blind judge OpenAI Codex. 32 checkpoints across 4 variants and 2 repeated runs (`rep01`, `rep02`): A baseline with no skills, B `repo-foundation`, C `repo-native-refactor`, D both.
 
 ### Raw results
 
@@ -73,18 +67,18 @@ Instead of explaining away the Gate 3 scores, I treated the failure modes as eng
 To check whether the patches fixed the failures, I reran the same milestones head-to-head on **Anthropic Claude Sonnet 4.6**:
 
 ### Test 1: smoke check (CP2 greenfield)
-- **Goal:** check whether the "Test Quality = 0" failure was fixed.
-- **Result:** Claude Sonnet 4.6 loaded the patched skills, wrote **18 unit tests** in `tests/test_query.py`, and scored **24 / 24**. Test Quality went from 0 to 4.
+
+Goal: check whether the "Test Quality = 0" failure was fixed. Result: Claude Sonnet 4.6 loaded the patched skills, wrote **18 unit tests** in `tests/test_query.py`, and scored **24 / 24**. Test Quality went from 0 to 4.
 
 ### Test 2: CP2 slice, head-to-head
-- **Setup:** same CP1 baseline, same un-coached task prompt (`evals/tasks/CP2_SLICE.md`).
-- **Control (no skills):** Sonnet 4.6 wrapped `LEDGER_FILE` in `Path(...)` and failed the contract check (19 / 24).
-- **Treatment (with skills):** kept `LEDGER_FILE = "ledger.jsonl"` (`str`), ran 24 local verification checks, passed everything (24 / 24).
+
+Same CP1 baseline, same un-coached task prompt (`evals/tasks/CP2_SLICE.md`). Control (no skills): Sonnet 4.6 wrapped `LEDGER_FILE` in `Path(...)` and failed the contract check (19 / 24). Treatment (with skills): kept `LEDGER_FILE = "ledger.jsonl"` (`str`), ran 24 local verification checks, passed everything (24 / 24).
 
 ### Test 3: CP3 migration, head-to-head
 - **Setup:** multi-tenant contract evolution. Tenant validation (`ValueError` on missing/empty/blank/non-string), zero-mutation guarantee on failure, atomic idempotent migration (`migrate() -> int`), multi-filter querying (`find(kind, tenant)`), and living documentation sync.
 - **Automated tests (`verify_cp3.py`):** control and treatment both passed everything (25 / 25).
-- **Blind judge review (unblinded after scoring):**
+
+Blind judge review, unblinded after scoring:
 
 | Dimension | Weight | Control (No Skills) | Treatment (With Skills) | Delta / Finding |
 | :--- | :---: | :---: | :---: | :--- |
@@ -115,8 +109,8 @@ One more honest note: treatment's updated `README.md` mentioned a CLI export tha
 ## 5. Phase 4: harness self-tests
 
 The test harness in `repo-native-refactor/evals/` passed its deterministic self-tests:
-- **Earlier run (commit `ae83651`):** `Ran 32 tests in 63.339s — OK` (32/32).
-- **Current release (commit `200286c`):** `Ran 33 tests in 70.755s — OK` (33/33; added Windows 8.3 short-path resolution).
+- **Earlier run (commit `ae83651`):** `Ran 32 tests in 63.339s, OK` (32/32).
+- **Current release (commit `200286c`):** `Ran 33 tests in 70.755s, OK` (33/33; added Windows 8.3 short-path resolution).
 - **What the tests check:**
   - Strict SHA-256 tree hash computation over directory snapshots.
   - Rejection of post-collection tampering (patch alteration, task mutation, metadata edits).

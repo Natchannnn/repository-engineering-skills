@@ -2,9 +2,9 @@
 
 ![demo](demo-40s.gif)
 
-Rendered from real outputs via `python scripts/render-demo-gif.py` — includes one deliberate typo + backspace so it does not look machine-typed. Re-run that script to regenerate after verifier changes.
+Rendered from real outputs via `python scripts/render-demo-gif.py`, includes one deliberate typo + backspace so it does not look machine-typed. Re-run that script to regenerate after verifier changes.
 
-Two self-contained fixtures. Each has an independent `verify.py` — no LLM judge.
+Two self-contained fixtures. Each has an independent `verify.py`, no LLM judge.
 
 ## Demo 1: read-only contract drift
 
