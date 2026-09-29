@@ -6,6 +6,9 @@ Destinations:
 - repo-foundation/references/shared-contracts.md
 - repo-native-refactor/references/shared-contracts.md
 
+Parity guard: repo-foundation/references/evolution.md §4 must keep the
+tests/callers rank (drift-01 regression). It is checked, not overwritten.
+
 Usage:
   python scripts/sync-shared.py         # copy + verify
   python scripts/sync-shared.py --check # fail if copies drift (for CI)
@@ -24,6 +27,24 @@ DESTS = [
 
 HEADER = "<!-- AUTO-GENERATED from docs/contracts-canonical.md — do not edit by hand. Run python scripts/sync-shared.py -->\n\n"
 
+# Parity guard (drift-01): this exact rank must exist in evolution.md §4.
+# Compared case-insensitively against the canonical §2 rank 5 wording.
+PARITY_FILE = ROOT / "repo-foundation" / "references" / "evolution.md"
+PARITY_NEEDLE = "relevant tests, schemas, callers"
+
+
+def check_parity() -> int:
+    text = PARITY_FILE.read_text(encoding="utf-8").lower()
+    if PARITY_NEEDLE not in text:
+        print(
+            f"PARITY-FAIL: {PARITY_FILE.relative_to(ROOT)} lost the tests/callers "
+            "rank (see adversarial/drift-01-tests-vs-local/case.md)",
+            file=sys.stderr,
+        )
+        return 1
+    print(f"OK: hierarchy parity holds in {PARITY_FILE.relative_to(ROOT)}")
+    return 0
+
 
 def build_payload() -> str:
     return HEADER + CANONICAL.read_text(encoding="utf-8").lstrip("\ufeff")
@@ -39,7 +60,7 @@ def main() -> int:
         return 2
     payload = build_payload()
     check_only = "--check" in sys.argv
-    failed = 0
+    failed = check_parity()
     for d in DESTS:
         if check_only:
             if not d.is_file() or d.read_text(encoding="utf-8") != payload:

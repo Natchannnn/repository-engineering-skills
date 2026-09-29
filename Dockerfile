@@ -9,7 +9,10 @@ RUN pip install --no-cache-dir -r requirements-test.txt
 COPY . ./
 
 # Windows-only PowerShell suites (installer rollback, runtime packaging,
-# archive verification) are intentionally out of scope here. See docs/reproduce.md.
+# archive verification) are intentionally out of scope here. The archive packets'
+# sealed hashes encode Windows path ordering, so they verify on Windows only;
+# scripts/verify_archive.py is the cross-platform runner for Windows use.
+# See docs/reproduce.md.
 CMD ["sh", "-c", "python scripts/sync-shared.py --check \
   && python -B repo-foundation/evals/harness.py validate \
   && python -B -m unittest discover -s repo-foundation/evals/tests \
