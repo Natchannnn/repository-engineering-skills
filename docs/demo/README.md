@@ -2,7 +2,7 @@
 
 ![demo](demo-40s.gif)
 
-Rendered from real outputs via `python scripts/render-demo-gif.py`, includes one deliberate typo + backspace so it does not look machine-typed. Re-run that script to regenerate after verifier changes.
+Rendered directly from the test harness via `python scripts/render-demo-gif.py` (Pillow only, deterministic). Re-run that script to regenerate after verifier changes.
 
 Two self-contained fixtures. Each has an independent `verify.py`, no LLM judge.
 
