@@ -75,6 +75,8 @@ pwsh -NoProfile -File ./scripts/verify-archive.ps1
 
 The script iterates through all 31 verifier scripts, checks that all 31 are present, executes them in isolated Python sub-processes, and confirms SHA-256 tree hash parity. All 31 verifiers must pass with exit code 0.
 
+`scripts/verify_archive.py` is the same check as a Python script (Windows-verified 31/31). Sealed packet hashes encode Windows path ordering, so archive verification stays Windows-only by design; see `docs/reproduce.md`.
+
 ---
 
 ## 5. Running Pilot Verifier Self-Audit Suites
