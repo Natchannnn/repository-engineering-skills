@@ -1,0 +1,232 @@
+{
+  "schema": "budget-rating-evaluation-report-v2",
+  "date": "2026-09-30",
+  "conclusion": {
+    "repo-foundation": {
+      "design_rating": "9/10 retained",
+      "ten_out_of_ten": "not established",
+      "reason": "No audited foundation comparison survived temporary evidence loss; exclusion and mixed-language routing probes were not run before the budget stop."
+    },
+    "repo-native-refactor": {
+      "design_rating": "9/10 retained",
+      "ten_out_of_ten": "not established",
+      "reason": "Both treatment and control met every review check in both repetitions; no incremental quality benefit observed on this fixture, with higher measured context cost."
+    },
+    "meaning": "Subjective design ratings, not benchmark-derived overall scores. No claim that either skill is universally ineffective or defective."
+  },
+  "requested_cli_model": "gpt-6.1-sol",
+  "reasoning_effort": "low",
+  "actual_server_model_id_exposed_in_cli_events": false,
+  "source_commit": "9630df0e56a6efc71957948b45e886503aeff8fd",
+  "source_worktree_clean": false,
+  "runtime_payload_matches_previous_smoke": {
+    "count": 23,
+    "all_match": true,
+    "previous_record": "../runtime-polish-smoke/report.json"
+  },
+  "audited_trials": {
+    "count": 4,
+    "passed": 4,
+    "families": 1,
+    "per_arm": {
+      "control": {
+        "runs": 2,
+        "all_pass": true,
+        "input_tokens": 117067,
+        "cached_input_tokens": 84992,
+        "uncached_input_tokens": 32075,
+        "output_tokens": 925,
+        "mean_wall_seconds": 49.870000000000005,
+        "mean_completed_commands": 3
+      },
+      "skills": {
+        "runs": 2,
+        "all_pass": true,
+        "input_tokens": 141882,
+        "cached_input_tokens": 92416,
+        "uncached_input_tokens": 49466,
+        "output_tokens": 1191,
+        "mean_wall_seconds": 55.17,
+        "mean_completed_commands": 4
+      }
+    },
+    "automatic_candidate_selection": {
+      "observed_first_refactor_reads": 2,
+      "treatment_sessions": 2,
+      "self_reports_used_as_evidence": false,
+      "proof": "Complete actual SKILL.md contents in captured shell output. review-skills-1 batch exits 1 due to later rg finding no AGENTS.md; full read remains observable."
+    }
+  },
+  "relative_cost_on_this_review_fixture": {
+    "uncached_input_percent_increase": 54.22,
+    "mean_wall_seconds_increase": 5.3,
+    "quality_difference": "tie on all prespecified checks; two correct identical defect reports per arm and no false findings"
+  },
+  "manual_artifact_inspection": {
+    "four_retry_findings_have_real_producer_consumer_consequence": true,
+    "approved_Path_change_not_reported_as_defect": true,
+    "no_speculative_shared_validation_finding": true,
+    "project_inventories_unchanged": true,
+    "observed_commands_stayed_in_permitted_project_and_installed_skills": true,
+    "no_network_install_delegation_commit_push_observed": true,
+    "limitation": "Instruction-level isolation and tool-trace inspection; not an OS access-control proof."
+  },
+  "verifier_negative_controls": [
+    {
+      "control": "suppress_true_finding",
+      "rejected": true,
+      "failed_checks": [
+        "exactly_one_supported_retry_finding"
+      ]
+    },
+    {
+      "control": "inject_false_contract_finding",
+      "rejected": true,
+      "failed_checks": [
+        "exactly_one_supported_retry_finding"
+      ]
+    },
+    {
+      "control": "modify_review_source",
+      "rejected": true,
+      "failed_checks": [
+        "project_unchanged"
+      ]
+    },
+    {
+      "control": "fake_skill_self_report",
+      "rejected": true,
+      "failed_checks": [
+        "initial_routing"
+      ]
+    }
+  ],
+  "excluded_attempts": {
+    "schema": "excluded-run-summary-v1",
+    "raw_evidence_available": false,
+    "exclusion_reason": "temporary run directory disappeared for undetermined reason before export",
+    "calibrations": [
+      {
+        "id": "calibration",
+        "input_tokens": 66548,
+        "cached_input_tokens": 55296,
+        "output_tokens": 154,
+        "reason": "foreign skills and shell policy blocked reads"
+      },
+      {
+        "id": "calibration2",
+        "input_tokens": 46238,
+        "cached_input_tokens": 33280,
+        "output_tokens": 117,
+        "reason": "foreign skills still loaded; shell read succeeded"
+      },
+      {
+        "id": "calibration3",
+        "input_tokens": 33885,
+        "cached_input_tokens": 27904,
+        "output_tokens": 119,
+        "reason": "valid local catalog and complete skill read confirmed"
+      }
+    ],
+    "migration_attempts": [
+      {
+        "id": "migration-control-1",
+        "seconds": 170.49,
+        "input_tokens": 80970,
+        "cached_input_tokens": 61056,
+        "output_tokens": 2931,
+        "reasoning_output_tokens": 18,
+        "summary_only": "trusted checks reported pass; raw events and candidate artifacts unavailable, excluded from audited scores"
+      },
+      {
+        "id": "migration-skills-1",
+        "seconds": 180.06,
+        "usage": null,
+        "completed_commands": 3,
+        "summary_only": "time ceiling; direct checks reported no behavior failures; persistent tests not updated; full foundation entrypoint observed despite later git status failure; incomplete and now excluded from audited scores"
+      }
+    ],
+    "measured_totals": {
+      "input_tokens": 227641,
+      "cached_input_tokens": 177536,
+      "uncached_input_tokens": 50105,
+      "output_tokens": 3321
+    },
+    "unavailable_usage_turns": 1,
+    "note": "Figures transcribed from captured evaluator tool outputs; not reconstructed raw run evidence."
+  },
+  "not_executed": [
+    {
+      "id": "neither-en",
+      "reason": "Budget stop before starting another model turn; not scored as failures."
+    },
+    {
+      "id": "neither-vi",
+      "reason": "Budget stop before starting another model turn; not scored as failures."
+    },
+    {
+      "id": "mixed-vi",
+      "reason": "Budget stop before starting another model turn; not scored as failures."
+    }
+  ],
+  "budget": {
+    "known_cli_usage_including_calibrations_and_excluded_control": {
+      "input_tokens": 486590,
+      "cached_input_tokens": 354944,
+      "uncached_input_tokens": 131646,
+      "output_tokens": 5437
+    },
+    "unknown_actual_usage_turns": 1,
+    "unknown_turn_input_reserve_for_stop_decision": 35000,
+    "unknown_turn_output_reserve_for_stop_decision": 3000,
+    "accounted_uncached_input_at_stop": 166646,
+    "uncached_input_ceiling_checked_between_sessions": 150000,
+    "why_above_ceiling": "The last allowed turn began below the ceiling and crossed it. No subsequent turn was started. CLI does not expose a hard per-turn token ceiling; reserve is not actual measured usage.",
+    "parent_evaluator_usage_included_in_cli_counts": false,
+    "actual_model_turns_attempted": 9,
+    "breakdown": {
+      "calibrations": 3,
+      "excluded_migration_attempts": 2,
+      "audited_reviews": 4
+    },
+    "account_wide_usage_snapshots": {
+      "start": {
+        "five_hour_used_percent": 31,
+        "weekly_used_percent": 70
+      },
+      "after_model_stop": {
+        "five_hour_used_percent": 51,
+        "weekly_used_percent": 73
+      },
+      "attribution": "Shared account percentages include parent evaluator and any other activity; not an exact per-test cost. No credits or reset consumed."
+    }
+  },
+  "limitations": [
+    "One synthetic review family, two repetitions, same requested model and low effort.",
+    "Not a held-out dataset, no statistical significance claim or cross-model generalization.",
+    "Foundation comparison excluded because raw evidence disappeared; no migration repeatability result.",
+    "Neither-skill exclusions, Vietnamese routing and mixed-phase coordination remain unmeasured in this pilot.",
+    "Higher cost and equal outcomes on this fixture do not establish absence of value on harder tasks."
+  ],
+  "cleanup": {
+    "all_three_temporary_profiles_removed": true,
+    "existing_user_config_unchanged": true,
+    "source_repo_commits_or_pushes": false,
+    "scratch_workspace_removed": false,
+    "scratch_workspace_path": "C:/Users/Natch/.codex/visualizations/2026/09/30/01a0f036-bd80-7b72-b8c3-3bce4584994f/skill-rating-eval",
+    "scratch_cleanup_blocked_reason": "Execution tool rejected recursive Remove-Item as blocked by policy; no more specific reason provided. No bypass attempted."
+  },
+  "evidence_files": {
+    "review-control-1": "review-control-1/verification.json",
+    "review-control-2": "review-control-2/verification.json",
+    "review-skills-1": "review-skills-1/verification.json",
+    "review-skills-2": "review-skills-2/verification.json"
+  },
+  "runtime_snapshot": {
+    "archive": "runtime-snapshot.zip",
+    "manifest": "runtime-snapshot-manifest.json",
+    "files": 23,
+    "all_hashes_verified": true
+  },
+  "post_run_helper_maintenance": "Replaced fixed host user paths with discovered settings and executable paths, and made future temporary profile names unique. Recorded trial args and labels remain unchanged; no model reruns."
+}

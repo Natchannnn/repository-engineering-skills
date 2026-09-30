@@ -1,0 +1,38 @@
+{
+  "schema": "budget-rating-eval-v1",
+  "purpose": "Test whether new observable evidence justifies increasing either subjective design rating from 9/10 to 10/10.",
+  "dataset_role": "predeclared synthetic development probes; not an independently held-out benchmark",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "low",
+  "conditions": "Fresh ephemeral CLI sessions, identical task prompts and fixture bytes within matched pairs, inherited account authentication, only the two candidate skills in the treatment catalog, empty control catalog. Same model and effort in both arms. No explicit skill invocation in scored prompts.",
+  "repetitions": 2,
+  "matched_families": ["migration", "review"],
+  "run_order": ["migration-control-1", "migration-skills-1", "review-skills-1", "review-control-1", "migration-skills-2", "migration-control-2", "review-control-2", "review-skills-2", "neither-en", "neither-vi", "mixed-vi"],
+  "expected_initial_skill": {"migration": "repo-foundation", "review": "repo-native-refactor", "neither": null, "mixed": "repo-foundation"},
+  "required_later_skill": {"mixed": "repo-native-refactor"},
+  "checks": {
+    "migration": ["approved schema, exact integer balances and account IDs", "all invalid records rejected before source replacement", "serialization and replacement failures preserve exact prior source bytes", "no temporary residue after success or failure", "current callers and documentation use the approved target contract", "unrelated user fee policy and source marker preserved", "persistent candidate tests pass and reject the unimplemented baseline", "skill files unchanged"],
+    "review": ["report the exhausted-transient-error regression with producer, consumer and consequence", "no false defect for the approved pathlib.Path API and compatible caller", "no speculative consolidation finding for separately owned validation policies", "no project edits", "skill files unchanged"],
+    "neither": ["answer the supplied question accurately", "no candidate skill read", "no project edits"],
+    "mixed": ["new optional result verified with default and generator behavior preserved", "persistent tests and docs updated", "foundation read before implementation and refactor read after implementation", "skill files unchanged"]
+  },
+  "rating_gate": {
+    "critical_correctness": "All treatment invariants must pass in both repetitions; a completed turn or exit code 0 is insufficient.",
+    "routing": "All seven scored treatment sessions must have the correct first candidate read; mixed must show a later refactor read after a project edit. Successful command output must contain the actual entrypoint text, not a self-report.",
+    "repeatability": "Both repetitions must meet the same correctness criteria. Two trials are only a bounded reliability probe.",
+    "incremental_value": "Treatment must never score below the matched control and must show a replicated, concrete quality improvement in each skill's task family. Ties establish no incremental benefit.",
+    "cost": "Record input, cached input, output, reasoning output, completed commands and wall time. Token counts are not a direct conversion to account usage. Increased context must have an observed quality benefit.",
+    "claim_limit": "Passing this small development set alone cannot establish universal 10/10 quality. Even a passing gate supports only the stated model, effort, tasks and runtime bytes; broader confidence requires separate held-out evidence. Missing or invalid traces are unobservable, not passes."
+  },
+  "budget": {
+    "max_scored_sessions": 11,
+    "seconds_per_session": 180,
+    "max_completed_commands_per_session": 14,
+    "stop_after_cumulative_uncached_input_tokens": 150000,
+    "stop_after_cumulative_output_tokens": 15000,
+    "include_calibration_usage": true,
+    "stop_rule": "Do not start another session after a budget ceiling. If both independent repetitions reveal the same disqualifying treatment failure, stop further model runs and finish deterministic evidence checks. No retries just to replace disappointing results."
+  },
+  "isolation": "Runner reads only its project and installed skills; evaluator, labels, checks and earlier results are outside the permitted scope. This is instruction-level isolation, not an OS security boundary. Capture tool commands and inspect for contamination. Do not alter user configuration, commit or push. A temporary CLI profile disables foreign skills and is removed after the run.",
+  "environment_errors": "Exclude runner calibrations from scored results, but include their usage. Preserve failed calibration logs and explain exclusions. Changes to configuration or case labels after scored outcomes require a new protocol version."
+}

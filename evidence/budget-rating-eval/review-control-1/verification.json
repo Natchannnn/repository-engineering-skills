@@ -1,0 +1,47 @@
+{
+  "run": "review-control-1",
+  "checks": {
+    "completed_with_trace": true,
+    "runtime_unchanged": true,
+    "project_unchanged": true,
+    "exactly_one_supported_retry_finding": true,
+    "retry_regression_independently_reproduced": true,
+    "no_skill_read_in_control": true
+  },
+  "pass": true,
+  "observation": {
+    "usage": {
+      "input_tokens": 58533,
+      "cached_input_tokens": 42496,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 462,
+      "reasoning_output_tokens": 0
+    },
+    "completed_commands": 3,
+    "skill_reads": [],
+    "final": {
+      "summary": "One confirmed defect. Both existing tests pass, but a targeted exhaustion check reproduces the regression. The Path return change matches the documented contract.",
+      "findings": [
+        {
+          "file": "app.py:9-14",
+          "symbol": "publish_with_retry",
+          "evidence": "The patch replaces the final-attempt raise with continue. When the publisher raises TransientError on all three calls, baseline.py propagates the error; app.py returns None. README.md explicitly requires propagation after exhaustion.",
+          "consequence": "Exhausted publishing failures are silently swallowed, preventing callers from observing failure and potentially making an unsuccessful publish appear successful."
+        }
+      ]
+    },
+    "errors": []
+  },
+  "after_hashes": {
+    "app.py": "038281301cfc3a29ca9868c4c84384edbb3b3be846ad002083f46572388f499b",
+    "baseline.py": "4eadbe8447ce22d565f59c2df9613b43f7fa971e42926ade1f7197fd342dae3c",
+    "change.patch": "9e3b98d95962d4a8a790eb75a9ed02f4dc5c4432290f554e960f785277621cab",
+    "README.md": "9a01587b24619f81f978e453d9db0b8f0d797f51ae8f89af09ced9bcbb3a0284",
+    "test_app.py": "05f7a2bbc3b66b7f07b0d374fbe6027ac36382e238f62c9fc3b49e7a357a42a7"
+  },
+  "execution": {
+    "exit": 0,
+    "seconds": 47.5,
+    "stop_reason": null
+  }
+}

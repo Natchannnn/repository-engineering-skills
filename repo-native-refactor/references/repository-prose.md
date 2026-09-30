@@ -136,8 +136,7 @@ When the repository provides little reliable prose evidence:
 - avoid tutorial voice, self-dialogue, marketing language, and performative assurances;
 - do not add comments merely to signal craftsmanship;
 - do not invent tickets, incidents, owners, dates, or production history.
-- a ticket, PR, or incident reference you cannot click through to (tracker search or
-  author confirmation) is fiction. Delete it rather than preserving it politely.
+- Never invent ticket, PR, or incident references. An inaccessible or unverified reference is not evidence of fabrication. Preserve existing references unless repository evidence establishes that they are incorrect or obsolete; report material uncertainty instead of deleting them.
 
 This fallback is deliberately modest. It must not become a universal style imposed over repository evidence.
 
@@ -152,6 +151,7 @@ Inspect the final diff and ask:
 - Did terminology match the owning domain?
 - Did any error, log, event, test expectation, or command output change without contract analysis?
 - Did the refactor fabricate rationale or history?
-- Did any added ticket, PR, or incident reference fail the click-through test?
+- Is each added ticket, PR, or incident reference supported by a source?
+- Was any existing reference deleted merely because it could not be verified?
 
 Remove prose edits that cannot be justified by semantics or repository evidence.

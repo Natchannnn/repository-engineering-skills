@@ -1,13 +1,6 @@
-<!-- AUTO-GENERATED from docs/contracts-canonical.md — do not edit by hand. Run python scripts/sync-shared.py -->
+# Shared contracts
 
-# Canonical Shared Contracts (source of truth)
-
-This file is the single source of truth for contract preservation and evidence hierarchy.
-`scripts/sync-shared.py` copies the normative sections into both installable skills:
-- `repo-foundation/references/shared-contracts.md`
-- `repo-native-refactor/references/shared-contracts.md`
-
-Do not edit the copies by hand. Edit here, then run `python scripts/sync-shared.py --check` in CI.
+These rules apply to repository development and review.
 
 ## 1. Strict contract adherence (canonical wording)
 

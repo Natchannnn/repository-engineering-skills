@@ -27,7 +27,7 @@ Verify: affected unit test still passes. Consequence: dead weight + log leak.
 
 ## R2 - Contextual Structural (predicate extraction)
 
-Bad: duplicate inverted validation in two owners (from CP3 control `_needs_migration` pattern):
+Bad: two callers implement divergent checks for the same owned validation policy:
 ```python
 if not tenant or not tenant.strip(): raise ValueError
 # ... 30 lines later in another module ...
@@ -51,10 +51,19 @@ for _ in range(5):
 Good: idempotency-aware, bounded, owner-logged:
 ```python
 for attempt in range(3):
-    try: return publish(ev, idempotency_key=ev.id)
-    except TransientError as e: log.warning("publish retry", extra={"attempt": attempt})
-    except PermanentError: raise
+    try:
+        return publish(ev, idempotency_key=ev.id)
+    except TransientError:
+        if attempt == 2:
+            raise
+        log.warning(
+            "publish retry",
+            extra={"attempt": attempt + 1},
+        )
 ```
+Retry only transient failures; propagate the final failure after exhaustion and
+non-transient errors immediately. Follow the repository's existing backoff and timeout
+policy. Verify eventual success, exhausted retries, and a non-retryable failure.
 Never mass-rewrite R3 without explicit instruction + verified tests.
 
 ## R4 - Critical Boundary (auth / migration / durability)

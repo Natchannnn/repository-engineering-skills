@@ -25,7 +25,8 @@ DESTS = [
     ROOT / "repo-native-refactor" / "references" / "shared-contracts.md",
 ]
 
-HEADER = "<!-- AUTO-GENERATED from docs/contracts-canonical.md — do not edit by hand. Run python scripts/sync-shared.py -->\n\n"
+HEADER = "# Shared contracts\n\nThese rules apply to repository development and review.\n\n"
+NORMATIVE_START = "## 1. Strict contract adherence (canonical wording)"
 
 # Parity guard (drift-01): this exact rank must exist in evolution.md §4.
 # Compared case-insensitively against the canonical §2 rank 5 wording.
@@ -47,7 +48,10 @@ def check_parity() -> int:
 
 
 def build_payload() -> str:
-    return HEADER + CANONICAL.read_text(encoding="utf-8").lstrip("\ufeff")
+    text = CANONICAL.read_text(encoding="utf-8").lstrip("\ufeff")
+    if NORMATIVE_START not in text:
+        raise ValueError("Canonical contracts are missing the first normative section")
+    return HEADER + text[text.index(NORMATIVE_START):]
 
 
 def sha(p: pathlib.Path) -> str:

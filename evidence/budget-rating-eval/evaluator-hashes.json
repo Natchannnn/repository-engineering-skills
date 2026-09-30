@@ -1,0 +1,19 @@
+{
+  "check.py": "5c8e836f92b22ea994108ea323502a7d99a89f2a27ad86baa7b798fe9ba0b37e",
+  "excluded-run-summary.json": "d805543b9ac8a4d5aa47cc828daece55b55ab42b117a9724bf8519f434884c63",
+  "protocol-v1.json": "817bd5e1061f2b5d6702efda147e70aa439805952f4c4471bf930d98c2d6d93d",
+  "protocol.json": "1af67cbfe550ea6d7036cbdc2b934a85393f9e21eb26def27c566eb3784439ef",
+  "PROTOCOL.md": "77e8d204f6b0a738e5cf304465e373b46e3d29b572e47b9ad974de70aacfff12",
+  "run.py": "c6d8783c8b6eac5466c2d3be1d76b015b817425b0cc9a95a9665b4d61eb585ef",
+  "fixtures/migration/accounts.json": "a30eeb4054255f7d2030a406a616ffb023a7feba804971fcf7bf9831bd28b421",
+  "fixtures/migration/ledger.py": "3d3e9844cf71b4f79bdc20df9cf8961fc76416afe746a388ee29f896f19e37f5",
+  "fixtures/migration/README.md": "a99e8925da9ec4ba3467ae6bc123a2f87e892d0f4abcff96b607cb65d533e37b",
+  "fixtures/migration/test_ledger.py": "76527b0e737902020290416dc787c979d56ad22596708197f317b2299bdf8467",
+  "fixtures/mixed/app.py": "bd36afeeabd102597ceaf3e6546f0ffcd25be339b88916444dc7802dd436985f",
+  "fixtures/mixed/README.md": "5db84eaa43116a8ac46d9518dd2cd1eb9b6f8ce625bbf2f12af6e1831157243e",
+  "fixtures/mixed/test_app.py": "639369442afd74b854de4997b16593e857aca1988aa6fd41372f8865ed13a6f3",
+  "fixtures/review/app.py": "038281301cfc3a29ca9868c4c84384edbb3b3be846ad002083f46572388f499b",
+  "fixtures/review/baseline.py": "4eadbe8447ce22d565f59c2df9613b43f7fa971e42926ade1f7197fd342dae3c",
+  "fixtures/review/README.md": "9a01587b24619f81f978e453d9db0b8f0d797f51ae8f89af09ced9bcbb3a0284",
+  "fixtures/review/test_app.py": "05f7a2bbc3b66b7f07b0d374fbe6027ac36382e238f62c9fc3b49e7a357a42a7"
+}

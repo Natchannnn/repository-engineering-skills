@@ -1,0 +1,22 @@
+--- baseline.py
++++ app.py
+@@ -10,16 +10,15 @@
+         try:
+             return publish(event, idempotency_key=event["id"])
+         except TransientError:
+-            if attempt == 2:
+-                raise
++            continue
+ 
+ 
+ def receipt_path(root):
+-    return str(Path(root) / "receipt.json")
++    return Path(root) / "receipt.json"
+ 
+ 
+ def receipt_label(root):
+-    return Path(receipt_path(root)).name
++    return receipt_path(root).name
+ 
+ 
+ def retail_name(value):

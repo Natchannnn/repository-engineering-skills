@@ -26,7 +26,7 @@ Build on a foundation that's just big enough, add features on top of it, and cha
   - Add comments only for information code cannot express: grounded rationale, non-obvious invariants, units, rounding, ordering, protocol quirks, or compatibility.
   - Do not narrate syntax; do not invent tickets, incidents, owners, or production histories.
   - Treat error and CLI text as contract surface: check callers and parsers before rewording.
-  - A ticket, PR, or incident reference you cannot click through to is fiction: delete it.
+  - Never invent ticket, PR, or incident references. An inaccessible or unverified reference is not evidence of fabrication. Preserve existing references unless repository evidence establishes that they are incorrect or obsolete; report material uncertainty instead of deleting them.
   - Do not strip valuable comments merely for cosmetic brevity; do not enforce arbitrary comment ratios.
   - Do not add abstractions, wrappers, or factory layers without concrete ownership, contract, or test seam needs.
 - **Preserve consumed public contracts** as defined in `references/shared-contracts.md` §1: keep documented types, values, errors, and serialization. Change a contract only when the task clearly authorizes it, then update callers, tests, and docs in scope.
@@ -63,7 +63,7 @@ Confirm the user's objective, observable consequences, affected boundaries, base
 - **Intentional contract changes** occur when a task explicitly requires changing a contract, so verify that callers and tests reflect the new contract rather than forcing deprecated behavior.
 
 ### 3. Verify proportionately
-- **Lightweight path (low risk):** routine bug fixes, typos, formatting, and localized edits inside established boundaries. Keep scope tight, run relevant mechanical checks (syntax, linter, affected unit tests), and skip secondary review passes.
+- **Lightweight path (low risk):** routine bug fixes and localized edits inside established boundaries. Keep scope tight and run relevant mechanical checks (syntax, linter, affected unit tests). Skip automatic secondary review passes unless concrete unresolved concerns warrant one; an explicit review request still applies.
 - **High-risk changes:** a single line touching authorization, permissions, data migrations, cryptography, persistence lifecycles, or concurrency can do serious damage. Read [verification](references/verification.md) before designing checks.
 
 ### 4. Continuity and state
@@ -75,7 +75,7 @@ Confirm the user's objective, observable consequences, affected boundaries, base
 
 ## Companion Coordination (`repo-native-refactor`)
 
-Foundation builds; refactor audits and cleans up. After a finished feature, ask for one refactor pass if the host has it (see [references/companion.md](references/companion.md)). Rerun affected checks after its edits; same-agent self-review is not independent review.
+Use at most one companion pass when the user requests review, concrete unresolved concerns remain, or a substantial contract, ownership, or semantic change warrants a scoped audit. Lightweight fixes do not trigger an automatic pass. Read [references/companion.md](references/companion.md) when a pass is warranted; finish normally if the companion is unavailable. Rerun affected checks after its edits; same-agent self-review is not independent review.
 
 ---
 
@@ -96,4 +96,3 @@ Read supporting references only when the corresponding trigger occurs:
 ## When NOT to Use
 
 - **Trivial edits:** Skip this skill for typos, isolated script adjustments, or formatting-only changes: the overhead is not worth it.
-- **Ambiguous precedent:** When repository conventions are ambiguous or conflicting, preserve the dominant local pattern and document the choice in the completion report rather than speculating.

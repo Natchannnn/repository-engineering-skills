@@ -103,7 +103,8 @@ No LLM judges are used for demo verifiers; deterministic scripts evaluate outcom
 |---|---|---|
 | Pilot 1 (3 arms, deterministic verifiers) | **7/9 passed** (2 runs failed schema validation on test ID formatting) | [PROTOCOL.md](pilots/small-behavioral-pilot/PROTOCOL.md) |
 | Phase 2 (27 runs, rotated triplets) | **27/27 passed** (tasks were too simple to differentiate arms statistically) | [PROTOCOL.md](pilots/phase2-contract-and-review/PROTOCOL.md) |
-| Harness & demo suites | 100 tests passed (59 unit + 41 demo acceptance) | `repo-*/evals/tests`, `scripts/test_demos.py` |
+| Runtime polish smoke (6 fresh agent contexts) | **6/6 passed**, explicit invocation, one run per case; no baseline comparison | [PROTOCOL.md](pilots/runtime-polish-smoke/PROTOCOL.md) |
+| Harness, example, runtime & demo suites | 110 tests (66 harness/example + 3 isolated-resource + 41 demo acceptance) | `repo-*/evals/tests`, `scripts/test_runtime_resources.py`, `scripts/test_demos.py` |
 | Runtime package verification | 23 payload files verified byte-for-byte against Git commit tree | `scripts/test-package.ps1` |
 | Real-world test runs | Colorama regression suite passes; 6 repositories correctly untouched; self-review verified | [docs/realworld.md](docs/realworld.md) |
 | Adversarial probes | 8 held-out fixtures (Batch E) and cross-model boundary analysis | [ATTACK_REPORT.md](adversarial/ATTACK_REPORT.md) |
@@ -124,8 +125,9 @@ No LLM judges are used for demo verifiers; deterministic scripts evaluate outcom
 
 ```sh
 python -m pip install -r requirements-test.txt
-python -B -m unittest discover -s repo-foundation/evals/tests      # 26 tests
-python -B -m unittest discover -s repo-native-refactor/evals/tests  # 33 tests
+python -B -m unittest discover -s repo-foundation/evals/tests      # 30 tests
+python -B -m unittest discover -s repo-native-refactor/evals/tests  # 36 tests
+python -B scripts/test_runtime_resources.py                       # 3 tests
 python -B repo-foundation/evals/harness.py validate
 python -B scripts/test_demos.py                                     # 41 tests
 powershell -ExecutionPolicy Bypass -File scripts/test-package.ps1   # 8 acceptance tests

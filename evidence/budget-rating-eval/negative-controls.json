@@ -1,0 +1,30 @@
+[
+  {
+    "control": "suppress_true_finding",
+    "rejected": true,
+    "failed_checks": [
+      "exactly_one_supported_retry_finding"
+    ]
+  },
+  {
+    "control": "inject_false_contract_finding",
+    "rejected": true,
+    "failed_checks": [
+      "exactly_one_supported_retry_finding"
+    ]
+  },
+  {
+    "control": "modify_review_source",
+    "rejected": true,
+    "failed_checks": [
+      "project_unchanged"
+    ]
+  },
+  {
+    "control": "fake_skill_self_report",
+    "rejected": true,
+    "failed_checks": [
+      "initial_routing"
+    ]
+  }
+]

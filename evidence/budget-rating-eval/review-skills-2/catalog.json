@@ -1,0 +1,8 @@
+{
+  "catalog": "### Available skills\\n- repo-foundation: Add features, start modules, migrate contracts, or pick up half-finished work without breaking the public API. Use for \\\"add X to this project\\\", \\\"set up a new module\\\", \\\"change this schema\\\", \\\"migrate the database\\\", \\\"continue where we left off\\\", \\\"fix this bug\\\", \\\"split this module\\\". (file: r0/repo-foundation/SKILL.md)\\n- repo-native-refactor: Review a diff or PR without editing it, or tidy a change set without changing behavior. Use for \\\"review my changes\\\", \\\"check this diff for contract breaks\\\", \\\"clean this up before I open a PR\\\", \\\"is this safe\\\", \\\"merge the duplicates\\\". (file: r0/repo-native-refactor/SKILL.md)\\n",
+  "expected_names": [
+    "repo-foundation",
+    "repo-native-refactor"
+  ],
+  "debug_prompt_sha256": "0cc890aab9dbe7edb1003c699883d4eec08f77e11472264c8d151444798997a9"
+}

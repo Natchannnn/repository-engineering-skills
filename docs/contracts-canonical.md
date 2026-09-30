@@ -5,7 +5,10 @@ This file is the single source of truth for contract preservation and evidence h
 - `repo-foundation/references/shared-contracts.md`
 - `repo-native-refactor/references/shared-contracts.md`
 
-Do not edit the copies by hand. Edit here, then run `python scripts/sync-shared.py --check` in CI.
+Do not edit the copies by hand. Edit the normative sections here, then run
+`python scripts/sync-shared.py` to regenerate the runtime copies. CI uses
+`python scripts/sync-shared.py --check` to detect drift. Maintainer instructions
+above section 1 are excluded from the installable copies.
 
 ## 1. Strict contract adherence (canonical wording)
 

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Repo Native Refactor"
+  short_description: "Audit and surgical cleanup without altering authorized behavior."
+  default_prompt: "Use $repo-native-refactor to review or clean up the current change set."
+
+policy:
+  allow_implicit_invocation: true

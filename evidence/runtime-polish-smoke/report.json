@@ -1,0 +1,441 @@
+{
+  "format": "runtime-polish-smoke-evidence-v1",
+  "date": "2026-09-30",
+  "protocol": {
+    "cases": 6,
+    "repetitions_per_case": 1,
+    "execution": "six fresh independent subagent contexts; explicit installed skill invocation",
+    "evaluation": "independent observable behavior, tests, hashes and artifact inspection",
+    "automatic_routing_tested": false,
+    "skill_read_trace": "self-reported; no independently captured tool trace",
+    "baseline_comparison": null,
+    "held_out": false
+  },
+  "source_commit": "9630df0e56a6efc71957948b45e886503aeff8fd",
+  "working_tree_clean_at_packaging": false,
+  "runtime_payload_hashes": {
+    "LICENSE": "5892ed0c85ff137547c3a9896de6df2877712f39bb3e915751a4043f43de7f3f",
+    "skills/repo-foundation/agents/openai.yaml": "670a58197d64bfc74baaf2a0357cfd634f5c1773a50b3d6a42b2624fb2f31ff1",
+    "skills/repo-foundation/LICENSE": "5892ed0c85ff137547c3a9896de6df2877712f39bb3e915751a4043f43de7f3f",
+    "skills/repo-foundation/references/bootstrap.md": "a61bf4126b6e2b33368271829cf16be6d96e51501a4ef662822c3a0fb345c231",
+    "skills/repo-foundation/references/companion.md": "87c03722d52c70a8c3e790ec107b44bdcd22a9674b1c2a95dce91e257dc1a8ab",
+    "skills/repo-foundation/references/continuity.md": "26b3de0b3b446ba0399d07b983f8defdca6f4d9c3f635ccd3bbe011dd8062158",
+    "skills/repo-foundation/references/evolution.md": "b6b1bde24c65e5fafa57a2569c9873d25204be69efd6adb5553cc1874595ca3a",
+    "skills/repo-foundation/references/migration-examples.md": "1166ce496370b819541074a9418effcdcd99fd41315813a37af17b6cffc8343a",
+    "skills/repo-foundation/references/shared-contracts.md": "678acfc3436652350ca25f64d7016853ff0ffb1217f1d44db1c9f74a1b045718",
+    "skills/repo-foundation/references/verification.md": "e2a02594f293a9f8b6e764ed53b4df87b3976ff756cf3a8c0eed99fa762958ed",
+    "skills/repo-foundation/SKILL.md": "a90b9c869bb5cfece808c816bedb07415cc20b4cd6c53e80ed251edaf32af93a",
+    "skills/repo-native-refactor/agents/openai.yaml": "bf3aa7f9aeb0363c5d258897051ef61a8307217fe8017d4ccb6695ae1a4746a7",
+    "skills/repo-native-refactor/LICENSE": "5892ed0c85ff137547c3a9896de6df2877712f39bb3e915751a4043f43de7f3f",
+    "skills/repo-native-refactor/references/deterministic-tooling.md": "e44fe4144ab5fffe88e94d8ef64209ce3b5331794f1086cf1d62ef79952bb034",
+    "skills/repo-native-refactor/references/error-reliability.md": "69bec30406760743ab128f9d200f6eb2a5d07df60e2d341f7fdea57787adff3b",
+    "skills/repo-native-refactor/references/finding-taxonomy.md": "fffe175df1938126478a97df83e058af9566849d25b271086291b19280cbd85d",
+    "skills/repo-native-refactor/references/refactor-examples.md": "814a3d6022360ea75984f5443ce0fd0377066ea072bee77744120853bd1bdfb1",
+    "skills/repo-native-refactor/references/repository-prose.md": "63408cfaab864d7f99cd9a651874dbfa40c17d695b21cdb7f861c3adc4478bef",
+    "skills/repo-native-refactor/references/repository-rehabilitation.md": "fb5da385aa9151b157f4ae4413adf78951556fcefdf6aed58256b82d3f90508e",
+    "skills/repo-native-refactor/references/semantic-risk.md": "a21c5e4f52fe4e51af410d9b29ad2a1cdc5976529ce1f206f22fb527a1e8583a",
+    "skills/repo-native-refactor/references/shared-contracts.md": "678acfc3436652350ca25f64d7016853ff0ffb1217f1d44db1c9f74a1b045718",
+    "skills/repo-native-refactor/references/testing-integrity.md": "a77c00c763a5e7cbd0a25605d1c57ac9ad375910311f6974a655bd4519a3ccbb",
+    "skills/repo-native-refactor/SKILL.md": "b36865928544cccec1073fe9951218318f4be8c3140119f9d514fd6e976948f6"
+  },
+  "negative_controls": {
+    "F1": {
+      "rejected": true,
+      "reason": [
+        "AssertionError: "
+      ]
+    },
+    "F2": {
+      "rejected": true,
+      "reason": [
+        "AssertionError: approved Path contract was not retained"
+      ]
+    },
+    "F3": {
+      "rejected": true,
+      "reason": [
+        "TypeError: summarize() got an unexpected keyword argument 'include_count'"
+      ]
+    },
+    "R1": {
+      "rejected": true,
+      "reason": [
+        "AssertionError: requested redundant comment cleanup missing"
+      ]
+    },
+    "R2": {
+      "rejected": true,
+      "reason": [
+        "AssertionError: contract defect not reported"
+      ]
+    },
+    "R3": {
+      "rejected": true,
+      "reason": [
+        "AssertionError: clean fixture received defect findings"
+      ]
+    }
+  },
+  "local_suites": {
+    "foundation_harness_and_examples": 30,
+    "refactor_harness_and_examples": 36,
+    "isolated_resources": 3,
+    "demo_acceptance": 41,
+    "total_passed": 110
+  },
+  "cases": {
+    "F1": {
+      "prompt": "Use $repo-foundation at {run_root}\\F1\\runtime\\skills\\repo-foundation\\SKILL.md to complete this request:\n\nFix normalize_amount so integer 0 is preserved as a valid amount. None and the empty string must still default to 10; preserve all other behavior. Add regression coverage. Do not commit or push.\n\nWorkspace: {run_root}\\F1\\workspace\nInstalled skills: {run_root}\\F1\\runtime\\skills\nUse only that workspace and those installed skills for task context. Do not read the source skill repository, evaluator, snapshots, or other cases. Other skills are available only if present in that installed directory. Use python -B for checks. Do not access the network, create Git history, or alter installed skill files. At completion write a concise JSON report to {run_root}\\F1\\submission.json with keys summary, findings (a list; each finding has file, symbol, consequence), skills_read, and checks (commands and observed results). Do not include metadata-only suggestions as defects. For implementation tasks, findings may be empty. Keep task edits inside the workspace; the report is the sole additional output.",
+      "before_files": {
+        "app.py": "# OPS-417: the legacy import worker omits amounts on some records.\ndef normalize_amount(value):\n    return int(value or 10)\n",
+        "README.md": "normalize_amount accepts integer-like amounts. Missing values (None or empty string) default to 10. Integer 0 is a valid amount.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import normalize_amount\n\nclass AmountTest(unittest.TestCase):\n    def test_default(self):\n        self.assertEqual(normalize_amount(None), 10)\n    def test_number(self):\n        self.assertEqual(normalize_amount(\"3\"), 3)\n"
+      },
+      "after_files": {
+        "app.py": "# OPS-417: the legacy import worker omits amounts on some records.\ndef normalize_amount(value):\n    if type(value) is int and value == 0:\n        return 0\n    return int(value or 10)\n",
+        "README.md": "normalize_amount accepts integer-like amounts. Missing values (None or empty string) default to 10. Integer 0 is a valid amount.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import normalize_amount\n\nclass AmountTest(unittest.TestCase):\n    def test_default(self):\n        self.assertEqual(normalize_amount(None), 10)\n        self.assertEqual(normalize_amount(\"\"), 10)\n    def test_number(self):\n        self.assertEqual(normalize_amount(\"3\"), 3)\n    def test_integer_zero(self):\n        self.assertEqual(normalize_amount(0), 0)\n    def test_other_falsy_values_keep_default(self):\n        for value in (False, 0.0, [], {}):\n            with self.subTest(value=value):\n                self.assertEqual(normalize_amount(value), 10)\n"
+      },
+      "submission": {
+        "summary": "Fixed normalize_amount to preserve integer 0, retaining None/empty-string defaults and all other existing behavior. Added regression coverage. No commit or push.",
+        "findings": [],
+        "skills_read": [
+          "{run_root}\\F1\\runtime\\skills\\repo-foundation\\SKILL.md",
+          "{run_root}\\F1\\runtime\\skills\\repo-foundation\\references\\shared-contracts.md"
+        ],
+        "checks": [
+          {
+            "command": "python -B -m unittest -v",
+            "result": "Baseline: 2 tests passed. Workspace had three files and no Git repository; established baseline by file inventory, contents, and SHA256 hashes."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py' -v",
+            "result": "Before implementation: 4 tests ran, with only the new integer-zero regression failing (10 != 0)."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py' -v",
+            "result": "Final code: all 4 tests passed, covering integer 0, None, empty string, numeric string, and unchanged defaults for False, 0.0, empty list, and empty dict. Final source and file inventory reviewed; only app.py and test_app.py changed."
+          }
+        ]
+      },
+      "verification": {
+        "pass": true,
+        "failures": [],
+        "evidence": {
+          "candidate_tests": {
+            "exit_code": 0,
+            "output": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+          },
+          "regression_negative_control": {
+            "exit_code": 1,
+            "output": ".F..\n======================================================================\nFAIL: test_integer_zero (test_app.AmountTest.test_integer_zero)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-sfxvdufr\\workspace\\test_app.py\", line 11, in test_integer_zero\n    self.assertEqual(normalize_amount(0), 0)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 10 != 0\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nFAILED (failures=1)\n"
+          },
+          "skills_read_self_reported": [
+            "{run_root}\\F1\\runtime\\skills\\repo-foundation\\SKILL.md",
+            "{run_root}\\F1\\runtime\\skills\\repo-foundation\\references\\shared-contracts.md"
+          ]
+        }
+      }
+    },
+    "F2": {
+      "prompt": "Use $repo-foundation at {run_root}\\F2\\runtime\\skills\\repo-foundation\\SKILL.md to complete this request:\n\nChange output_path(root) to return pathlib.Path. This is an approved public API change. Update its callers, tests, and README; label_output(root) must still return report.json. Then use the installed repo-native-refactor skill for one scoped review of the completed change. Do not commit or push.\n\nWorkspace: {run_root}\\F2\\workspace\nInstalled skills: {run_root}\\F2\\runtime\\skills\nUse only that workspace and those installed skills for task context. Do not read the source skill repository, evaluator, snapshots, or other cases. Other skills are available only if present in that installed directory. Use python -B for checks. Do not access the network, create Git history, or alter installed skill files. At completion write a concise JSON report to {run_root}\\F2\\submission.json with keys summary, findings (a list; each finding has file, symbol, consequence), skills_read, and checks (commands and observed results). Do not include metadata-only suggestions as defects. For implementation tasks, findings may be empty. Keep task edits inside the workspace; the report is the sole additional output.",
+      "before_files": {
+        "app.py": "def output_path(root):\n    return str(root).rstrip(\"/\") + \"/report.json\"\n\ndef label_output(root):\n    return output_path(root).split(\"/\")[-1]\n",
+        "README.md": "output_path(root) returns a str naming report.json under root. label_output(root) returns the final filename, report.json.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import output_path, label_output\n\nclass PathTest(unittest.TestCase):\n    def test_path_type(self):\n        self.assertIsInstance(output_path(\"out\"), str)\n    def test_label(self):\n        self.assertEqual(label_output(\"out\"), \"report.json\")\n"
+      },
+      "after_files": {
+        "app.py": "from pathlib import Path\n\n\ndef output_path(root) -> Path:\n    return Path(root) / \"report.json\"\n\ndef label_output(root):\n    return output_path(root).name\n",
+        "README.md": "output_path(root) returns a pathlib.Path naming report.json under root. The root may be a string or a pathlib.Path. label_output(root) returns the final filename as a str, report.json.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom pathlib import Path\nfrom app import output_path, label_output\n\nclass PathTest(unittest.TestCase):\n    def test_path_type(self):\n        result = output_path(\"out\")\n        self.assertIsInstance(result, Path)\n        self.assertEqual(result, Path(\"out\") / \"report.json\")\n    def test_path_root(self):\n        root = Path(\"out\") / \"nested\"\n        self.assertEqual(output_path(root), root / \"report.json\")\n    def test_trailing_separator(self):\n        self.assertEqual(output_path(\"out/\"), Path(\"out\") / \"report.json\")\n    def test_label(self):\n        for root in (\"out\", \"out/\", Path(\"out\") / \"nested\"):\n            with self.subTest(root=root):\n                self.assertEqual(label_output(root), \"report.json\")\n"
+      },
+      "submission": {
+        "summary": "Verified: output_path now returns pathlib.Path; label_output still returns the string report.json. Updated the caller, tests, and README. Completed one scoped same-agent repo-native-refactor review with no defects found. No commits or pushes.",
+        "findings": [],
+        "skills_read": [
+          "repo-foundation/SKILL.md",
+          "repo-foundation/references/evolution.md",
+          "repo-foundation/references/shared-contracts.md",
+          "repo-foundation/references/companion.md",
+          "repo-native-refactor/SKILL.md",
+          "repo-native-refactor/references/shared-contracts.md",
+          "repo-native-refactor/references/semantic-risk.md",
+          "repo-native-refactor/references/error-reliability.md",
+          "repo-native-refactor/references/testing-integrity.md"
+        ],
+        "checks": [
+          {
+            "command": "rg --files -g '!__pycache__' -g '!*.pyc'; git status --short; git rev-parse HEAD",
+            "result": "Baseline inventory: app.py, test_app.py, README.md. Workspace is not a Git repository; no revision exists. Used the initial file inventory and contents as the baseline."
+          },
+          {
+            "command": "python -B -m unittest -v",
+            "result": "Baseline: 2 tests passed."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py' -v",
+            "result": "After implementation and again on the final reviewed state: all 4 tests passed, covering Path return type and location, Path roots, trailing separators, and the unchanged filename string."
+          },
+          {
+            "command": "rg -n 'output_path|label_output|Path|str' app.py test_app.py README.md; Get-Content app.py; Get-Content test_app.py; Get-Content README.md; rg --files -g '!__pycache__' -g '!*.pyc'",
+            "result": "Scoped review confirmed all callers, tests, and documentation use the authorized Path contract. label_output uses Path.name and returns report.json. Final inventory contains only the three workspace files. No additional review edits were needed."
+          }
+        ]
+      },
+      "verification": {
+        "pass": true,
+        "failures": [],
+        "evidence": {
+          "candidate_tests": {
+            "exit_code": 0,
+            "output": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+          },
+          "regression_negative_control": {
+            "exit_code": 1,
+            "output": ".FFF\n======================================================================\nFAIL: test_path_root (test_app.PathTest.test_path_root)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-h1lnq5xv\\workspace\\test_app.py\", line 12, in test_path_root\n    self.assertEqual(output_path(root), root / \"report.json\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'out\\\\nested/report.json' != WindowsPath('out/nested/report.json')\n\n======================================================================\nFAIL: test_path_type (test_app.PathTest.test_path_type)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-h1lnq5xv\\workspace\\test_app.py\", line 8, in test_path_type\n    self.assertIsInstance(result, Path)\n    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\nAssertionError: 'out/report.json' is not an instance of <class 'pathlib.Path'>\n\n======================================================================\nFAIL: test_trailing_separator (test_app.PathTest.test_trailing_separator)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-h1lnq5xv\\workspace\\test_app.py\", line 14, in test_trailing_separator\n    self.assertEqual(output_path(\"out/\"), Path(\"out\") / \"report.json\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'out/report.json' != WindowsPath('out/report.json')\n\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nFAILED (failures=3)\n"
+          },
+          "skills_read_self_reported": [
+            "repo-foundation/SKILL.md",
+            "repo-foundation/references/evolution.md",
+            "repo-foundation/references/shared-contracts.md",
+            "repo-foundation/references/companion.md",
+            "repo-native-refactor/SKILL.md",
+            "repo-native-refactor/references/shared-contracts.md",
+            "repo-native-refactor/references/semantic-risk.md",
+            "repo-native-refactor/references/error-reliability.md",
+            "repo-native-refactor/references/testing-integrity.md"
+          ]
+        }
+      }
+    },
+    "F3": {
+      "prompt": "Use $repo-foundation at {run_root}\\F3\\runtime\\skills\\repo-foundation\\SKILL.md to complete this request:\n\nAdd optional include_count=True to summarize(values), returning a dictionary with total and count. Keep the default integer result unchanged, including for empty input. Add tests and document the option. Do not commit or push.\n\nWorkspace: {run_root}\\F3\\workspace\nInstalled skills: {run_root}\\F3\\runtime\\skills\nUse only that workspace and those installed skills for task context. Do not read the source skill repository, evaluator, snapshots, or other cases. Other skills are available only if present in that installed directory. Use python -B for checks. Do not access the network, create Git history, or alter installed skill files. At completion write a concise JSON report to {run_root}\\F3\\submission.json with keys summary, findings (a list; each finding has file, symbol, consequence), skills_read, and checks (commands and observed results). Do not include metadata-only suggestions as defects. For implementation tasks, findings may be empty. Keep task edits inside the workspace; the report is the sole additional output.",
+      "before_files": {
+        "app.py": "def summarize(values):\n    return sum(values)\n",
+        "README.md": "summarize(values) returns the integer total; empty input returns 0.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import summarize\n\nclass SummaryTest(unittest.TestCase):\n    def test_total(self):\n        self.assertEqual(summarize([2, 3]), 5)\n    def test_empty(self):\n        self.assertEqual(summarize([]), 0)\n"
+      },
+      "after_files": {
+        "app.py": "def summarize(values, include_count=False):\n    if include_count:\n        total = 0\n        count = 0\n        for value in values:\n            total += value\n            count += 1\n        return {\"total\": total, \"count\": count}\n    return sum(values)\n",
+        "README.md": "summarize(values) returns the integer total; empty input returns 0.\nPass include_count=True to return a dictionary with the total and number of\nvalues: summarize([2, 3], include_count=True) returns {\"total\": 5, \"count\": 2}.\nEmpty input with this option returns {\"total\": 0, \"count\": 0}. The option defaults\nto False, preserving the integer result. Both modes accept iterables, including\ngenerators.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import summarize\n\nclass SummaryTest(unittest.TestCase):\n    def test_total(self):\n        result = summarize([2, 3])\n        self.assertEqual(result, 5)\n        self.assertIs(type(result), int)\n    def test_empty(self):\n        result = summarize([])\n        self.assertEqual(result, 0)\n        self.assertIs(type(result), int)\n\n    def test_explicit_no_count(self):\n        self.assertEqual(summarize([2, 3], include_count=False), 5)\n        self.assertEqual(summarize([], include_count=False), 0)\n\n    def test_include_count(self):\n        self.assertEqual(\n            summarize([2, 3], include_count=True),\n            {\"total\": 5, \"count\": 2},\n        )\n\n    def test_include_count_empty(self):\n        self.assertEqual(\n            summarize([], include_count=True),\n            {\"total\": 0, \"count\": 0},\n        )\n\n    def test_include_count_single_use_iterator(self):\n        values = (value for value in [-2, 0, 3])\n        self.assertEqual(\n            summarize(values, include_count=True),\n            {\"total\": 1, \"count\": 3},\n        )\n"
+      },
+      "submission": {
+        "summary": "Added include_count=False to summarize; include_count=True returns total and count in one pass. Preserved the default integer result, documented the option, and added tests for empty input and single-use iterators. No commits or pushes.",
+        "findings": [],
+        "skills_read": [
+          "{run_root}\\F3\\runtime\\skills\\repo-foundation\\SKILL.md",
+          "{run_root}\\F3\\runtime\\skills\\repo-foundation\\references\\shared-contracts.md"
+        ],
+        "checks": [
+          {
+            "command": "rg --files --hidden -g '!.git'",
+            "result": "Baseline inventory: app.py, test_app.py, README.md."
+          },
+          {
+            "command": "git status --short; git rev-parse HEAD",
+            "result": "Workspace is not a Git repository; used file inventory as baseline. No Git history created."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py'",
+            "result": "Baseline: 2 tests passed."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py' -v",
+            "result": "Final state: all 6 tests passed, including default integer results, explicit include_count=False, totals and counts, empty input, and a single-use generator."
+          },
+          {
+            "command": "Get-Content -LiteralPath 'app.py', 'test_app.py', 'README.md'",
+            "result": "Reviewed final source, tests, and documentation; all requested behavior is implemented and documented."
+          }
+        ]
+      },
+      "verification": {
+        "pass": true,
+        "failures": [],
+        "evidence": {
+          "candidate_tests": {
+            "exit_code": 0,
+            "output": "......\n----------------------------------------------------------------------\nRan 6 tests in 0.000s\n\nOK\n"
+          },
+          "regression_negative_control": {
+            "exit_code": 1,
+            "output": ".EEEE.\n======================================================================\nERROR: test_explicit_no_count (test_app.SummaryTest.test_explicit_no_count)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-5lkd7_cv\\workspace\\test_app.py\", line 15, in test_explicit_no_count\n    self.assertEqual(summarize([2, 3], include_count=False), 5)\n                     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: summarize() got an unexpected keyword argument 'include_count'\n\n======================================================================\nERROR: test_include_count (test_app.SummaryTest.test_include_count)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-5lkd7_cv\\workspace\\test_app.py\", line 20, in test_include_count\n    summarize([2, 3], include_count=True),\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: summarize() got an unexpected keyword argument 'include_count'\n\n======================================================================\nERROR: test_include_count_empty (test_app.SummaryTest.test_include_count_empty)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-5lkd7_cv\\workspace\\test_app.py\", line 26, in test_include_count_empty\n    summarize([], include_count=True),\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: summarize() got an unexpected keyword argument 'include_count'\n\n======================================================================\nERROR: test_include_count_single_use_iterator (test_app.SummaryTest.test_include_count_single_use_iterator)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-5lkd7_cv\\workspace\\test_app.py\", line 33, in test_include_count_single_use_iterator\n    summarize(values, include_count=True),\n    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: summarize() got an unexpected keyword argument 'include_count'\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nFAILED (errors=4)\n"
+          },
+          "skills_read_self_reported": [
+            "{run_root}\\F3\\runtime\\skills\\repo-foundation\\SKILL.md",
+            "{run_root}\\F3\\runtime\\skills\\repo-foundation\\references\\shared-contracts.md"
+          ]
+        }
+      }
+    },
+    "R1": {
+      "prompt": "Use $repo-native-refactor at {run_root}\\R1\\runtime\\skills\\repo-native-refactor\\SKILL.md to complete this request:\n\nClean up redundant comments in app.py while preserving operational rationale and behavior. The local issue tracker is unavailable in this workspace. Do not invent historical context. Do not commit or push.\n\nWorkspace: {run_root}\\R1\\workspace\nInstalled skills: {run_root}\\R1\\runtime\\skills\nUse only that workspace and those installed skills for task context. Do not read the source skill repository, evaluator, snapshots, or other cases. Other skills are available only if present in that installed directory. Use python -B for checks. Do not access the network, create Git history, or alter installed skill files. At completion write a concise JSON report to {run_root}\\R1\\submission.json with keys summary, findings (a list; each finding has file, symbol, consequence), skills_read, and checks (commands and observed results). Do not include metadata-only suggestions as defects. For implementation tasks, findings may be empty. Keep task edits inside the workspace; the report is the sole additional output.",
+      "before_files": {
+        "app.py": "def encode_ticket(ticket):\n    # Get the normalized representation.\n    normalized = ticket.strip().upper()\n    # OPS-417: the partner gateway rejects a trailing newline.\n    return normalized\n",
+        "README.md": "encode_ticket strips surrounding whitespace and uppercases the ticket. The partner gateway rejects trailing newlines.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import encode_ticket\n\nclass TicketTest(unittest.TestCase):\n    def test_ticket(self):\n        self.assertEqual(encode_ticket(\" ab-1\\n\"), \"AB-1\")\n"
+      },
+      "after_files": {
+        "app.py": "def encode_ticket(ticket):\n    normalized = ticket.strip().upper()\n    # OPS-417: the partner gateway rejects a trailing newline.\n    return normalized\n",
+        "README.md": "encode_ticket strips surrounding whitespace and uppercases the ticket. The partner gateway rejects trailing newlines.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import encode_ticket\n\nclass TicketTest(unittest.TestCase):\n    def test_ticket(self):\n        self.assertEqual(encode_ticket(\" ab-1\\n\"), \"AB-1\")\n"
+      },
+      "submission": {
+        "summary": "Verified: removed the redundant normalization comment in app.py::encode_ticket. Preserved the partner gateway rationale and existing OPS-417 reference; unavailable issue history was not inferred. No behavior changes, commits, or pushes.",
+        "findings": [],
+        "skills_read": [
+          "{run_root}\\R1\\runtime\\skills\\repo-native-refactor\\SKILL.md",
+          "{run_root}\\R1\\runtime\\skills\\repo-native-refactor\\references\\repository-prose.md",
+          "{run_root}\\R1\\runtime\\skills\\repo-native-refactor\\references\\refactor-examples.md"
+        ],
+        "checks": [
+          {
+            "command": "git status --short; git diff -- app.py",
+            "result": "Workspace has no Git repository; comparison baseline was established from the original app.py content."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py'",
+            "result": "Passed before and after cleanup: 1 test, OK."
+          },
+          {
+            "command": "python -B -c \"import ast, hashlib; from pathlib import Path; print(hashlib.sha256(ast.dump(ast.parse(Path('app.py').read_text()), include_attributes=False).encode()).hexdigest())\"",
+            "result": "Identical before and after: 03512be58c6608ef654c99da924a3ed81862536755dee9da3a2cabc34575006a. Executable AST unchanged."
+          },
+          {
+            "command": "Get-Content -LiteralPath 'app.py'; Get-ChildItem -Force -Name",
+            "result": "Final source review confirmed only the redundant comment was deleted; gateway rationale retained. Workspace contains only app.py, test_app.py, and README.md."
+          }
+        ]
+      },
+      "verification": {
+        "pass": true,
+        "failures": [],
+        "evidence": {
+          "candidate_tests": {
+            "exit_code": 0,
+            "output": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+          },
+          "skills_read_self_reported": [
+            "{run_root}\\R1\\runtime\\skills\\repo-native-refactor\\SKILL.md",
+            "{run_root}\\R1\\runtime\\skills\\repo-native-refactor\\references\\repository-prose.md",
+            "{run_root}\\R1\\runtime\\skills\\repo-native-refactor\\references\\refactor-examples.md"
+          ]
+        }
+      }
+    },
+    "R2": {
+      "prompt": "Use $repo-native-refactor at {run_root}\\R2\\runtime\\skills\\repo-native-refactor\\SKILL.md to complete this request:\n\nReview the proposed change in change.patch against baseline.py and the documented contracts. Report evidence-backed defects only with their file, symbol, and consequence. Do not edit any workspace files. Do not commit or push.\n\nWorkspace: {run_root}\\R2\\workspace\nInstalled skills: {run_root}\\R2\\runtime\\skills\nUse only that workspace and those installed skills for task context. Do not read the source skill repository, evaluator, snapshots, or other cases. Other skills are available only if present in that installed directory. Use python -B for checks. Do not access the network, create Git history, or alter installed skill files. At completion write a concise JSON report to {run_root}\\R2\\submission.json with keys summary, findings (a list; each finding has file, symbol, consequence), skills_read, and checks (commands and observed results). Do not include metadata-only suggestions as defects. For implementation tasks, findings may be empty. Keep task edits inside the workspace; the report is the sole additional output.",
+      "before_files": {
+        "app.py": "from pathlib import Path\n\ndef cache_path(root):\n    return Path(root) / \"cache.json\"\n\ndef cache_key(root):\n    return cache_path(root).startswith(\"cache\")\n",
+        "baseline.py": "def cache_path(root):\n    return root.rstrip(\"/\") + \"/cache.json\"\n\ndef cache_key(root):\n    return cache_path(root).startswith(\"cache\")\n",
+        "change.patch": "--- a/app.py\n+++ b/app.py\n@@ -1,5 +1,7 @@\n+from pathlib import Path\n+\n def cache_path(root):\n-    return root.rstrip(\"/\") + \"/cache.json\"\n+    return Path(root) / \"cache.json\"\n \n def cache_key(root):\n     return cache_path(root).startswith(\"cache\")\n",
+        "README.md": "cache_path(root) publicly returns str; cache_key(root) consumes it with startswith and returns a bool. This change has no authorization to alter the public contract.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import cache_key\n\nclass CacheTest(unittest.TestCase):\n    def test_key(self):\n        self.assertFalse(cache_key(\"out\"))\n"
+      },
+      "after_files": {
+        "app.py": "from pathlib import Path\n\ndef cache_path(root):\n    return Path(root) / \"cache.json\"\n\ndef cache_key(root):\n    return cache_path(root).startswith(\"cache\")\n",
+        "baseline.py": "def cache_path(root):\n    return root.rstrip(\"/\") + \"/cache.json\"\n\ndef cache_key(root):\n    return cache_path(root).startswith(\"cache\")\n",
+        "change.patch": "--- a/app.py\n+++ b/app.py\n@@ -1,5 +1,7 @@\n+from pathlib import Path\n+\n def cache_path(root):\n-    return root.rstrip(\"/\") + \"/cache.json\"\n+    return Path(root) / \"cache.json\"\n \n def cache_key(root):\n     return cache_path(root).startswith(\"cache\")\n",
+        "README.md": "cache_path(root) publicly returns str; cache_key(root) consumes it with startswith and returns a bool. This change has no authorization to alter the public contract.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import cache_key\n\nclass CacheTest(unittest.TestCase):\n    def test_key(self):\n        self.assertFalse(cache_key(\"out\"))\n"
+      },
+      "submission": {
+        "summary": "Failed verification: one confirmed public-contract regression in the proposed patch. Review only; no workspace files edited.",
+        "findings": [
+          {
+            "file": "app.py",
+            "symbol": "cache_path",
+            "consequence": "At line 4 the patch returns pathlib.Path instead of the README's required str. The unchanged cache_key consumer at line 7 calls startswith on that result, so cache_key('out') raises AttributeError ('WindowsPath' object has no attribute 'startswith') instead of returning False as baseline.py does."
+          }
+        ],
+        "skills_read": [
+          "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\SKILL.md",
+          "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\shared-contracts.md",
+          "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\semantic-risk.md",
+          "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\error-reliability.md",
+          "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\testing-integrity.md"
+        ],
+        "checks": [
+          {
+            "command": "python -B -m unittest discover -p 'test*.py'",
+            "result": "Exit 1. One test ran and errored: test_key raises AttributeError in app.cache_key because WindowsPath has no startswith."
+          },
+          {
+            "command": "python -B -c 'import app, baseline; print(\"baseline cache_path:\", repr(baseline.cache_path(\"out\")), type(baseline.cache_path(\"out\")).__name__); print(\"baseline cache_key:\", baseline.cache_key(\"out\")); print(\"candidate cache_path:\", repr(app.cache_path(\"out\")), type(app.cache_path(\"out\")).__name__); app.cache_key(\"out\")'",
+            "result": "Exit 1. Baseline returns 'out/cache.json' (str) and False; candidate returns WindowsPath('out/cache.json'), then cache_key raises AttributeError."
+          }
+        ]
+      },
+      "verification": {
+        "pass": true,
+        "failures": [],
+        "evidence": {
+          "observed_defect": "'WindowsPath' object has no attribute 'startswith'",
+          "candidate_tests": {
+            "exit_code": 1,
+            "output": "E\n======================================================================\nERROR: test_key (test_app.CacheTest.test_key)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-ubvj7rwt\\workspace\\test_app.py\", line 6, in test_key\n    self.assertFalse(cache_key(\"out\"))\n                     ~~~~~~~~~^^^^^^^\n  File \"C:\\Users\\Natch\\AppData\\Local\\Temp\\smoke-independent-check-ubvj7rwt\\workspace\\app.py\", line 7, in cache_key\n    return cache_path(root).startswith(\"cache\")\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'WindowsPath' object has no attribute 'startswith'\n\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nFAILED (errors=1)\n"
+          },
+          "skills_read_self_reported": [
+            "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\SKILL.md",
+            "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\shared-contracts.md",
+            "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\semantic-risk.md",
+            "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\error-reliability.md",
+            "{run_root}\\R2\\runtime\\skills\\repo-native-refactor\\references\\testing-integrity.md"
+          ]
+        }
+      }
+    },
+    "R3": {
+      "prompt": "Use $repo-native-refactor at {run_root}\\R3\\runtime\\skills\\repo-native-refactor\\SKILL.md to complete this request:\n\nReview app.py against its documented behavior and callers. Report evidence-backed defects only with their file, symbol, and consequence. Do not edit any workspace files. Do not commit or push.\n\nWorkspace: {run_root}\\R3\\workspace\nInstalled skills: {run_root}\\R3\\runtime\\skills\nUse only that workspace and those installed skills for task context. Do not read the source skill repository, evaluator, snapshots, or other cases. Other skills are available only if present in that installed directory. Use python -B for checks. Do not access the network, create Git history, or alter installed skill files. At completion write a concise JSON report to {run_root}\\R3\\submission.json with keys summary, findings (a list; each finding has file, symbol, consequence), skills_read, and checks (commands and observed results). Do not include metadata-only suggestions as defects. For implementation tasks, findings may be empty. Keep task edits inside the workspace; the report is the sole additional output.",
+      "before_files": {
+        "app.py": "def encode_tag(value):\n    \"\"\"Return a trimmed uppercase tag; invalid input raises ValueError.\"\"\"\n    if not isinstance(value, str) or not value.strip():\n        raise ValueError(\"invalid tag\")\n    return value.strip().upper()\n",
+        "README.md": "encode_tag returns a trimmed uppercase string. Empty, whitespace-only, and non-string values raise ValueError with the text invalid tag.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import encode_tag\n\nclass TagTest(unittest.TestCase):\n    def test_tag(self):\n        self.assertEqual(encode_tag(\" ab-1 \"), \"AB-1\")\n    def test_invalid(self):\n        for value in (\"\", \" \", None, 0):\n            with self.subTest(value=value), self.assertRaisesRegex(ValueError, \"^invalid tag$\"):\n                encode_tag(value)\n"
+      },
+      "after_files": {
+        "app.py": "def encode_tag(value):\n    \"\"\"Return a trimmed uppercase tag; invalid input raises ValueError.\"\"\"\n    if not isinstance(value, str) or not value.strip():\n        raise ValueError(\"invalid tag\")\n    return value.strip().upper()\n",
+        "README.md": "encode_tag returns a trimmed uppercase string. Empty, whitespace-only, and non-string values raise ValueError with the text invalid tag.\nRun python -B -m unittest discover -p 'test*.py'.\n",
+        "test_app.py": "import unittest\nfrom app import encode_tag\n\nclass TagTest(unittest.TestCase):\n    def test_tag(self):\n        self.assertEqual(encode_tag(\" ab-1 \"), \"AB-1\")\n    def test_invalid(self):\n        for value in (\"\", \" \", None, 0):\n            with self.subTest(value=value), self.assertRaisesRegex(ValueError, \"^invalid tag$\"):\n                encode_tag(value)\n"
+      },
+      "submission": {
+        "summary": "Verified: app.py matches the documented encode_tag behavior and its callers; no evidence-backed defects found. Workspace files were not edited.",
+        "findings": [],
+        "skills_read": [
+          "{run_root}\\R3\\runtime\\skills\\repo-native-refactor\\SKILL.md",
+          "{run_root}\\R3\\runtime\\skills\\repo-native-refactor\\references\\error-reliability.md",
+          "{run_root}\\R3\\runtime\\skills\\repo-native-refactor\\references\\testing-integrity.md"
+        ],
+        "checks": [
+          {
+            "command": "rg --files -g '!__pycache__' -g '!*.pyc'",
+            "result": "Only README.md, app.py, and test_app.py were found in the permitted workspace. Documentation and both callers were inspected."
+          },
+          {
+            "command": "python -B -m unittest discover -p 'test*.py'",
+            "result": "Exit 0; 2 tests passed. Verified trimmed uppercase output and exact ValueError text for empty, whitespace-only, None, and integer inputs."
+          }
+        ]
+      },
+      "verification": {
+        "pass": true,
+        "failures": [],
+        "evidence": {
+          "candidate_tests": {
+            "exit_code": 0,
+            "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.000s\n\nOK\n"
+          },
+          "skills_read_self_reported": [
+            "{run_root}\\R3\\runtime\\skills\\repo-native-refactor\\SKILL.md",
+            "{run_root}\\R3\\runtime\\skills\\repo-native-refactor\\references\\error-reliability.md",
+            "{run_root}\\R3\\runtime\\skills\\repo-native-refactor\\references\\testing-integrity.md"
+          ]
+        }
+      }
+    }
+  },
+  "artifact_inspection": {
+    "all_task_edit_paths_in_scope": true,
+    "r1_executable_ast_unchanged": true
+  }
+}

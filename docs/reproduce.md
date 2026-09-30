@@ -4,8 +4,9 @@
 docker build -t reskills . && docker run --rm reskills
 ```
 
-What that runs, in order: shared-contracts sync check, foundation asset validation,
-26 foundation harness tests, 33 refactor harness tests, and the demo acceptance
+What that runs, in order: shared-contracts sync check, 3 isolated skill-resource checks,
+foundation asset validation, 30 foundation harness/example tests, 36 refactor
+harness/example tests, and the demo acceptance
 suite (`scripts/test_demos.py`). Tested on an image built from this commit; expect
 exit 0 end to end.
 

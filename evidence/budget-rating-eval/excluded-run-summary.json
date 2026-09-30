@@ -1,0 +1,54 @@
+{
+  "schema": "excluded-run-summary-v1",
+  "raw_evidence_available": false,
+  "exclusion_reason": "temporary run directory disappeared for undetermined reason before export",
+  "calibrations": [
+    {
+      "id": "calibration",
+      "input_tokens": 66548,
+      "cached_input_tokens": 55296,
+      "output_tokens": 154,
+      "reason": "foreign skills and shell policy blocked reads"
+    },
+    {
+      "id": "calibration2",
+      "input_tokens": 46238,
+      "cached_input_tokens": 33280,
+      "output_tokens": 117,
+      "reason": "foreign skills still loaded; shell read succeeded"
+    },
+    {
+      "id": "calibration3",
+      "input_tokens": 33885,
+      "cached_input_tokens": 27904,
+      "output_tokens": 119,
+      "reason": "valid local catalog and complete skill read confirmed"
+    }
+  ],
+  "migration_attempts": [
+    {
+      "id": "migration-control-1",
+      "seconds": 170.49,
+      "input_tokens": 80970,
+      "cached_input_tokens": 61056,
+      "output_tokens": 2931,
+      "reasoning_output_tokens": 18,
+      "summary_only": "trusted checks reported pass; raw events and candidate artifacts unavailable, excluded from audited scores"
+    },
+    {
+      "id": "migration-skills-1",
+      "seconds": 180.06,
+      "usage": null,
+      "completed_commands": 3,
+      "summary_only": "time ceiling; direct checks reported no behavior failures; persistent tests not updated; full foundation entrypoint observed despite later git status failure; incomplete and now excluded from audited scores"
+    }
+  ],
+  "measured_totals": {
+    "input_tokens": 227641,
+    "cached_input_tokens": 177536,
+    "uncached_input_tokens": 50105,
+    "output_tokens": 3321
+  },
+  "unavailable_usage_turns": 1,
+  "note": "Figures transcribed from captured evaluator tool outputs; not reconstructed raw run evidence."
+}

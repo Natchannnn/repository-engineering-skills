@@ -14,6 +14,7 @@ COPY . ./
 # scripts/verify_archive.py is the cross-platform runner for Windows use.
 # See docs/reproduce.md.
 CMD ["sh", "-c", "python scripts/sync-shared.py --check \
+  && python -B scripts/test_runtime_resources.py \
   && python -B repo-foundation/evals/harness.py validate \
   && python -B -m unittest discover -s repo-foundation/evals/tests \
   && python -B -m unittest discover -s repo-native-refactor/evals/tests \

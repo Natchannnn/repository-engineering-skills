@@ -1,0 +1,36 @@
+{
+  "prepared_at_utc": "2026-09-30T05:05:50Z",
+  "profile_name": "skills-budget-skill-rating-eval",
+  "profile_path": "C:\\Users\\Natch\\.codex\\skills-budget-skill-rating-eval.config.toml",
+  "profile_sha256": "4613ef6817c6bb59d96d54e1206b1fb0560133100f21cdc23500c994b42a84b2",
+  "foreign_skills_disabled": 1638,
+  "protocol_sha256": "1af67cbfe550ea6d7036cbdc2b934a85393f9e21eb26def27c566eb3784439ef",
+  "source_commit": "9630df0e56a6efc71957948b45e886503aeff8fd",
+  "cli_version": "codex-cli 0.159.0",
+  "runtime_hashes": {
+    "repo-foundation": {
+      "bootstrap.md": "a61bf4126b6e2b33368271829cf16be6d96e51501a4ef662822c3a0fb345c231",
+      "companion.md": "87c03722d52c70a8c3e790ec107b44bdcd22a9674b1c2a95dce91e257dc1a8ab",
+      "continuity.md": "26b3de0b3b446ba0399d07b983f8defdca6f4d9c3f635ccd3bbe011dd8062158",
+      "evolution.md": "b6b1bde24c65e5fafa57a2569c9873d25204be69efd6adb5553cc1874595ca3a",
+      "migration-examples.md": "1166ce496370b819541074a9418effcdcd99fd41315813a37af17b6cffc8343a",
+      "shared-contracts.md": "678acfc3436652350ca25f64d7016853ff0ffb1217f1d44db1c9f74a1b045718",
+      "verification.md": "e2a02594f293a9f8b6e764ed53b4df87b3976ff756cf3a8c0eed99fa762958ed",
+      "SKILL.md": "a90b9c869bb5cfece808c816bedb07415cc20b4cd6c53e80ed251edaf32af93a",
+      "agents/openai.yaml": "670a58197d64bfc74baaf2a0357cfd634f5c1773a50b3d6a42b2624fb2f31ff1"
+    },
+    "repo-native-refactor": {
+      "deterministic-tooling.md": "e44fe4144ab5fffe88e94d8ef64209ce3b5331794f1086cf1d62ef79952bb034",
+      "error-reliability.md": "69bec30406760743ab128f9d200f6eb2a5d07df60e2d341f7fdea57787adff3b",
+      "finding-taxonomy.md": "fffe175df1938126478a97df83e058af9566849d25b271086291b19280cbd85d",
+      "refactor-examples.md": "814a3d6022360ea75984f5443ce0fd0377066ea072bee77744120853bd1bdfb1",
+      "repository-prose.md": "63408cfaab864d7f99cd9a651874dbfa40c17d695b21cdb7f861c3adc4478bef",
+      "repository-rehabilitation.md": "fb5da385aa9151b157f4ae4413adf78951556fcefdf6aed58256b82d3f90508e",
+      "semantic-risk.md": "a21c5e4f52fe4e51af410d9b29ad2a1cdc5976529ce1f206f22fb527a1e8583a",
+      "shared-contracts.md": "678acfc3436652350ca25f64d7016853ff0ffb1217f1d44db1c9f74a1b045718",
+      "testing-integrity.md": "a77c00c763a5e7cbd0a25605d1c57ac9ad375910311f6974a655bd4519a3ccbb",
+      "SKILL.md": "b36865928544cccec1073fe9951218318f4be8c3140119f9d514fd6e976948f6",
+      "agents/openai.yaml": "bf3aa7f9aeb0363c5d258897051ef61a8307217fe8017d4ccb6695ae1a4746a7"
+    }
+  }
+}

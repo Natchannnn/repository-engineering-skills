@@ -12,6 +12,9 @@ The repository includes two independent evaluation harnesses:
 | :--- | :--- | :--- |
 | **Foundation Harness** | `repo-foundation/evals/` | Multi-checkpoint lifecycle verification, deterministic snapshots, exact rational scoring |
 | **Refactor Harness** | `repo-native-refactor/evals/` | Hash-checked change evaluation, runner isolation, patch roundtrip integrity |
+| **Runtime Resource Checks** | `scripts/test_runtime_resources.py` | Skill-owned references resolve without the source repository or companion |
+| **Runtime Polish Smoke** | `pilots/runtime-polish-smoke/` | Six bounded tasks with explicit skill invocation and independent outcome checks |
+| **Bounded Rating Comparison** | `pilots/budget-rating-eval/` | Four audited review sessions with/without skills; usage, exclusions and limits recorded |
 | **Behavioral Pilot 1** | `pilots/small-behavioral-pilot/` | 9-run behavioral evaluation (D1, D3, R1) with 42 self-audit checks |
 | **Phase 2 Pilot** | `pilots/phase2-contract-and-review/` | 27-run contract drift and review evaluation (D2, R2A, R2B) with 35 self-audit checks |
 | **Archive Evidence** | `evals-suite/` | 31 sealed historical evidence packets from experimental runs |
@@ -52,12 +55,26 @@ python -B repo-foundation/evals/harness.py verify CP2_SLICE /path/to/workspace
 Run both unit test suites from the repository root:
 
 ```bash
-# 1. Foundation harness tests (26 unit tests):
+# 1. Foundation harness and example tests (30 tests):
 python -B -m unittest discover -s repo-foundation/evals/tests -v
 
-# 2. Refactor harness tests (33 unit tests):
+# 2. Refactor harness and example tests (36 tests):
 python -B -m unittest discover -s repo-native-refactor/evals/tests -v
+
+# 3. Isolated skill resources (3 tests):
+python -B scripts/test_runtime_resources.py
 ```
+
+The six-case live smoke check uses installed runtime copies and explicit invocation;
+see its [protocol and recorded limits](../pilots/runtime-polish-smoke/PROTOCOL.md).
+It is not part of deterministic CI or proof of automatic skill selection.
+
+The later [bounded comparison](../pilots/budget-rating-eval/RESULTS.md) records
+four audited review sessions with an empty catalog versus both skills available
+for implicit selection. Both repetitions in both arms passed, with equal graded
+outcomes and higher measured context cost in the skill arm. Two migration
+attempts were excluded after evidence loss, and remaining exclusion/mixed cases
+were stopped for usage. It does not establish a universal 10/10 rating.
 
 ---
 

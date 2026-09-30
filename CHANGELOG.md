@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Fixed
+- Migration example now keeps the file open through flush/fsync, stages under a unique name, and cleans up temporary files on ordinary I/O failures.
+- Retry example propagates the final transient error and immediately propagates non-retryable errors.
+- Existing ticket, PR, and incident references are preserved when inaccessible or unverified; deletion requires repository evidence.
+- Installable shared contracts exclude maintainer-only commands and source-repository paths. Migration and refactor examples no longer require benchmark context.
+- Lightweight fixes, explicit review requests, and substantial changes use consistent companion timing; conflicting conventions follow the existing reconciliation workflow.
+
+### Added
+- Seven behavioral regression checks for executable migration and retry examples.
+- Three isolated skill-resource checks, included in Windows/Linux CI and the Docker verification command.
+- A six-case smoke protocol for explicit skill invocation with isolated runtime copies and independent outcome verification.
+
 ## [0.3.0] - 2026-09-29
 
 ### Fixed
