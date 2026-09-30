@@ -2,14 +2,19 @@
 
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![version](https://img.shields.io/badge/version-0.3.0-green)](CHANGELOG.md) [![payload](https://img.shields.io/badge/payload-23%20files-lightgrey)](docs/installation.md)
 
-Vibe coding works great until you're 10 or 20 sessions in. As different models and chat sessions touch the project, you have two options: refactor the whole thing or just give up. The problem usually isn't a lack of "clean code"—it's a lack of **consistency**. Let's say one agent uses a `str` path, and the next one, bro "upgrades" it to `pathlib.Path`, and another dumps a 300-line diff of unnecessary rewrites. Yikes.
+Vibe coding feels great for the first few sessions. But 10 or 20 sessions in, you open the repo and it looks like it was written by random flatmates who never met, but each decided to completely remodel the house without asking, one is over-engineering, another is tearing it down to basics, and Jimmy is playing drums in the corner.
 
-These two companion skills keep agents consistent over long projects:
+Everything an agent touches, it believes has turned into gold. Weirdly enough, nobody asked it to write 300 lines out of scope, and when every agent believes it's doing God's work, is that something you refactor from scratch, or is it time to get on your bike?
 
-- **`repo-foundation`**: sets up boundaries, baseline conventions, and contracts so every new session knows the ground rules.
-- **`repo-native-refactor`**: stops diff bloat, catches contract drift, and makes new changes blend naturally into the existing code.
+Anyway, here’s what Jimmy made while playing the drums to keep the band together:
 
-The goal: you can vibe code across dozens of sessions with different agents, and the repo still looks like one person wrote it.
+- **`repo-foundation`**: gives every new session the same ground rules to start from: where the boundaries are, which conventions the repo follows, and which contracts can't be broken.
+- **`repo-native-refactor`**: keeps each change in line with the ones before it. It trims bloated diffs, catches contract drift, and makes new code look like it was always there.
+
+Use them together and you can pass a project from agent to agent across dozens of sessions, and it will still be comprehensible.
+
+Much love,  
+~~Jimmy~~ Natch
 
 ---
 
